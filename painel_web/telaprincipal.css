@@ -1,0 +1,100 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Aplica o Grid no body usando a SUA estrutura:
+   A primeira coluna é o <aside> e a segunda coluna é a sua div #titulo-principal */
+body {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    height: 100vh;
+    background-color: #f4f6f9;
+}
+
+/* --- MENU LATERAL (SEUS NOMES DE CLASSE) --- */
+.barra-lateral {
+    background-color: #0b1426;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    padding: 10px 20px 30px 20px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid #1e293b;
+}
+
+.menu-lateral {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.menu-lateral a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 15px 25px;
+    transition: 0.2s;
+
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px; 
+    font-weight: 400;
+}
+
+.menu-lateral a:hover {
+    background-color: #1e293b;
+    color: #ffffff;
+}
+
+.menu-lateral a.active {
+    background-color: #2563eb;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* --- CONTEÚDO DA DIREITA (USANDO OS SEUS IDS) --- */
+#titulo-principal {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+#cabecalho-principal {
+    background-color: #ffffff;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+#cabecalho-principal h2 {
+    font-size: 24px;
+    color: #1e293b;
+}
+
+/* Estiliza o span (Visão geral) que está dentro do seu h2 */
+#cabecalho-principal h2 span {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: normal;
+    margin-left: 10px;
+}
+
+#usuario {
+    font-size: 14px;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+#informacoes-principais {
+    padding: 40px;
+}
