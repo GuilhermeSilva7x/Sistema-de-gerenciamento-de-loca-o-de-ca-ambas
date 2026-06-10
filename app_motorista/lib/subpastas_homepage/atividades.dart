@@ -33,11 +33,11 @@ class Atividades extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 12),
-              CardsAtividades(),
+              CardsAtividades(atividade: "ENTREGA", cor: Colors.blue),
               SizedBox(height: 8),
-              CardsAtividades(),
+              CardsAtividades(atividade: "TROCA", cor: Colors.orange),
               SizedBox(height: 8),
-              CardsAtividades(),
+              CardsAtividades(atividade: "RETIRADA", cor: Colors.red),
             ],
           ),
         ),
@@ -47,7 +47,14 @@ class Atividades extends StatelessWidget {
 }
 
 class CardsAtividades extends StatelessWidget {
-  const CardsAtividades({super.key});
+  final Color cor;
+  final String atividade;
+
+  const CardsAtividades({
+    super.key,
+    required this.cor,
+    required this.atividade,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +62,7 @@ class CardsAtividades extends StatelessWidget {
       width: double.infinity,
       height: 120,
       decoration: BoxDecoration(
-        color: const Color(0xFFE8F2FF),
+        color: cor.withOpacity(0.08),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey[200]!, width: 1),
       ),
@@ -64,8 +71,8 @@ class CardsAtividades extends StatelessWidget {
           Container(
             width: 6,
             height: double.infinity,
-            decoration: const BoxDecoration(
-              color: Color(0xFF1976D2),
+            decoration: BoxDecoration(
+              color: cor,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(12),
                 bottomLeft: Radius.circular(12),
@@ -85,13 +92,13 @@ class CardsAtividades extends StatelessWidget {
                     height: 24,
                     width: 80,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFADCFFF),
+                      color: cor.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    child: const Text(
-                      "ENTREGA",
+                    child: Text(
+                      atividade,
                       style: TextStyle(
-                        color: Color(0xFF1976D2),
+                        color: cor,
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
                       ),
