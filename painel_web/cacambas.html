@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locação de Caçambas - Gerenciamento</title>
+    <link rel="stylesheet" href="telaprincipal.css">
+    <link rel="stylesheet" href="cacambas.css">
+</head>
+<body>
+
+    <aside class="barra-lateral">
+        <div class="logo">LOCAÇÃO DE CAÇAMBAS</div>
+        <nav class="menu-lateral">
+            <!-- Link para voltar para a tela principal -->
+            <a href="telaprincipal.html">Início</a>
+            <!-- Ativo nesta página -->
+            <a href="cacambas.html" class="active">Caçambas</a> 
+            <a href="#">Locações</a>
+            <a href="#">Ordens de Serviço</a>
+            <a href="#">Clientes</a>
+            <a href="#">Motoristas</a>
+            <a href="#">Caminhões</a>
+            <a href="#">Despesas</a>
+            <a href="#">Relatórios</a>
+        </nav>
+    </aside>
+
+    <div class="titulo-principal" id="titulo-principal">
+        <header class="cabecalho-principal" id="cabecalho-principal">
+            <h2>Gerenciamento de Caçambas <span>Visão geral</span></h2>
+            <div class="usuario" id="usuario">Administrador</div>
+        </header>
+
+        <main class="informacoes-principais" id="informacoes-principais">
+            <section class="cards">
+                <div class="card disponiveis-card">
+                    <h2 id="disponiveis">15</h2>
+                    <p>Disponíveis</p>
+                </div>
+                <div class="card uso-card">
+                    <h2 id="em-uso">32</h2>
+                    <p>Em Uso</p>
+                </div>
+                <div class="card troca-card">
+                    <h2 id="troca">8</h2>
+                    <p>Aguardando Troca</p>
+                </div>
+                <div class="card retirada-card">
+                    <h2 id="retirada">5</h2>
+                    <p>Aguardando Retirada</p>
+                </div>
+                <div class="card manutencao-card">
+                    <h2 id="manutencao">2</h2>
+                    <p>Em Manutenção</p>
+                </div>
+            </section>
+
+            <section class="filtros">
+                <input type="text" placeholder="Buscar número da caçamba...">
+                <select>
+                    <option>Todos os Status</option>
+                    <option>Disponível</option>
+                    <option>Em Uso</option>
+                    <option>Aguardando Troca</option>
+                    <option>Aguardando Retirada</option>
+                    <option>Em Manutenção</option>
+                </select>
+                <button class="btn-nova">+ Nova Caçamba</button>
+            </section>
+
+            <section class="tabela">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Status</th>
+                            <th>Cliente</th>
+                            <th>Endereço</th>
+                            <th>Data Entrega</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>001</td>
+                            <td><span class="status disponivel">🟢 Disponível</span></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td class="acoes">
+                                <button class="btn-ver">👁</button>
+                                <button class="btn-editar">✏</button>
+                                <button class="btn-excluir">🗑</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>002</td>
+                            <td><span class="status em-uso">🔵 Em Uso</span></td>
+                            <td>João Silva</td>
+                            <td>Rua das Flores</td>
+                            <td>15/06/2026</td>
+                            <td class="acoes">
+                                <button class="btn-ver">👁</button>
+                                <button class="btn-editar">✏</button>
+                                <button class="btn-excluir">🗑</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>003</td>
+                            <td><span class="status retirada">🔴 Retirada</span></td>
+                            <td>Construtora Silva</td>
+                            <td>Av. Brasil</td>
+                            <td>10/06/2026</td>
+                            <td class="acoes">
+                                <button class="btn-ver">👁</button>
+                                <button class="btn-editar">✏</button>
+                                <button class="btn-excluir">🗑</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="paginacao">
+                <button>Anterior</button>
+                <button class="pag-atual">1</button> 
+                <button>2</button>
+                <button>3</button>
+                <button>Próxima</button>
+            </section>
+        </main>
+    </div>
+
+    <script src="cacambas.js"></script>
+</body>
+</html>

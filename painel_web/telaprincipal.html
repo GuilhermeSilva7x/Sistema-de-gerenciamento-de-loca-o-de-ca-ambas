@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Painel Principal - Locação de Caçambas</title>
     <link rel="stylesheet" href="telaprincipal.css">
+    <link rel="stylesheet" href="cacambas.css">
 </head>
 <body>
+
     <aside class="barra-lateral">
         <div class="logo">LOCAÇÃO DE CAÇAMBAS</div>
         <nav class="menu-lateral">
-            <a href="#" class="active">Início</a>
-            <a href="#">Caçambas</a>
+            <a href="telaprincipal.html" class="active">Início</a>
+            <a href="cacambas.html">Caçambas</a> 
+            
             <a href="#">Locações</a>
             <a href="#">Ordens de Serviço</a>
             <a href="#">Clientes</a>
@@ -19,23 +22,98 @@
             <a href="#">Caminhões</a>
             <a href="#">Despesas</a>
             <a href="#">Relatórios</a>
-            </nav>
+        </nav>
     </aside>
 
     <div class="titulo-principal" id="titulo-principal">
-
         <header class="cabecalho-principal" id="cabecalho-principal">
-        <h2>Painel Principal <span>Visão geral</span></h2>
-        <div class="usuario" id="usuario">Administrador</div>
+            <h2>Painel Principal <span>Visão geral da operação</span></h2>
+            <div class="usuario" id="usuario">Administrador</div>
         </header>
 
         <main class="informacoes-principais" id="informacoes-principais">
+            
+            <section class="cards">
+                <div class="card manutencao-card">
+                    <h2>50</h2>
+                    <p>Total de Caçambas</p>
+                </div>
+                <div class="card uso-card">
+                    <h2>28</h2>
+                    <p>Em Uso</p>
+                </div>
+                <div class="card troca-card">
+                    <h2>5</h2>
+                    <p>Aguardando Troca</p>
+                </div>
+                <div class="card retirada-card">
+                    <h2>3</h2>
+                    <p>Aguardando Retirada</p>
+                </div>
+                <div class="card manutencao-card">
+                    <h2>2</h2>
+                    <p>Em Manutenção</p>
+                </div>
+            </section>
 
+            <section class="tabela">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Caçamba</th>
+                            <th>Cliente</th>
+                            <th>Endereço</th>
+                            <th>Data Entrega</th>
+                            <th>Prev. Retirada</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>025</td>
+                            <td>João Silva</td>
+                            <td>Rua das Flores, 123 - Setor Sul</td>
+                            <td>10/06/2026</td>
+                            <td>20/06/2026</td>
+                            <td><span class="status em-uso">🔵 Em uso</span></td>
+                        </tr>
+                        <tr>
+                            <td>031</td>
+                            <td>Construtora ABC</td>
+                            <td>Av. T-63, 210 - Jardim América</td>
+                            <td>08/06/2026</td>
+                            <td>18/06/2026</td>
+                            <td><span class="status em-uso">🔵 Em uso</span></td>
+                        </tr>
+                        <tr>
+                            <td>018</td>
+                            <td>Maria Oliveira</td>
+                            <td>Rua 90, 45 - Setor Central</td>
+                            <td>05/06/2026</td>
+                            <td>15/06/2026</td>
+                            <td><span class="status retirada">🔴 Aguard. retirada</span></td>
+                        </tr>
+                        <tr>
+                            <td>064</td>
+                            <td>Residencial Boa Vista</td>
+                            <td>Av. Perimetral, 555 - Bueno</td>
+                            <td>10/06/2026</td>
+                            <td>20/06/2026</td>
+                            <td><span class="status em-uso">🔵 Em uso</span></td>
+                        </tr>
+                        <tr>
+                            <td>042</td>
+                            <td>Empreendimentos Ltda</td>
+                            <td>Rua C-255, 180 - Nova Suíça</td>
+                            <td>09/06/2026</td>
+                            <td>19/06/2026</td>
+                            <td><span class="status troca">🟡 Aguard. troca</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
         </main>
-
-        
     </div>
-
 
 </body>
 </html>
