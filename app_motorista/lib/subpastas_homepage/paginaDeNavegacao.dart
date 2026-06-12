@@ -6,6 +6,7 @@ class Paginadenavegacao extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      selectedItemColor: Colors.blue,
       type: BottomNavigationBarType.fixed,
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: "Início"),

@@ -10,9 +10,16 @@ class Homepage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [Cabecalho(), SizedBox(height: 12), Resumo(), Atividades()],
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Column(
+            children: [
+              Cabecalho(),
+              SizedBox(height: 12),
+              Resumo(),
+              Atividades(),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Paginadenavegacao(),
