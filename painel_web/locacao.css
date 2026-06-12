@@ -1,0 +1,437 @@
+/* ARQUIVO: locacao.css */
+
+/* Bloco flexível que segura as caixas de resumo */
+.cards {
+    display: flex; /* Ativa o layout flexível */
+    gap: 20px; /* Cria espaço de 20px entre cada card */
+    margin-bottom: 30px; /* Margem de folga abaixo dos cards */
+    flex-wrap: wrap; /* Permite quebrar de linha se a tela diminuir */
+}
+
+/* Base estrutural dos cartões superiores */
+.card {
+    flex: 1; /* Faz os cards dividirem o espaço disponível igualmente */
+    min-width: 220px; /* Largura mínima para manter a estrutura bonita */
+    padding: 20px; /* Espaço interno para afastar o texto das bordas */
+    border-radius: 12px; /* Cantos arredondados do card */
+    color: white; /* Cor dos textos em branco */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* Sombra leve decorativa no fundo */
+}
+
+.card h2 {
+    font-size: 32px; /* Tamanho do número grande em destaque */
+    margin-bottom: 4px; /* Espaço entre o número e o texto de baixo */
+}
+
+.card p {
+    font-size: 14px; /* Tamanho do texto descritivo */
+    opacity: 0.9; /* Opacidade sutil para deixar o texto suave */
+}
+
+/* Cores de fundo baseadas nas imagens reais enviadas */
+.disponiveis-card { background: #16a34a; } /* Verde sólido para Locações Ativas */
+.troca-card { background: #facc15; }       /* Amarelo sólido para Prazos Vencendo */
+.manutencao-card { background: #0f172a; }  /* Azul Escuro Sólido Noturno para Total a Receber */
+
+/* Alinhamento horizontal dos elementos de busca e filtros */
+.filtros {
+    display: flex; /* Organiza input, select e botão lado a lado */
+    gap: 15px; /* Espaço de 15px entre eles */
+    margin-bottom: 25px; /* Espaçamento antes de começar a tabela */
+    align-items: center; /* Centraliza os elementos na linha vertical */
+}
+
+/* Estilização da caixa de texto da pesquisa */
+.filtros input {
+    flex: 1; /* Faz o input ocupar todo o espaço restante disponível */
+    padding: 12px 16px; /* Altura e preenchimento interno */
+    border: 1px solid #e2e8f0; /* Borda fina cinza clara */
+    border-radius: 8px; /* Cantos levemente arredondados */
+    background: white; /* Cor de fundo branca */
+    font-size: 14px; /* Tamanho da letra digitada */
+}
+
+/* Estilização da seleção de status (Dropdown) */
+.filtros select {
+    width: 220px; /* Largura fixa para a caixinha de seleção */
+    border: 1px solid #e2e8f0; /* Mesma borda fina cinza */
+    border-radius: 8px; /* Mesmos cantos arredondados do input */
+    padding: 12px 16px; /* Mesma altura do input */
+    background: white; /* Fundo branco */
+    font-size: 14px; /* Tamanho da letra interno */
+    color: #475569; /* Tom cinza escuro para o texto da opção */
+}
+
+/* Efeito de destaque ao clicar no input ou select */
+.filtros input:focus, .filtros select:focus {
+    outline: 2px solid #2563eb; /* Cria uma borda externa azul viva */
+}
+
+/* Botão azul de cadastro "+ Nova Locação" */
+.btn-nova {
+    background: #2563eb; /* Azul padrão corporativo do sistema */
+    color: white; /* Cor do texto interna */
+    border: none; /* Remove bordas nativas */
+    padding: 12px 24px; /* Dimensão de altura e largura do botão */
+    border-radius: 8px; /* Cantos arredondados combinando com os inputs */
+    cursor: pointer; /* Transforma o mouse na mãozinha de clique */
+    font-weight: 600; /* Letra em negrito */
+    font-size: 14px; /* Tamanho do texto */
+    transition: 0.2s; /* Suaviza a troca de cor no hover */
+    white-space: nowrap; /* Impede o botão de quebrar o texto em duas linhas */
+}
+
+.btn-nova:hover {
+    background: #1d4ed8; /* Escurece o azul quando passa o mouse por cima */
+}
+
+/* Caixa com cantos arredondados que envolve a tabela */
+.tabela {
+    background: white; /* Fundo interno da tabela branco */
+    border-radius: 12px; /* Arredonda os cantos extremos da tabela */
+    overflow: hidden; /* Corta o conteúdo que passar das bordas arredondadas */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); /* Sombra sutil de profundidade */
+    border: 1px solid #e2e8f0; /* Borda exterior cinza */
+    margin-bottom: 25px; /* Folga antes da paginação do rodapé */
+}
+
+table {
+    width: 100%; /* Obriga a tabela a ocupar 100% da largura da tela */
+    border-collapse: collapse; /* Funde as bordas das células para não duplicar */
+}
+
+thead {
+    background: #f8fafc; /* Fundo cinza bem claro para o título das colunas */
+}
+
+thead th {
+    padding: 16px; /* Altura do cabeçalho */
+    text-align: left; /* Alinha o texto das colunas à esquerda */
+    color: #475569; /* Cor do texto descritivo */
+    font-size: 14px; /* Tamanho da fonte */
+    font-weight: 600; /* Título semi-negrito */
+}
+
+tbody td {
+    padding: 16px; /* Espaçamento interno das linhas de dados */
+    border-top: 1px solid #e2e8f0; /* Linha divisória horizontal entre os registros */
+    color: #334155; /* Cor do texto interno */
+    font-size: 14px; /* Tamanho da fonte */
+}
+
+tbody tr:hover {
+    background: #f8fafc; /* Efeito acinzentado na linha inteira onde o mouse passar */
+}
+
+/* Pílulas coloridas indicadoras de status */
+.status {
+    padding: 6px 12px; /* Dimensões internas da etiqueta */
+    border-radius: 20px; /* Transforma em formato oval/pílula */
+    font-size: 12px; /* Texto menor interno */
+    font-weight: 600; /* Letras em negrito */
+    display: inline-block; /* Permite formatação correta de margens */
+}
+
+.disponivel { background: #dcfce7; color: #166534; } /* Fundo verde claro e letra escura para Na Obra */
+.troca { background: #fef3c7; color: #a16207; }      /* Fundo amarelo claro e letra castanha para Aguardando */
+.retirada { background: #fee2e2; color: #b91c1c; }   /* Fundo vermelho claro e letra escura para Retirar */
+
+/* Alinhamento dos botões de ferramentas (Ver, Editar, Excluir) */
+.acoes {
+    display: flex; /* Deixa os três botões na horizontal */
+    gap: 8px; /* Espaço de 8px entre os botões */
+}
+
+.btn-ver, .btn-editar, .btn-excluir {
+    width: 32px; /* Largura quadrada */
+    height: 32px; /* Altura quadrada */
+    border: 1px solid #e2e8f0; /* Borda fina idêntica ao seu protótipo */
+    border-radius: 6px; /* Cantos levemente suaves */
+    background: white; /* Fundo branco fixo */
+    cursor: pointer; /* Mãozinha ao passar o mouse */
+    transition: 0.2s; /* Transição de cor suave */
+    display: flex; /* Ativa flex para centralizar os emojis */
+    align-items: center; /* Centraliza o emoji verticalmente */
+    justify-content: center; /* Centraliza o emoji horizontalmente */
+    font-size: 14px; /* Tamanho do emoji */
+}
+
+.btn-ver { color: #64748b; } /* Cor cinza padrão */
+.btn-editar { color: #64748b; } /* Cor cinza padrão */
+.btn-excluir { color: #ef4444; } /* Ícone de lixeira em vermelho */
+
+.btn-ver:hover, .btn-editar:hover { background: #f1f5f9; } /* Fundo escurece no hover */
+.btn-excluir:hover { background: #fee2e2; } /* Fundo avermelha ao tentar excluir */
+
+/* Centralização do controle de páginas */
+.paginacao {
+    display: flex; /* Alinha os botões lado a lado */
+    justify-content: center; /* Centraliza o bloco todo no meio da página */
+    gap: 8px; /* Espaço entre os botões numéricos */
+}
+
+.paginacao button {
+    padding: 8px 14px; /* Tamanho dos botões de página */
+    border: 1px solid #e2e8f0; /* Borda fina */
+    border-radius: 6px; /* Cantos arredondados */
+    background: white; /* Fundo inicial branco */
+    cursor: pointer; /* Mãozinha de clique */
+    color: #475569; /* Tom de cor do número */
+    font-size: 14px; /* Tamanho da fonte */
+    transition: 0.2s; /* Suavização */
+}
+
+.paginacao button:hover, .paginacao button.pag-atual {
+    background: #2563eb; /* Ganha fundo azul quando selecionado ou hover */
+    color: white; /* Texto vira branco */
+    border-color: #2563eb; /* Borda vira azul */
+}
+
+
+/* ================= REGRAS EXCLUSIVAS DO MODAL PRINCIPAL ================= */
+
+/* Cortina escura que cobre a tela inteira fixada no topo */
+.modal-overlay {
+    position: fixed; /* Fixa o elemento travado na tela do navegador */
+    top: 0; /* Alinha no topo absoluto */
+    left: 0; /* Alinha na esquerda absoluta */
+    width: 100%; /* Força largura total da tela */
+    height: 100%; /* Força altura total da tela */
+    background: rgba(0, 0, 0, 0.4); /* Esfumaçado preto transparente (efeito de sombra de fundo) */
+    display: flex; /* Ativa flex para poder alinhar a caixa central */
+    align-items: center; /* Centraliza o formulário na vertical */
+    justify-content: center; /* Centraliza o formulário na horizontal */
+    opacity: 0; /* Inicialmente começa invisível/escondido */
+    pointer-events: none; /* Bloqueia qualquer clique no formulário enquanto oculto */
+    transition: 0.2s ease; /* Efeito de surgimento suave */
+    z-index: 999; /* Posicionamento acima do painel de tabelas */
+}
+
+/* Classe de ativação disparada via JavaScript para exibir o modal */
+.modal-overlay.active {
+    opacity: 1; /* Torna visível instantaneamente */
+    pointer-events: auto; /* Libera digitação e cliques nos campos */
+}
+
+/* Container interno branco (caixa do formulário) */
+.modal-container {
+    background: white; /* Fundo interno do painel limpo */
+    width: 100%; /* Ocupa largura total disponível */
+    max-width: 750px; /* Trava o tamanho máximo proporcional à sua imagem modelo */
+    max-height: 90vh; /* Impede o formulário de estourar a tela em monitores pequenos */
+    border-radius: 12px; /* Bordas arredondadas elegantes */
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2); /* Sombra pesada de sobreposição */
+    overflow-y: auto; /* Cria barra de rolagem inteligente se o formulário for maior que a tela */
+}
+
+/* Topo do modal */
+.modal-header {
+    padding: 18px 24px; /* Margem interna do título */
+    border-bottom: 1px solid #e2e8f0; /* Borda inferior sutil de separação */
+    display: flex; /* Alinha título e botão X */
+    justify-content: space-between; /* Empurra o título para a esquerda e o X para a direita */
+    align-items: center; /* Centraliza verticalmente ambos */
+}
+
+.modal-header h3 {
+    font-size: 15px; /* Tamanho do título em caixa alta */
+    color: #1e293b; /* Tom escuro elegante */
+    font-weight: 700; /* Letras bem marcadas em negrito */
+}
+
+.modal-fechar {
+    background: none; /* Remove fundos nativos do botão */
+    border: none; /* Remove bordas nativas */
+    font-size: 18px; /* Aumenta o tamanho do caractere X */
+    color: #94a3b8; /* Cor cinza clara neutra */
+    cursor: pointer; /* Mãozinha de clique */
+}
+
+/* Espaçamento das margens internas do formulário */
+.modal-form {
+    padding: 20px 24px; /* Distancia os campos da extremidade da caixa branca */
+}
+
+/* Caixas cinzas que agrupam cada seção do formulário */
+.form-secao {
+    border: 1px solid #f1f5f9; /* Borda muito fina quase invisível */
+    background: #f8fafc; /* Fundo cinza claro idêntico ao protótipo enviado */
+    border-radius: 8px; /* Cantos suavemente arredondados das divisórias */
+    padding: 16px; /* Conforto visual interno dos campos */
+    margin-bottom: 16px; /* Distância para o bloco de baixo */
+}
+
+/* Pequenos títulos azuis em caixa alta de cada grupo */
+.secao-titulo {
+    display: block; /* Força o título a se comportar como bloco e quebrar linha */
+    font-size: 11px; /* Letras pequenas e discretas */
+    font-weight: 700; /* Negrito marcante */
+    color: #2563eb; /* Azul padrão de destaque do sistema */
+    margin-bottom: 12px; /* Margem de folga antes de entrarem os inputs */
+}
+
+/* Divisores de layout interno em colunas paralelas */
+.linha-dupla {
+    display: flex; /* Coloca dois campos na mesma linha */
+    gap: 12px; /* Espaço de 12px entre os campos da linha */
+    margin-bottom: 10px; /* Margem caso haja mais de uma linha interna */
+}
+
+.linha-tripla {
+    display: flex; /* Coloca três campos na mesma linha (seção financeira) */
+    gap: 12px; /* Espaço entre os três elementos */
+}
+
+/* Alinhamento vertical do label com o seu respectivo input */
+.campo-grupo {
+    flex: 1; /* Força os campos internos a se expandirem igualmente */
+    display: flex; /* Ativa disposição estrutural */
+    flex-direction: column; /* Joga o texto descritivo para cima da caixa de entrada */
+    gap: 4px; /* Espaço de 4px entre o label e o input */
+}
+
+.campo-grupo label {
+    font-size: 11px; /* Letra miúda descritiva */
+    font-weight: 600; /* Letras em semi-negrito */
+    color: #475569; /* Tom cinza médio profissional */
+}
+
+/* Estilo padronizado para todas as caixas de inserção do modal */
+.modal-form input, 
+.modal-form select {
+    padding: 10px 12px; /* Conforto de digitação interna */
+    border: 1px solid #cbd5e1; /* Borda cinza de contorno */
+    border-radius: 6px; /* Arredondamento suave dos cantos */
+    font-size: 13px; /* Tamanho da letra interna */
+    background: white; /* Fundo das caixas sempre branco puro */
+    color: #334155; /* Cor da letra interna */
+    width: 100%; /* Garante preenchimento total do espaço reservado */
+    box-sizing: border-box; /* Impede o preenchimento interno de alargar a estrutura */
+}
+
+/* Botão branco "+ Novo" da linha de clientes */
+.btn-form-novo {
+    background: white; /* Fundo branco */
+    border: 1px solid #cbd5e1; /* Borda cinza discreta */
+    color: #2563eb; /* Texto interno azul ativo */
+    border-radius: 6px; /* Cantos arredondados */
+    font-weight: 600; /* Texto em negrito */
+    font-size: 13px; /* Tamanho do texto */
+    cursor: pointer; /* Mãozinha de clique */
+}
+
+/* Rodapé inferior com espaçamento dos botões de confirmação */
+.modal-footer {
+    display: flex; /* Organiza os botões nas extremidades */
+    justify-content: space-between; /* Joga o cancelar para a esquerda e o salvar para a direita */
+    margin-top: 24px; /* Espaço após a última seção cinza */
+    border-top: 1px solid #e2e8f0; /* Linha de divisão superior */
+    padding-top: 16px; /* Espaço interno após a linha */
+}
+
+.btn-cancelar {
+    background: white; /* Fundo neutro branco */
+    border: 1px solid #cbd5e1; /* Borda simples cinza */
+    color: #64748b; /* Letras cinzas discretas */
+    padding: 10px 20px; /* Dimensões do botão */
+    border-radius: 6px; /* Cantos arredondados */
+    cursor: pointer; /* Mãozinha de clique */
+    font-weight: 600; /* Negrito */
+    font-size: 13px; /* Letra interna */
+}
+
+.btn-salvar {
+    background: #2563eb; /* Cor azul de ação afirmativa do sistema */
+    border: none; /* Remove bordas estruturais nativas */
+    color: white; /* Letras internas brancas em destaque */
+    padding: 10px 24px; /* Dimensões do botão (um pouco mais largo) */
+    border-radius: 6px; /* Cantos arredondados perfeitos */
+    cursor: pointer; /* Mãozinha de clique */
+    font-weight: 600; /* Letras em negrito */
+    font-size: 13px; /* Tamanho da fonte */
+}
+
+.btn-salvar:hover { 
+    background: #1d4ed8; /* Escurecimento dinâmico ao passar o mouse por cima */
+}
+
+
+/* ================= REGRAS DO PASSO 3: MODAL DE CLIENTE RÁPIDO ================= */
+
+/* Cortina escura do segundo modal (sobreposição acima de tudo) */
+.modal-overlay-mini {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Fundo ligeiramente mais escuro para destacar o foco */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.2s ease-in-out;
+    z-index: 10000; /* Z-index maior que o primeiro modal para ficar na frente */
+}
+
+/* Ativação do Minimodal */
+.modal-overlay-mini.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Caixa branca reduzida do Minimodal */
+.modal-container-mini {
+    background: white;
+    width: 100%;
+    max-width: 460px; /* Largura reduzida ideal para 1 coluna de formulário */
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    overflow: hidden;
+}
+
+/* Grupos de campos verticais do Minimodal */
+.campo-grupo-mini {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.campo-grupo-mini label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+}
+
+/* Botão de salvar estilizado em azul do minimodal */
+.btn-salvar-mini {
+    background: #2563eb;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.btn-salvar-mini:hover {
+    background: #1d4ed8;
+}
+
+
+/* Regras de responsividade para telas menores (como Tablets e Celulares) */
+@media(max-width: 1024px){
+    .filtros {
+        flex-direction: column; /* Empilha os filtros verticalmente */
+        align-items: stretch; /* Estica todos os filtros para ocupar toda a largura */
+    }
+    .filtros select, .btn-nova {
+        width: 100%; /* Força tamanho completo em telas pequenas */
+    }
+    .linha-dupla, .linha-tripla {
+        flex-direction: column; /* Transforma as linhas paralelas em campos empilhados em telas móveis */
+    }
+}

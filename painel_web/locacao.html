@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Locações</title>
+    <link rel="stylesheet" href="telaprincipal.css">
+    <link rel="stylesheet" href="locacao.css">
+</head>
+<body>
+
+    <aside class="barra-lateral">
+        <div class="logo">LOCAÇÃO DE CAÇAMBAS</div>
+        <nav class="menu-lateral">
+            <a href="telaprincipal.html">Início</a>
+            <a href="cacambas.html">Caçambas</a>
+            <a href="locacao.html" class="active">Locações</a>
+            <a href="#">Ordens de Serviço</a>
+            <a href="#">Clientes</a>
+            <a href="#">Motoristas</a>
+            <a href="#">Caminhões</a>
+            <a href="#">Despesas</a>
+            <a href="#">Relatórios</a>
+        </nav>
+    </aside>
+
+    <div class="titulo-principal" id="titulo-principal">
+        
+        <header class="cabecalho-principal" id="cabecalho-principal">
+            <h2>Gerenciamento de Locações <span>Painel de controle</span></h2>
+            <div class="usuario" id="usuario">Administrador</div>
+        </header>
+
+        <main class="informacoes-principais" id="informacoes-principais">
+            
+            <section class="cards">
+                <div class="card disponiveis-card">
+                    <h2>42</h2>
+                    <p>Locações Ativas</p>
+                </div>
+                <div class="card troca-card">
+                    <h2>8</h2>
+                    <p>Prazos Vencendo</p>
+                </div>
+                <div class="card manutencao-card">
+                    <h2>R$ 3.150,00</h2>
+                    <p>Total a Receber</p>
+                </div>
+            </section>
+
+            <section class="filtros">
+                <input type="text" placeholder="Buscar cliente ou obra...">
+                <select>
+                    <option>Todos os Status</option>
+                    <option>Na Obra</option>
+                    <option>Aguardando</option>
+                    <option>Retirar</option>
+                </select>
+                <button class="btn-nova" id="btnAbrirModal">+ Nova Locação</button>
+            </section>
+
+            <section class="tabela">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>OS</th>
+                            <th>Cliente</th>
+                            <th>Caçamba</th>
+                            <th>Endereço Obra</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#102</td>
+                            <td>João Silva</td>
+                            <td>002</td>
+                            <td>Rua das Flores, 123</td>
+                            <td><span class="status disponivel">🟢 Na Obra</span></td>
+                            <td class="acoes">
+                                <button class="btn-ver">👁</button>
+                                <button class="btn-editar">✏</button>
+                                <button class="btn-excluir">🗑</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#103</td>
+                            <td>Construtora Silva</td>
+                            <td>003</td>
+                            <td>Av. Brasil, 456</td>
+                            <td><span class="status troca">🟡 Aguardando</span></td>
+                            <td class="acoes">
+                                <button class="btn-ver">👁</button>
+                                <button class="btn-editar">✏</button>
+                                <button class="btn-excluir">🗑</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#104</td>
+                            <td>Marcos Souza</td>
+                            <td>015</td>
+                            <td>Al. Santos, 789</td>
+                            <td><span class="status retirada">🔴 Retirar</span></td>
+                            <td class="acoes">
+                                <button class="btn-ver">👁</button>
+                                <button class="btn-editar">✏</button>
+                                <button class="btn-excluir">🗑</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="paginacao">
+                <button>Anterior</button>
+                <button class="pag-atual">1</button> 
+                <button>2</button>
+                <button>Próxima</button>
+            </section>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="modalLocacao">
+        <div class="modal-container">
+            
+            <header class="modal-header">
+                <h3>📋 NOVA LOCAÇÃO (ORDEM DE SERVIÇO)</h3>
+                <button class="modal-fechar" id="btnFecharModal">✕</button>
+            </header>
+
+            <form class="modal-form">
+                
+                <div class="form-secao">
+                    <label class="secao-titulo">👤 SELECIONE O CLIENTE</label>
+                    <div class="linha-dupla">
+                        <input type="text" placeholder="Buscar por nome ou telefone..." style="flex: 3;">
+                        <button type="button" class="btn-form-novo" id="btnAbrirNovoCliente" style="flex: 1;">+ Novo</button>
+                    </div>
+                </div>
+                <div class="form-secao">
+                    <label class="secao-titulo">📍 ENDEREÇO DESTA ENTREGA (OBRA)</label>
+                    <div class="linha-dupla">
+                        <div class="campo-grupo" style="flex: 3;">
+                            <label>Rua / Avenida:</label>
+                            <input type="text" placeholder="Ex: Av. Brasil ou Rua das Flores">
+                        </div>
+                        <div class="campo-grupo" style="flex: 1;">
+                            <label>Número:</label>
+                            <input type="text" placeholder="456">
+                        </div>
+                    </div>
+                    <div class="linha-dupla">
+                        <div class="campo-grupo">
+                            <label>Bairro:</label>
+                            <input type="text" placeholder="Centro">
+                        </div>
+                        <div class="campo-grupo">
+                            <label>Cidade:</label>
+                            <input type="text" placeholder="São Paulo">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-secao">
+                    <label class="secao-titulo">🚚 LOGÍSTICA DO SERVIÇO</label>
+                    <div class="linha-dupla">
+                        <div class="campo-grupo">
+                            <label>Caçamba a Enviar:</label>
+                            <select>
+                                <option>Selecionar Caçamba Disponível</option>
+                            </select>
+                        </div>
+                        <div class="campo-grupo">
+                            <label>Motorista Responsável:</label>
+                            <select>
+                                <option>Selecionar Motorista</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="linha-dupla">
+                        <div class="campo-grupo" style="max-width: 50%;">
+                            <label>Data de Entrega:</label>
+                            <input type="date" value="2026-06-12">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-secao">
+                    <label class="secao-titulo">💵 VALOR E PAGAMENTO</label>
+                    <div class="linha-tripla">
+                        <div class="campo-grupo">
+                            <label>Valor da Locação:</label>
+                            <input type="text" value="R$ 350,00">
+                        </div>
+                        <div class="campo-grupo">
+                            <label>Forma de Pagamento:</label>
+                            <select>
+                                <option>Pix</option>
+                                <option>Boleto</option>
+                                <option>Cartão</option>
+                            </select>
+                        </div>
+                        <div class="campo-grupo">
+                            <label>Status do Pagamento:</label>
+                            <select>
+                                <option>Pendente</option>
+                                <option>Pago</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="modal-footer">
+                    <button type="button" class="btn-cancelar" id="btnCancelarModal">Cancelar</button>
+                    <button type="submit" class="btn-salvar">🚀 SALVAR E LANÇAR</button>
+                </footer>
+                </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay-mini" id="modalNovoCliente">
+        <div class="modal-container-mini">
+            
+            <header class="modal-header">
+                <h3>👤 NOVO CLIENTE (RÁPIDO)</h3>
+                <button class="modal-fechar" id="btnFecharMiniModal">✕</button>
+            </header>
+
+            <form class="modal-form">
+                <div class="campo-grupo-mini">
+                    <label>Nome do Cliente / Construtora:</label>
+                    <input type="text" placeholder="Construtora Alvorada">
+                </div>
+
+                <div class="campo-grupo-mini">
+                    <label>WhatsApp / Telefone:</label>
+                    <input type="text" placeholder="(11) 99999-9999">
+                </div>
+
+                <div class="campo-grupo-mini">
+                    <label>CPF ou CNPJ (Opcional):</label>
+                    <input type="text" placeholder="12.345.678/0001-99">
+                </div>
+
+                <footer class="modal-footer">
+                    <button type="button" class="btn-cancelar" id="btnCancelarMiniModal">Cancelar</button>
+                    <button type="button" class="btn-salvar-mini" id="btnSalvarMiniModal">💾 SALVAR</button>
+                </footer>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        // Elementos do Modal 1 (Locação)
+        const modal = document.getElementById('modalLocacao');
+        const btnAbrir = document.getElementById('btnAbrirModal');
+        const btnFechar = document.getElementById('btnFecharModal');
+        const btnCancelar = document.getElementById('btnCancelarModal');
+
+        // Elementos do Modal 2 (Cliente Rápido)
+        const miniModal = document.getElementById('modalNovoCliente');
+        const btnAbrirMini = document.getElementById('btnAbrirNovoCliente');
+        const btnFecharMini = document.getElementById('btnFecharMiniModal');
+        const btnCancelarMini = document.getElementById('btnCancelarMiniModal');
+        const btnSalvarMini = document.getElementById('btnSalvarMiniModal');
+
+        // Cliques do Modal 1
+        btnAbrir.addEventListener('click', () => modal.classList.add('active'));
+        btnFechar.addEventListener('click', () => modal.classList.remove('active'));
+        btnCancelar.addEventListener('click', () => modal.classList.remove('active'));
+
+        // Cliques do Modal 2
+        btnAbrirMini.addEventListener('click', () => miniModal.classList.add('active'));
+        btnFecharMini.addEventListener('click', () => miniModal.classList.remove('active'));
+        btnCancelarMini.addEventListener('click', () => miniModal.classList.remove('active'));
+        btnSalvarMini.addEventListener('click', () => miniModal.classList.remove('active'));
+
+        // Fechar clicando no fundo escuro
+        modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.remove('active'); });
+        miniModal.addEventListener('click', (e) => { if(e.target === miniModal) miniModal.classList.remove('active'); });
+    </script>
+</body>
+</html>
