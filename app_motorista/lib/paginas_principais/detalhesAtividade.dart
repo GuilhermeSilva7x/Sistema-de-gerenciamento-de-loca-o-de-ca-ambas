@@ -1,4 +1,7 @@
 import 'package:app_motorista/subpastas_detalhesAtividades/abaCliente.dart';
+import 'package:app_motorista/subpastas_detalhesAtividades/botaoConfirmacao.dart';
+import 'package:app_motorista/subpastas_detalhesAtividades/botaoLocalizacao.dart';
+import 'package:app_motorista/subpastas_detalhesAtividades/fotoConfirmacao.dart';
 import 'package:app_motorista/subpastas_homepage/atividades.dart';
 import 'package:flutter/material.dart';
 
@@ -28,11 +31,11 @@ class Detalhesatividade extends StatelessWidget {
             SizedBox(height: 20),
             Abacliente(),
             SizedBox(height: 20),
-            ElevatedButton(
-              style: ButtonStyle(),
-              onPressed: () {},
-              child: Text("Abrir no GPS (MAPS/WAZE)"),
-            ),
+            Botaolocalizacao(),
+            SizedBox(height: 20),
+            Fotoconfirmacao(),
+            SizedBox(height: 20),
+            Botaoconfirmacao(),
           ],
         ),
       ),
