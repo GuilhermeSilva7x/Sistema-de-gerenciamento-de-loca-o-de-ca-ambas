@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Locações - Clientes</title>
+    <link rel="stylesheet" href="telaprincipal.css">
+    <link rel="stylesheet" href="locacao.css">
+    <link rel="stylesheet" href="clientes.css">
+</head>
+<body>
+
+    <!-- BARRA LATERAL -->
+    <aside class="barra-lateral">
+        <div class="logo">LOCAÇÃO DE CAÇAMBAS</div>
+        <nav class="menu-lateral">
+            <a href="telaprincipal.html">Início</a>
+            <a href="cacambas.html">Caçambas</a>
+            <a href="locacao.html">Locações</a>
+            <a href="clientes.html" class="active">Clientes</a>
+            <a href="#">Motoristas</a>
+            <a href="#">Caminhões</a>
+            <a href="#">Despesas</a>
+            <a href="#">Relatórios</a>
+        </nav>
+    </aside>
+
+    <!-- BLOCO DO CONTEÚDO PRINCIPAL -->
+    <div class="conteudo-principal" id="titulo-principal">
+        
+        <!-- CABEÇALHO DA PÁGINA  -->
+        <header class="cabecalho-principal" id="cabecalho-principal">
+            <h2>Gerenciamento de Clientes <span>Painel de Clientes</span></h2>
+            <div class="usuario" id="usuario">Administrador</div>
+        </header>
+
+        <!-- SEÇÃO DE FILTROS -->
+        <section class="filtros">
+            <input type="text" placeholder="Buscar clientes">
+            <button class="btn-nova" id="btnAbrirModal">+ Novo Cliente</button>
+        </section>
+        
+        <!-- TABELA DE CLIENTES  -->
+        <section class="tabela">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Telefone / WhatsApp</th>
+                        <th>Email</th>
+                        <th>Data de Cadastro</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Exemplo de Cliente 1 (O link do WhatsApp abre direto no aplicativo) -->
+                    <tr>
+                        <td><strong>João Silva</strong></td>
+                        <td>
+                            <a href="https://wa.me/5511988888888" target="_blank">(11) 98888-8888</a>
+                        </td>
+                        <td>joao.silva@email.com</td>
+                        <td>12/06/2026</td>
+                        <td>
+                            <button title="Editar">✏️</button>
+                            <button title="Excluir">🗑️</button>
+                        </td>
+                    </tr>
+                    <!-- Exemplo de Cliente 2 -->
+                    <tr>
+                        <td><strong>Maria do Carmo</strong></td>
+                        <td>
+                            <a href="https://wa.me/5521977777777" target="_blank">(21) 97777-7777</a>
+                        </td>
+                        <td>maria.carmo@email.com</td>
+                        <td>10/06/2026</td>
+                        <td>
+                            <button title="Editar">✏️</button>
+                            <button title="Excluir">🗑️</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </div>
+</body>
+</html>

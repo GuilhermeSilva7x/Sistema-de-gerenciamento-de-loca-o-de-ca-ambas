@@ -1,0 +1,122 @@
+/* Deixa os filtros alinhados (Busca na esquerda e Botão na direita) */
+.filtros {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 40px 15px 40px; 
+    gap: 15px;
+}
+
+/* Campo de digitação da barra de busca */
+.filtros input[type="text"] {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 15px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: 0.3s;
+}
+
+/* Quando você clica na barra de busca, ela ganha um contorno azul */
+.filtros input[type="text"]:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Botão verde "+ Novo Cliente" */
+.btn-nova {
+    background-color: #10b981;
+    color: #ffffff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+/* Quando passa o mouse no botão verde, ele escurece um pouco */
+.btn-nova:hover {
+    background-color: #059669;
+}
+
+/* ESTILIZAÇÃO DA TABELA */
+
+/* Espaçamento em volta de toda a tabela */
+.tabela {
+    padding: 15px 40px 40px 40px;
+}
+
+/* Transforma a tabela em um "card" branco com sombra */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Títulos das colunas (Nome, Telefone, Email...) */
+th {
+    background-color: #f8fafc;
+    color: #64748b;
+    padding: 16px;
+    font-weight: 600;
+    border-bottom: 2px solid #e2e8f0;
+    font-size: 14px;
+}
+
+/* Linhas com as informações dos clientes */
+td {
+    padding: 16px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+    font-size: 14px;
+}
+
+/* Quando passa o mouse em cima da linha do cliente, ela acende em cinza claro */
+tr:hover td {
+    background-color: #f8fafc;
+}
+
+/* Destaca o nome do cliente deixando em negrito escuro */
+td strong {
+    color: #1e293b;
+}
+
+/*BOTÕES DE AÇÃO*/
+.tabela a {
+    color: #25D366;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Cria o sublinhado quando passa o mouse no número do WhatsApp */
+.tabela a:hover {
+    text-decoration: underline;
+}
+
+/* Remove o fundo padrão dos botões de Editar e Excluir */
+.tabela button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 5px;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+/* Efeito de fundo azul claro ao passar o mouse no lápis (Editar) */
+.tabela button[title="Editar"]:hover {
+    background-color: #eff6ff;
+}
+
+/* Efeito de fundo vermelho claro ao passar o mouse na lixeira (Excluir) */
+.tabela button[title="Excluir"]:hover {
+    background-color: #fef2f2;
+}
