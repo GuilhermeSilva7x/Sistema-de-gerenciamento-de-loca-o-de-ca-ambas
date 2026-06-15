@@ -22,7 +22,7 @@ class Homepage extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: Paginadenavegacao(),
+      bottomNavigationBar: Paginadenavegacao(index: 0),
     );
   }
 }
