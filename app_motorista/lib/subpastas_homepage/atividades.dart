@@ -42,11 +42,7 @@ class Atividades extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 12),
-              CardsAtividades(
-                atividade: "ENTREGA",
-                cor: Colors.blue,
-                concluido: true,
-              ),
+              CardsAtividades(atividade: "ENTREGA", cor: Colors.blue),
               SizedBox(height: 8),
               CardsAtividades(atividade: "TROCA", cor: Colors.orange),
               SizedBox(height: 8),

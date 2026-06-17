@@ -23,9 +23,7 @@ class _CardsAtividadesState extends State<CardsAtividades> {
     final bool estaConcluido = widget.concluido;
 
     final Color corPrincipal = estaConcluido ? Colors.green : widget.cor;
-    final String textoAtividade = estaConcluido
-        ? "CONCLUÍDA"
-        : widget.atividade;
+    final String textoAtividade = widget.atividade;
 
     final Color corDoTextoDados = estaConcluido
         ? Colors.grey[600]!

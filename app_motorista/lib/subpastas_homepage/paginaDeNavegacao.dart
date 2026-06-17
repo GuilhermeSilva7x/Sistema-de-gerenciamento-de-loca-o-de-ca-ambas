@@ -1,5 +1,6 @@
 import 'package:app_motorista/paginas_principais/paginaAtividades.dart';
 import 'package:app_motorista/paginas_principais/homepage.dart';
+import 'package:app_motorista/paginas_principais/paginaHistorico.dart';
 import 'package:flutter/material.dart';
 
 class Paginadenavegacao extends StatelessWidget {
@@ -25,6 +26,10 @@ class Paginadenavegacao extends StatelessWidget {
               MaterialPageRoute(builder: (context) => Paginaatividades()),
             );
           } else if (value == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Paginahistorico()),
+            );
           } else {}
         }
       },
