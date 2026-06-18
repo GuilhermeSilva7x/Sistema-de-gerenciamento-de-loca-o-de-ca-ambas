@@ -1,4 +1,3 @@
-import 'package:app_motorista/subpastas_homepage/atividades.dart';
 import 'package:app_motorista/subpastas_homepage/cardsAtividades.dart';
 import 'package:app_motorista/subpastas_homepage/paginaDeNavegacao.dart';
 import 'package:flutter/material.dart';

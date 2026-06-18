@@ -1,3 +1,4 @@
+import 'package:app_motorista/paginas_principais/configuracao.dart';
 import 'package:app_motorista/paginas_principais/paginaAtividades.dart';
 import 'package:app_motorista/paginas_principais/homepage.dart';
 import 'package:app_motorista/paginas_principais/paginaHistorico.dart';
@@ -30,7 +31,12 @@ class Paginadenavegacao extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (context) => Paginahistorico()),
             );
-          } else {}
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Configuracao()),
+            );
+          }
         }
       },
       items: const [

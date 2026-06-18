@@ -35,7 +35,7 @@ class Detalhesatividade extends StatelessWidget {
             SizedBox(height: 20),
             Fotoconfirmacao(),
             SizedBox(height: 20),
-            Botaoconfirmacao(),
+            Botaoconfirmacao(texto: "CONFIRMAR SERVIÇO", cor: Colors.green),
           ],
         ),
       ),

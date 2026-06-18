@@ -12,7 +12,7 @@ class Botaolocalizacao extends StatelessWidget {
       ),
       onPressed: () {},
       child: Text(
-        "Abrir no GPS (MAPS/WAZE)",
+        "Abrir no GPS (MAPS)",
         style: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
