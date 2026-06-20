@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Fotoconfirmacao extends StatelessWidget {
-  const Fotoconfirmacao({super.key});
+  final bool concluido;
+  const Fotoconfirmacao({super.key, this.concluido = false});
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +25,15 @@ class Fotoconfirmacao extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.camera_alt_outlined, size: 50),
-                Text(
-                  "Toque para tirar a foto da caçamba no local",
-                  style: TextStyle(fontSize: 15),
-                ),
+                concluido
+                    ? Icon(Icons.photo, size: 100)
+                    : Icon(Icons.camera_alt_outlined, size: 50),
+                concluido
+                    ? Text("")
+                    : Text(
+                        "Toque para tirar a foto da caçamba no local",
+                        style: TextStyle(fontSize: 15),
+                      ),
               ],
             ),
           ),

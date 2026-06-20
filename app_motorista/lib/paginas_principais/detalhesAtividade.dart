@@ -6,12 +6,14 @@ import 'package:app_motorista/subpastas_homepage/atividades.dart';
 import 'package:flutter/material.dart';
 
 class Detalhesatividade extends StatelessWidget {
+  final bool concluido;
   final String atividade;
   final Color cor;
   const Detalhesatividade({
     super.key,
     required this.cor,
     required this.atividade,
+    required this.concluido,
   });
 
   @override
@@ -33,9 +35,18 @@ class Detalhesatividade extends StatelessWidget {
             SizedBox(height: 20),
             Botaolocalizacao(),
             SizedBox(height: 20),
-            Fotoconfirmacao(),
+            Fotoconfirmacao(concluido: concluido),
             SizedBox(height: 20),
-            Botaoconfirmacao(texto: "CONFIRMAR SERVIÇO", cor: Colors.green),
+            concluido
+                ? const Icon(
+                    Icons.check_circle_rounded,
+                    color: Colors.green,
+                    size: 70,
+                  )
+                : Botaoconfirmacao(
+                    texto: "CONFIRMAR SERVIÇO",
+                    cor: Colors.green,
+                  ),
           ],
         ),
       ),

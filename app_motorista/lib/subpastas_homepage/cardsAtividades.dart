@@ -34,8 +34,11 @@ class _CardsAtividadesState extends State<CardsAtividades> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                Detalhesatividade(cor: corPrincipal, atividade: textoAtividade),
+            builder: (context) => Detalhesatividade(
+              cor: corPrincipal,
+              atividade: textoAtividade,
+              concluido: estaConcluido,
+            ),
           ),
         );
       },
