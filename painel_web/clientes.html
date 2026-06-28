@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciamento de Locações - Clientes</title>
     <link rel="stylesheet" href="telaprincipal.css">
-    <link rel="stylesheet" href="locacao.css">
     <link rel="stylesheet" href="clientes.css">
 </head>
 <body>
 
-    <!-- BARRA LATERAL -->
     <aside class="barra-lateral">
         <div class="logo">LOCAÇÃO DE CAÇAMBAS</div>
         <nav class="menu-lateral">
@@ -18,29 +16,25 @@
             <a href="cacambas.html">Caçambas</a>
             <a href="locacao.html">Locações</a>
             <a href="clientes.html" class="active">Clientes</a>
-            <a href="#">Motoristas</a>
-            <a href="#">Caminhões</a>
-            <a href="#">Despesas</a>
-            <a href="#">Relatórios</a>
+            <a href="motoristas.html">Motoristas</a>
+            <a href="caminhoes.html">Caminhões</a>
+            <a href="despesas.html">Despesas</a>
+            <a href="relatorios.html">Relatórios</a>
         </nav>
     </aside>
 
-    <!-- BLOCO DO CONTEÚDO PRINCIPAL -->
     <div class="conteudo-principal" id="titulo-principal">
         
-        <!-- CABEÇALHO DA PÁGINA  -->
         <header class="cabecalho-principal" id="cabecalho-principal">
             <h2>Gerenciamento de Clientes <span>Painel de Clientes</span></h2>
             <div class="usuario" id="usuario">Administrador</div>
         </header>
 
-        <!-- SEÇÃO DE FILTROS -->
         <section class="filtros">
             <input type="text" placeholder="Buscar clientes">
             <button class="btn-nova" id="btnAbrirModal">+ Novo Cliente</button>
         </section>
         
-        <!-- TABELA DE CLIENTES  -->
         <section class="tabela">
             <table>
                 <thead>
@@ -53,7 +47,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Exemplo de Cliente 1 (O link do WhatsApp abre direto no aplicativo) -->
                     <tr>
                         <td><strong>João Silva</strong></td>
                         <td>
@@ -66,7 +59,6 @@
                             <button title="Excluir">🗑️</button>
                         </td>
                     </tr>
-                    <!-- Exemplo de Cliente 2 -->
                     <tr>
                         <td><strong>Maria do Carmo</strong></td>
                         <td>
@@ -84,5 +76,59 @@
         </section>
 
     </div>
+
+    <div id="modalCliente" class="modal-container">
+        <div class="modal-conteudo">
+            <div class="modal-cabecalho">
+                <h3>Cadastrar Novo Cliente</h3>
+                <span id="btnFecharModal" class="modal-fechar">&times;</span>
+            </div>
+            <form id="formCliente" class="modal-formulario">
+                <label>Nome do Cliente</label>
+                <input type="text" required placeholder="Digite o nome completo">
+
+                <label>Telefone / WhatsApp</label>
+                <input type="text" required placeholder="(00) 00000-0000">
+
+                <label>E-mail</label>
+                <input type="email" placeholder="exemplo@email.com">
+
+                <div class="modal-botoes">
+                    <button type="button" id="btnCancelar" class="btn-cancelar">Cancelar</button>
+                    <button type="submit" class="btn-salvar">Salvar Cliente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Mapeia os elementos do HTML
+        const modal = document.getElementById('modalCliente');
+        const btnAbrir = document.getElementById('btnAbrirModal');
+        const btnFecharX = document.getElementById('btnFecharModal');
+        const btnCancelar = document.getElementById('btnCancelar');
+
+        // Abre a janela flutuante ao clicar no botão verde
+        btnAbrir.addEventListener('click', () => {
+            modal.classList.add('ativo');
+        });
+
+        // Fecha a janela ao clicar no "X"
+        btnFecharX.addEventListener('click', () => {
+            modal.classList.remove('ativo');
+        });
+
+        // Fecha a janela ao clicar no botão "Cancelar"
+        btnCancelar.addEventListener('click', () => {
+            modal.classList.remove('ativo');
+        });
+
+        // Fecha a janela se clicar na parte escura fora do formulário
+        window.addEventListener('click', (evento) => {
+            if (evento.target === modal) {
+                modal.classList.remove('ativo');
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,329 @@
+/* Subtítulo grande abaixo do cabeçalho principal */
+.subtitulo-pagina {
+    display: block;
+    font-size: 22px;
+    font-weight: bold;
+    color: #1e293b;
+    padding: 20px 40px 0px 40px;
+}
+
+/* ==========================================================================
+   ESTILO DOS CARDS DE INDICADORES (TOPO DA TELA)
+   ========================================================================== */
+.cards-resumo {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 15px 40px;
+}
+
+.card {
+    background-color: #ffffff;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border: 1px solid #f1f5f9;
+}
+
+/* Quadrado do ícone dentro de cada card */
+.card-icone {
+    font-size: 24px;
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+/* Cores de fundo suaves para cada tipo de ícone */
+.card-icone.verde { background-color: #e6f4ea; }
+.card-icone.azul { background-color: #e8f0fe; }
+.card-icone.laranja { background-color: #fef7e0; }
+
+.card-info p {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0 0 5px 0;
+    font-weight: 500;
+}
+
+.card-info h3 {
+    font-size: 20px;
+    color: #1e293b;
+    margin: 0;
+    font-weight: bold;
+}
+
+/* ==========================================================================
+   ESTILO DOS FILTROS DE BUSCA E SELEÇÕES
+   ========================================================================== */
+.filtros {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    gap: 15px;
+}
+
+.filtros-esquerda {
+    display: flex;
+    gap: 10px;
+    flex: 1;
+}
+
+.filtros input[type="text"] {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px 15px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    background-color: #ffffff;
+}
+
+.filtros select {
+    padding: 10px 15px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    background-color: #ffffff;
+    color: #334155;
+    cursor: pointer;
+}
+
+/* Botão verde de Nova Despesa */
+.btn-nova {
+    background-color: #10b981;
+    color: #ffffff;
+    border: none;
+    padding: 11px 22px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.btn-nova:hover {
+    background-color: #059669;
+}
+
+/* ==========================================================================
+   ESTILO DA TABELA FINANCEIRA
+   ========================================================================== */
+.tabela {
+    padding: 10px 40px 40px 40px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+th {
+    background-color: #f8fafc;
+    color: #475569;
+    padding: 14px 16px;
+    font-weight: 700;
+    border-bottom: 2px solid #e2e8f0;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+td {
+    padding: 16px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+tr:hover td {
+    background-color: #f8fafc;
+}
+
+/* Visual para os nomes de categoria dentro da tabela */
+.tag-categoria {
+    background-color: #f1f5f9;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #475569;
+}
+
+/* Pequenos botões de ação (Lápis, Lixeira e Folha) */
+.btn-acao {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 5px;
+    opacity: 0.7;
+    transition: 0.2s;
+}
+
+.btn-acao:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* ==========================================================================
+   PÍLULAS DE STATUS (BADGES)
+   ========================================================================== */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+    text-align: center;
+    min-width: 80px;
+}
+
+/* Status Pago (Verde) */
+.status-badge.pago {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+/* Status Pendente (Amarelo/Laranja) */
+.status-badge.pendente {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+/* Status Atrasado (Vermelho) */
+.status-badge.atrasado {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+/* ==========================================================================
+   ESTILO DO MODAL (JANELA FLUTUANTE)
+   ========================================================================== */
+.modal-container {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-container.ativo {
+    display: flex;
+}
+
+.modal-conteudo {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 450px;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    animation: deslizar 0.25s ease-out;
+}
+
+@keyframes deslizar {
+    from { transform: translateY(-15px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 12px;
+}
+
+.modal-cabecalho h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #1e293b;
+}
+
+.modal-fechar {
+    font-size: 22px;
+    color: #94a3b8;
+    cursor: pointer;
+}
+
+.modal-fechar:hover { color: #1e293b; }
+
+.modal-formulario {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-formulario label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 5px;
+}
+
+.modal-formulario input,
+.modal-formulario select {
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    outline: none;
+    background-color: #ffffff;
+}
+
+.modal-formulario input:focus,
+.modal-formulario select:focus {
+    border-color: #2563eb;
+}
+
+.modal-botoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-cancelar {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-cancelar:hover { background-color: #e2e8f0; }
+
+.btn-salvar {
+    background-color: #10b981;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-salvar:hover { background-color: #059669; }

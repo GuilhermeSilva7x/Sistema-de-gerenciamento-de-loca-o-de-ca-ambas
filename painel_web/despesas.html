@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Locações - Despesas</title>
+    
+    <link rel="stylesheet" href="telaprincipal.css">
+    
+    <link rel="stylesheet" href="despesas.css">
+</head>
+<body>
+
+    <aside class="barra-lateral">
+        <div class="logo">LOCAÇÃO DE CAÇAMBAS</div>
+        <nav class="menu-lateral">
+            <a href="telaprincipal.html">Início</a>
+            <a href="cacambas.html">Caçambas</a>
+            <a href="locacao.html">Locações</a>
+            <a href="clientes.html">Clientes</a>
+            <a href="motoristas.html">Motoristas</a>
+            <a href="caminhoes.html">Caminhões</a>
+            <a href="despesas.html" class="active">Despesas</a>
+            <a href="relatorios.html">Relatórios</a>
+        </nav>
+    </aside>
+
+    <div class="conteudo-principal" id="titulo-principal">
+        
+        <header class="cabecalho-principal" id="cabecalho-principal">
+            <h2>Gerenciamento de Locações - Despesas <span>Admin Panel | Painel de Controle</span></h2>
+            <div class="usuario" id="usuario">Administrador <small style="display:block; font-size:10px; color:#94a3b8; text-align:right;">ADMIN</small></div>
+        </header>
+
+        <span class="subtitulo-pagina">Despesas</span>
+
+        <section class="cards-resumo">
+            <div class="card">
+                <div class="card-icone verde">💵</div>
+                <div class="card-info">
+                    <p>Despesas do Mês (Junho 2026):</p>
+                    <h3 id="cardTotalMes">R$ 0,00</h3>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icone azul">🚛</div>
+                <div class="card-info">
+                    <p>Maior Gasto:</p>
+                    <h3 id="cardMaiorGasto">Nenhum: R$ 0,00</h3>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icone laranja">⚠️</div>
+                <div class="card-info">
+                    <p>Despesas Pendentes:</p>
+                    <h3 id="cardPendentes">R$ 0,00</h3>
+                </div>
+            </div>
+        </section>
+
+        <section class="filtros">
+            <div class="filtros-esquerda">
+                <input type="text" id="buscaDescricao" placeholder="Buscar despesa por descrição...">
+                
+                <select id="filtroCategoria">
+                    <option value="">Categoria (Todas)</option>
+                    <option value="Manutenção">Manutenção</option>
+                    <option value="Combustível">Combustível</option>
+                    <option value="Oficina">Oficina</option>
+                    <option value="Seguros">Seguros</option>
+                </select>
+
+                <select id="filtroData">
+                    <option value="">Data (Este Mês)</option>
+                </select>
+            </div>
+            
+            <button class="btn-nova" id="btnAbrirModal">+ Nova Despesa</button>
+        </section>
+        
+        <section class="tabela">
+            <table>
+                <thead>
+                    <tr>
+                        <th>DESCRIÇÃO</th>
+                        <th>CATEGORIA</th>
+                        <th>VALOR</th>
+                        <th>DATA PAGAMENTO</th>
+                        <th>STATUS</th>
+                        <th>AÇÕES</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabelaDespesas">
+                    </tbody>
+            </table>
+        </section>
+
+    </div>
+
+    <div id="modalDespesa" class="modal-container">
+        <div class="modal-conteudo">
+            <div class="modal-cabecalho">
+                <h3>Cadastrar Nova Despesa</h3>
+                <span id="btnFecharModal" class="modal-fechar">&times;</span>
+            </div>
+            
+            <form id="formDespesa" class="modal-formulario">
+                <label>Descrição do Gasto</label>
+                <input type="text" id="descricao" required placeholder="Ex: Troca de Óleo - Mercedes ABC-1234">
+
+                <label>Categoria</label>
+                <select id="categoria" required>
+                    <option value="">-- Selecione uma Categoria --</option>
+                    <option value="Manutenção">Manutenção</option>
+                    <option value="Combustível">Combustível</option>
+                    <option value="Oficina">Oficina</option>
+                    <option value="Seguros">Seguros</option>
+                    <option value="Outros">Outros</option>
+                </select>
+
+                <label>Valor (R$)</label>
+                <input type="number" id="valor" step="0.01" required placeholder="0.00">
+
+                <label>Data do Pagamento/Vencimento</label>
+                <input type="date" id="dataPagamento" required>
+
+                <label>Status do Pagamento</label>
+                <select id="status" required>
+                    <option value="Pago">Pago</option>
+                    <option value="Pendente">Pendente</option>
+                    <option value="Atrasado">Atrasado</option>
+                </select>
+
+                <div class="modal-botoes">
+                    <button type="button" id="btnCancelar" class="btn-cancelar">Cancelar</button>
+                    <button type="submit" class="btn-salvar">Salvar Despesa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('modalDespesa');
+        const btnAbrir = document.getElementById('btnAbrirModal');
+        const btnFecharX = document.getElementById('btnFecharModal');
+        const btnCancelar = document.getElementById('btnCancelar');
+        const formDespesa = document.getElementById('formDespesa');
+        const corpoTabela = document.getElementById('corpoTabelaDespesas');
+
+        // Itens iniciais padrão da foto para o sistema não iniciar em branco
+        const despesasIniciais = [
+            { id: 1, descricao: "Troca de Óleo - Mercedes ABC-1234", categoria: "Manutenção", valor: 450.00, data: "2026-06-27", status: "Pago" },
+            { id: 2, descricao: "Abastecimento - Ford DEF-5678", categoria: "Combustível", valor: 780.00, data: "2026-06-26", status: "Pago" },
+            { id: 3, descricao: "Conserto de Freio - VW GHI-9012", categoria: "Oficina", valor: 2100.00, data: "2026-06-25", status: "Pendente" },
+            { id: 4, descricao: "Seguro Anual da Frota", categoria: "Seguros", valor: 6500.00, data: "2026-06-20", status: "Atrasado" },
+            { id: 5, descricao: "Compra de Pneus - Mercedes XYZ-4321", categoria: "Manutenção", valor: 3200.00, data: "2026-06-18", status: "Pago" }
+        ];
+
+        // Se não houver nada salvo no localStorage, carrega os dados da foto
+        if (!localStorage.getItem('listaDespesas')) {
+            localStorage.setItem('listaDespesas', JSON.stringify(despesasIniciais));
+        }
+
+        // Converte a data do formato AAAA-MM-DD para DD/MM/AAAA
+        function formatarData(dataString) {
+            const partes = dataString.split('-');
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
+        }
+
+        // Desenha a tabela e recalcula os cards do topo
+        function renderizarTela() {
+            corpoTabela.innerHTML = '';
+            const despesas = JSON.parse(localStorage.getItem('listaDespesas')) || [];
+
+            let totalMes = 0;
+            let totalPendentes = 0;
+            let gastosPorCategoria = {};
+
+            if (despesas.length === 0) {
+                corpoTabela.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhuma despesa registrada.</td></tr>';
+            }
+
+            despesas.forEach((desp, index) => {
+                const valorNum = parseFloat(desp.valor);
+                
+                // Soma os totais para os cards
+                totalMes += valorNum;
+                if (desp.status === 'Pendente' || desp.status === 'Atrasado') {
+                    totalPendentes += valorNum;
+                }
+
+                // Agrupa gastos por categoria para descobrir o maior gasto
+                if (!gastosPorCategoria[desp.categoria]) gastosPorCategoria[desp.categoria] = 0;
+                gastosPorCategoria[desp.categoria] += valorNum;
+
+                // Define a classe CSS correta para a tag de status (Pago, Pendente ou Atrasado)
+                let statusClass = desp.status.toLowerCase();
+
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${index + 1}. ${desp.descricao}</strong></td>
+                    <td><span class="tag-categoria">⚙️ ${desp.categoria}</span></td>
+                    <td><strong>R$ ${valorNum.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong></td>
+                    <td>${formatarData(desp.data)}</td>
+                    <td><span class="status-badge ${statusClass}">${desp.status}</span></td>
+                    <td>
+                        <button title="Editar" class="btn-acao">✏️</button>
+                        <button title="Excluir" class="btn-acao">🗑️</button>
+                        <button title="Ver Recibo" class="btn-acao">📄</button>
+                    </td>
+                `;
+                corpoTabela.appendChild(tr);
+            });
+
+            // Descobre qual categoria teve o maior peso financeiro
+            let maiorCat = "Nenhuma";
+            let maiorValorCat = 0;
+            for (let cat in gastosPorCategoria) {
+                if (gastosPorCategoria[cat] > maiorValorCat) {
+                    maiorValorCat = gastosPorCategoria[cat];
+                    maiorCat = cat;
+                }
+            }
+
+            // Atualiza os textos dos cards com os valores reais somados
+            document.getElementById('cardTotalMes').textContent = `R$ ${totalMes.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('cardMaiorGasto').textContent = `${maiorCat}: R$ ${maiorValorCat.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('cardPendentes').textContent = `R$ ${totalPendentes.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        }
+
+        // Controles de abertura e fechamento do Modal
+        btnAbrir.addEventListener('click', () => modal.classList.add('ativo'));
+        btnFecharX.addEventListener('click', () => modal.classList.remove('ativo'));
+        btnCancelar.addEventListener('click', () => modal.classList.remove('ativo'));
+
+        // Salvar Nova Despesa
+        formDespesa.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const novaDespesa = {
+                descricao: document.getElementById('descricao').value,
+                categoria: document.getElementById('categoria').value,
+                valor: parseFloat(document.getElementById('valor').value),
+                data: document.getElementById('dataPagamento').value,
+                status: document.getElementById('status').value
+            };
+
+            let despesas = JSON.parse(localStorage.getItem('listaDespesas')) || [];
+            despesas.push(novaDespesa);
+            localStorage.setItem('listaDespesas', JSON.stringify(despesas));
+
+            modal.classList.remove('ativo');
+            formDespesa.reset();
+            renderizarTela(); // Atualiza tudo na hora
+        });
+
+        // Inicializa a tela com as informações
+        renderizarTela();
+    </script>
+</body>
+</html>

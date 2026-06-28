@@ -1,8 +1,8 @@
 /* ==========================================================================
-   ESTILO DOS FILTROS (ÁREA DE BUSCA E BOTÃO)
+   ESTILO DA BARRA DE PESQUISA E BOTÃO (FILTROS)
    ========================================================================== */
 
-/* Alinha a busca na esquerda e o botão na direita com o mesmo recuo do cabeçalho */
+/* Organiza a barra de pesquisa na esquerda e o botão na direita */
 .filtros {
     display: flex;
     justify-content: space-between;
@@ -11,7 +11,7 @@
     gap: 15px;
 }
 
-/* Caixa de texto da busca */
+/* Visual da caixa onde o usuário digita a pesquisa */
 .filtros input[type="text"] {
     width: 100%;
     max-width: 400px;
@@ -20,16 +20,16 @@
     border-radius: 8px;
     font-size: 0.95rem;
     outline: none;
-    transition: 0.3s;
+    transition: 0.3s; /* Deixa o efeito de clique mais suave */
 }
 
-/* Destaque azul ao clicar para digitar na busca */
+/* Efeito azul que aparece quando o usuário clica na caixa de pesquisa */
 .filtros input[type="text"]:focus {
     border-color: #2563eb;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-/* Botão verde "+ Novo Cliente" */
+/* Estilo do botão verde "+ Novo Motorista" */
 .btn-nova {
     background-color: #10b981;
     color: #ffffff;
@@ -41,32 +41,32 @@
     transition: 0.2s;
 }
 
-/* Escurece o verde do botão ao passar o mouse */
+/* Deixa o botão mais escuro ao passar o mouse */
 .btn-nova:hover {
     background-color: #059669;
 }
 
 /* ==========================================================================
-   ESTILO DA TABELA DE CLIENTES
+   ESTILO DA TABELA DE MOTORISTAS
    ========================================================================== */
 
-/* Afastamento lateral para alinhar com o topo da página */
+/* Espaçamento da tabela em relação ao resto da tela */
 .tabela {
     padding: 15px 40px 40px 40px;
 }
 
-/* Transforma a tabela em um bloco de card com sombra */
+/* Visual do "card" branco onde a tabela fica dentro */
 table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: collapse; /* Tira os espaços duplos entre as linhas */
     text-align: left;
     background-color: #ffffff;
     border-radius: 8px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* Sombreado leve */
     overflow: hidden;
 }
 
-/* Cabeçalho cinza com os nomes das colunas */
+/* Linha de cabeçalho da tabela (Nome, CPF, etc) */
 th {
     background-color: #f8fafc;
     color: #64748b;
@@ -76,7 +76,7 @@ th {
     font-size: 14px;
 }
 
-/* Linhas com as informações dos usuários */
+/* Celulas normais da tabela (Dados dos motoristas) */
 td {
     padding: 16px;
     border-bottom: 1px solid #e2e8f0;
@@ -84,76 +84,35 @@ td {
     font-size: 14px;
 }
 
-/* Faz a linha brilhar em cinza claro ao passar o mouse */
+/* Efeito de destaque cinza claro ao passar o mouse por cima de uma linha */
 tr:hover td {
     background-color: #f8fafc;
-}
-
-/* Destaca o nome do cliente */
-td strong {
-    color: #1e293b;
-}
-
-/* ==========================================================================
-   BOTÕES DE AÇÃO E LINKS
-   ========================================================================== */
-
-/* Link estilizado do WhatsApp */
-.tabela a {
-    color: #25D366;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.tabela a:hover {
-    text-decoration: underline;
-}
-
-/* Remove a estilização padrão dos botões de emojis */
-.tabela button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 5px;
-    border-radius: 4px;
-    transition: 0.2s;
-}
-
-/* Fundo azul claro ao passar o mouse no botão Editar */
-.tabela button[title="Editar"]:hover {
-    background-color: #eff6ff;
-}
-
-/* Fundo vermelho claro ao passar o mouse no botão Excluir */
-.tabela button[title="Excluir"]:hover {
-    background-color: #fef2f2;
 }
 
 /* ==========================================================================
    ESTILO DA JANELA FLUTUANTE (MODAL)
    ========================================================================== */
 
-/* Fundo escurecido que cobre a tela toda */
+/* Fundo escuro que cobre a tela inteira quando a janela abre */
 .modal-container {
-    display: none; /* Começa escondido */
+    display: none; /* Começa escondido, o JS muda isso depois */
     position: fixed;
-    z-index: 999;
+    z-index: 999; /* Garante que fique por cima de tudo */
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Sombra escura de fundo */
-    justify-content: center;
-    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5); 
+    justify-content: center; /* Centraliza a janela na horizontal */
+    align-items: center;     /* Centraliza a janela na vertical */
 }
 
-/* Quando o modal estiver ativo, o JavaScript adiciona essa classe */
+/* Quando o JS adiciona a classe 'ativo', a janela aparece */
 .modal-container.ativo {
     display: flex;
 }
 
-/* Caixa branca centralizada do formulário */
+/* Caixa branca do formulário no meio da tela */
 .modal-conteudo {
     background-color: #ffffff;
     width: 100%;
@@ -161,16 +120,16 @@ td strong {
     padding: 25px;
     border-radius: 8px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    animation: abrirModal 0.3s ease-out;
+    animation: abrirModal 0.3s ease-out; /* Animação de descida */
 }
 
-/* Efeito de surgimento suave descendo na tela */
+/* Regra da animação da janela surgindo */
 @keyframes abrirModal {
     from { transform: translateY(-20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
 
-/* Cabeçalho interno do Modal */
+/* Topo do modal com o título e o X */
 .modal-cabecalho {
     display: flex;
     justify-content: space-between;
@@ -186,7 +145,7 @@ td strong {
     margin: 0;
 }
 
-/* Botão "X" para fechar */
+/* Estilo do botão X (Fechar) */
 .modal-fechar {
     font-size: 24px;
     color: #94a3b8;
@@ -198,12 +157,13 @@ td strong {
     color: #334155;
 }
 
-/* Estrutura do formulário */
+/* Layout interno do formulário */
 .modal-formulario {
     display: flex;
     flex-direction: column;
 }
 
+/* Textos acima das caixas de preenchimento (Labels) */
 .modal-formulario label {
     font-size: 14px;
     color: #475569;
@@ -211,7 +171,9 @@ td strong {
     font-weight: 600;
 }
 
-.modal-formulario input {
+/* Caixas de preenchimento de texto, datas e a caixa de seleção do caminhão */
+.modal-formulario input,
+.modal-formulario select {
     padding: 10px 12px;
     border: 1px solid #cbd5e1;
     border-radius: 6px;
@@ -219,13 +181,21 @@ td strong {
     font-size: 14px;
     outline: none;
     transition: 0.2s;
+    background-color: #ffffff;
 }
 
-.modal-formulario input:focus {
+/* Adiciona a mãozinha ao passar o mouse na caixa de seleção */
+.modal-formulario select {
+    cursor: pointer;
+}
+
+/* Borda azul ao focar (clicar) em algum campo do formulário */
+.modal-formulario input:focus,
+.modal-formulario select:focus {
     border-color: #2563eb;
 }
 
-/* Botões de Ação no rodapé do Modal */
+/* Container para alinhar os botões de Cancelar e Salvar à direita */
 .modal-botoes {
     display: flex;
     justify-content: flex-end;
@@ -233,6 +203,7 @@ td strong {
     margin-top: 10px;
 }
 
+/* Estilo do botão Cancelar (Cinza) */
 .btn-cancelar {
     background-color: #f1f5f9;
     color: #475569;
@@ -248,6 +219,7 @@ td strong {
     background-color: #e2e8f0;
 }
 
+/* Estilo do botão Salvar (Verde) */
 .btn-salvar {
     background-color: #10b981;
     color: #ffffff;

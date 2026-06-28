@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Locações - Motoristas</title>
+    
+    <link rel="stylesheet" href="telaprincipal.css">
+    
+    <link rel="stylesheet" href="motoristas.css">
+</head>
+<body>
+
+    <aside class="barra-lateral">
+        <div class="logo">LOCAÇÃO DE CAÇAMBAS</div>
+        <nav class="menu-lateral">
+            <a href="telaprincipal.html">Início</a>
+            <a href="cacambas.html">Caçambas</a>
+            <a href="locacao.html">Locações</a>
+            <a href="clientes.html">Clientes</a>
+            <a href="motoristas.html" class="active">Motoristas</a>
+            <a href="caminhoes.html">Caminhões</a>
+            <a href="despesas.html">Despesas</a>
+            <a href="relatorios.html">Relatórios</a>
+        </nav>
+    </aside>
+
+    <div class="conteudo-principal" id="titulo-principal">
+        
+        <header class="cabecalho-principal" id="cabecalho-principal">
+            <h2>Gerenciamento de Motoristas <span>Controle de Frota</span></h2>
+            <div class="usuario" id="usuario">Administrador</div>
+        </header>
+
+        <section class="filtros">
+            <input type="text" placeholder="Buscar motorista por nome ou CNH...">
+            <button class="btn-nova" id="btnAbrirModal">+ Novo Motorista</button>
+        </section>
+        
+        <section class="tabela">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Telefone / WhatsApp</th>
+                        <th>CNH (Categoria)</th>
+                        <th>Caminhão Vinculado</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabelaMotoristas">
+                    </tbody>
+            </table>
+        </section>
+
+    </div>
+
+    <div id="modalMotorista" class="modal-container">
+        <div class="modal-conteudo">
+            
+            <div class="modal-cabecalho">
+                <h3>Cadastrar Novo Motorista</h3>
+                <span id="btnFecharModal" class="modal-fechar">&times;</span>
+            </div>
+
+            <form id="formMotorista" class="modal-formulario">
+                
+                <label>Nome Completo</label>
+                <input type="text" id="nome" required placeholder="Digite o nome do motorista">
+
+                <label>CPF</label>
+                <input type="text" id="cpf" required placeholder="000.000.000-00">
+
+                <label>Telefone / Celular</label>
+                <input type="text" id="telefone" required placeholder="(00) 00000-0000">
+
+                <label>Número da CNH e Categoria</label>
+                <input type="text" id="cnh" required placeholder="Ex: 123456789-00 (Cat. D)">
+
+                <label>Vencimento da CNH</label>
+                <input type="date" id="vencimento" required>
+
+                <label>Vincular Caminhão Disponível</label>
+                <select id="selectCaminhao" required>
+                    <option value="">-- Selecione um Caminhão --</option>
+                </select>
+
+                <div class="modal-botoes">
+                    <button type="button" id="btnCancelar" class="btn-cancelar">Cancelar</button>
+                    <button type="submit" class="btn-salvar">Salvar Motorista</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        // 1. Mapeando os elementos do HTML para o JavaScript poder controlar
+        const modal = document.getElementById('modalMotorista');
+        const btnAbrir = document.getElementById('btnAbrirModal');
+        const btnFecharX = document.getElementById('btnFecharModal');
+        const btnCancelar = document.getElementById('btnCancelar');
+        const formMotorista = document.getElementById('formMotorista');
+        const selectCaminhao = document.getElementById('selectCaminhao');
+        const corpoTabela = document.getElementById('corpoTabelaMotoristas');
+
+        // 2. Função para criar o link direto para o WhatsApp do motorista
+        function formatarZap(numero) {
+            let limpo = numero.replace(/\D/g, ''); // Tira traços e parênteses
+            return `https://wa.me/55${limpo}`;
+        }
+
+        // 3. Função que pega os motoristas salvos na memória e desenha a tabela
+        function renderizarTabela() {
+            corpoTabela.innerHTML = ''; // Limpa a tabela antes de preencher
+            let motoristas = JSON.parse(localStorage.getItem('listaMotoristas')) || [];
+
+            // Se não tiver nenhum motorista, mostra uma mensagem
+            if (motoristas.length === 0) {
+                corpoTabela.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum motorista cadastrado ainda.</td></tr>';
+                return;
+            }
+
+            // Se tiver, cria uma linha (<tr>) para cada motorista
+            motoristas.forEach(mot => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${mot.nome}</strong></td>
+                    <td>${mot.cpf}</td>
+                    <td><a href="${formatarZap(mot.telefone)}" target="_blank" style="color: #25D366; font-weight: bold; text-decoration: none;">${mot.telefone}</a></td>
+                    <td>${mot.cnh}</td>
+                    <td>Placa: ${mot.caminhao}</td>
+                    <td>
+                        <button title="Editar" style="background:none; border:none; cursor:pointer;">✏️</button>
+                        <button title="Excluir" style="background:none; border:none; cursor:pointer;">🗑️</button>
+                    </td>
+                `;
+                corpoTabela.appendChild(tr); // Adiciona a linha na tabela
+            });
+        }
+
+        // 4. Lógica para ABRIR a janela flutuante
+        btnAbrir.addEventListener('click', () => {
+            // Limpa as opções de caminhões
+            selectCaminhao.innerHTML = '<option value="">-- Selecione um Caminhão --</option>';
+            
+            // Placas de teste (já que a tela de caminhões não está pronta)
+            const opcoesPadrao = ['ABC-1234', 'DEF-5678', 'XYZ-9999'];
+            opcoesPadrao.forEach(placa => {
+                const opt = document.createElement('option');
+                opt.value = placa;
+                opt.textContent = `Placa: ${placa}`;
+                selectCaminhao.appendChild(opt);
+            });
+
+            // Mostra a janela flutuante na tela
+            modal.classList.add('ativo');
+        });
+
+        // 5. Lógica para FECHAR a janela flutuante
+        btnFecharX.addEventListener('click', () => modal.classList.remove('ativo')); // Fecha no X
+        btnCancelar.addEventListener('click', () => modal.classList.remove('ativo')); // Fecha no Cancelar
+        
+        // Fecha se o usuário clicar na área escura fora da janela
+        window.addEventListener('click', (e) => { 
+            if (e.target === modal) modal.classList.remove('ativo'); 
+        });
+
+        // 6. Lógica para SALVAR o motorista quando o formulário for enviado
+        formMotorista.addEventListener('submit', (e) => {
+            e.preventDefault(); // Impede que a página recarregue
+
+            // Monta o "pacote" com os dados digitados
+            const novoMotorista = {
+                nome: document.getElementById('nome').value,
+                cpf: document.getElementById('cpf').value,
+                telefone: document.getElementById('telefone').value,
+                cnh: document.getElementById('cnh').value,
+                vencimento: document.getElementById('vencimento').value,
+                caminhao: selectCaminhao.value
+            };
+
+            // Puxa a lista antiga, adiciona o novo motorista e salva de novo
+            let motoristas = JSON.parse(localStorage.getItem('listaMotoristas')) || [];
+            motoristas.push(novoMotorista);
+            localStorage.setItem('listaMotoristas', JSON.stringify(motoristas));
+
+            // Esconde o modal, limpa os campos e atualiza a tabela na hora
+            modal.classList.remove('ativo');
+            formMotorista.reset();
+            renderizarTabela(); 
+        });
+
+        // 7. Assim que a página abre, ele já puxa e exibe a tabela atualizada
+        renderizarTabela();
+    </script>
+</body>
+</html>

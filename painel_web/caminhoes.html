@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Locações - Caminhões</title>
+    
+    <link rel="stylesheet" href="telaprincipal.css">
+    <link rel="stylesheet" href="caminhoes.css">
+</head>
+<body>
+
+    <aside class="barra-lateral">
+        <div class="logo">LOCAÇÃO DE CAÇAMBAS</div>
+        <nav class="menu-lateral">
+            <a href="telaprincipal.html">Início</a>
+            <a href="cacambas.html">Caçambas</a>
+            <a href="locacao.html">Locações</a>
+            <a href="clientes.html">Clientes</a>
+            <a href="motoristas.html">Motoristas</a>
+            <a href="caminhoes.html" class="active">Caminhões</a>
+            <a href="despesas.html">Despesas</a>
+            <a href="relatorios.html">Relatórios</a>
+        </nav>
+    </aside>
+
+    <div class="conteudo-principal" id="titulo-principal">
+        
+        <header class="cabecalho-principal" id="cabecalho-principal">
+            <h2>Gerenciamento de Caminhões <span>Controle de Patrimônio</span></h2>
+            <div class="usuario" id="usuario">Administrador</div>
+        </header>
+
+        <section class="filtros">
+            <input type="text" placeholder="Buscar por placa ou chassi...">
+            <button class="btn-nova" id="btnAbrirModal">+ Novo Caminhão</button>
+        </section>
+        
+        <section class="tabela">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Placa</th>
+                        <th>Chassi</th>
+                        <th>Motorista Atual</th> <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabelaCaminhoes">
+                    </tbody>
+            </table>
+        </section>
+    </div>
+
+    <div id="modalCaminhao" class="modal-container">
+        <div class="modal-conteudo">
+            <div class="modal-cabecalho">
+                <h3>Cadastrar Novo Veículo</h3>
+                <span id="btnFecharModal" class="modal-fechar">&times;</span>
+            </div>
+
+            <form id="formCaminhao" class="modal-formulario">
+                <label>Placa do Veículo</label>
+                <input type="text" id="placa" required placeholder="Ex: ABC-1234">
+
+                <label>Número do Chassi</label>
+                <input type="text" id="chassi" required placeholder="Digite o chassi completo">
+
+                <div class="modal-botoes">
+                    <button type="button" id="btnCancelar" class="btn-cancelar">Cancelar</button>
+                    <button type="submit" class="btn-salvar">Salvar Caminhão</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Mapeamento de elementos
+        const modal = document.getElementById('modalCaminhao');
+        const btnAbrir = document.getElementById('btnAbrirModal');
+        const btnFecharX = document.getElementById('btnFecharModal');
+        const btnCancelar = document.getElementById('btnCancelar');
+        const formCaminhao = document.getElementById('formCaminhao');
+        const corpoTabela = document.getElementById('corpoTabelaCaminhoes');
+
+        // Função para desenhar a tabela na tela
+        function renderizarTabela() {
+            corpoTabela.innerHTML = '';
+            
+            // Puxa os caminhões e os motoristas da memória (localStorage)
+            const caminhoes = JSON.parse(localStorage.getItem('listaCaminhoes')) || [];
+            const motoristas = JSON.parse(localStorage.getItem('listaMotoristas')) || [];
+
+            if (caminhoes.length === 0) {
+                corpoTabela.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum caminhão cadastrado.</td></tr>';
+                return;
+            }
+
+            caminhoes.forEach(cam => {
+                // Lógica para descobrir qual motorista está com este caminhão
+                // Ele procura na lista de motoristas quem tem a placa igual à deste caminhão
+                const motoristaVinculado = motoristas.find(m => m.caminhao === cam.placa);
+                const nomeMotorista = motoristaVinculado ? motoristaVinculado.nome : '<span style="color: #94a3b8;">Nenhum</span>';
+
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${cam.placa}</strong></td>
+                    <td>${cam.chassi}</td>
+                    <td>${nomeMotorista}</td>
+                    <td>
+                        <button title="Editar" style="background:none; border:none; cursor:pointer;">✏️</button>
+                        <button title="Excluir" style="background:none; border:none; cursor:pointer;">🗑️</button>
+                    </td>
+                `;
+                corpoTabela.appendChild(tr);
+            });
+        }
+
+        // Abrir/Fechar Modal
+        btnAbrir.addEventListener('click', () => modal.classList.add('ativo'));
+        btnFecharX.addEventListener('click', () => modal.classList.remove('ativo'));
+        btnCancelar.addEventListener('click', () => modal.classList.remove('ativo'));
+
+        // Salvar Caminhão
+        formCaminhao.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const novoCaminhao = {
+                placa: document.getElementById('placa').value.toUpperCase(), // Salva sempre em maiúsculo
+                chassi: document.getElementById('chassi').value
+            };
+
+            let caminhoes = JSON.parse(localStorage.getItem('listaCaminhoes')) || [];
+            caminhoes.push(novoCaminhao);
+            localStorage.setItem('listaCaminhoes', JSON.stringify(caminhoes));
+
+            modal.classList.remove('ativo');
+            formCaminhao.reset();
+            renderizarTabela();
+            alert("Caminhão cadastrado! Ele já aparecerá na aba de Motoristas.");
+        });
+
+        // Carrega a tabela ao abrir a página
+        renderizarTabela();
+    </script>
+</body>
+</html>
