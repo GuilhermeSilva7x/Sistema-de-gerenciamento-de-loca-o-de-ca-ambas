@@ -2,16 +2,33 @@ import 'package:app_motorista/paginas_principais/detalhesAtividade.dart';
 import 'package:flutter/material.dart';
 
 class CardsAtividades extends StatefulWidget {
+  final String id;
   final bool concluido;
   final Color cor;
   final String atividade;
+  final String clienteNome;
+  final String endereco;
+  final String cacambaNumero;
+  final String cacambaId;
+  final String hora;
+  final String cacambaVelhaNumero;
 
   const CardsAtividades({
     super.key,
+    required this.id,
     required this.cor,
     required this.atividade,
+    required this.clienteNome,
+    required this.endereco,
+    required this.cacambaNumero,
+    required this.cacambaId,
+    required this.hora,
+    this.cacambaVelhaNumero = '',
     this.concluido = false,
+    this.atrasada = false,
   });
+
+  final bool atrasada;
 
   @override
   State<CardsAtividades> createState() => _CardsAtividadesState();
@@ -35,9 +52,15 @@ class _CardsAtividadesState extends State<CardsAtividades> {
           context,
           MaterialPageRoute(
             builder: (context) => Detalhesatividade(
+              id: widget.id,
               cor: corPrincipal,
               atividade: textoAtividade,
               concluido: estaConcluido,
+              clienteNome: widget.clienteNome,
+              endereco: widget.endereco,
+              cacambaNumero: widget.cacambaNumero,
+              cacambaId: widget.cacambaId,
+              cacambaVelhaNumero: widget.cacambaVelhaNumero,
             ),
           ),
         );
@@ -71,22 +94,47 @@ class _CardsAtividadesState extends State<CardsAtividades> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      alignment: Alignment.center,
-                      height: 24,
-                      width: 95,
-                      decoration: BoxDecoration(
-                        color: corPrincipal.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        textoAtividade,
-                        style: TextStyle(
-                          color: corPrincipal,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 11,
+                    Row(
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          height: 24,
+                          width: 95,
+                          decoration: BoxDecoration(
+                            color: corPrincipal.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            textoAtividade.toUpperCase(),
+                            style: TextStyle(
+                              color: corPrincipal,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 11,
+                            ),
+                          ),
                         ),
-                      ),
+                        if (widget.atrasada && !estaConcluido) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            alignment: Alignment.center,
+                            height: 24,
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.red[100],
+                              borderRadius: BorderRadius.circular(6),
+                              border: Border.all(color: Colors.red[300]!, width: 1),
+                            ),
+                            child: const Text(
+                              "⚠️ ATRASADA",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 9,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                     Row(
                       children: [
@@ -97,7 +145,7 @@ class _CardsAtividadesState extends State<CardsAtividades> {
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          "08:00",
+                          widget.hora,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -111,7 +159,7 @@ class _CardsAtividadesState extends State<CardsAtividades> {
                         ),
                         Expanded(
                           child: Text(
-                            "João Silva",
+                            widget.clienteNome,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: corDoTextoDados,
@@ -130,24 +178,14 @@ class _CardsAtividadesState extends State<CardsAtividades> {
                           style: TextStyle(color: Colors.grey),
                         ),
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Rua das Flores, 123",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: corDoTextoDados,
-                                ),
-                              ),
-                              Text(
-                                "Setor Sul, Goiânia - GO",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: corDoTextoDados,
-                                ),
-                              ),
-                            ],
+                          child: Text(
+                            widget.endereco,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: corDoTextoDados,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
@@ -174,7 +212,7 @@ class _CardsAtividadesState extends State<CardsAtividades> {
                         style: TextStyle(color: Colors.grey),
                       ),
                       Text(
-                        "025",
+                        widget.cacambaNumero,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: corDoTextoDados,

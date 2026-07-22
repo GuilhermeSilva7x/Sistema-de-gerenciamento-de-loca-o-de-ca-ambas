@@ -1,47 +1,38 @@
 import 'package:flutter/material.dart';
 
 class Cabecalho extends StatelessWidget {
-  const Cabecalho({super.key});
+  final String nome;
+  const Cabecalho({super.key, required this.nome});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 65,
+      height: 70,
       decoration: BoxDecoration(color: Colors.blue[900]),
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.menu, color: Colors.white),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Olá, $nome!",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
-                SizedBox(width: 8),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Olá, Jorge!",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text("Motorista", style: TextStyle(color: Colors.white)),
-                  ],
+              ),
+              const Text(
+                "Motorista",
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 13,
                 ),
-              ],
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.notifications_none_rounded, color: Colors.white),
+              ),
+            ],
           ),
         ],
       ),

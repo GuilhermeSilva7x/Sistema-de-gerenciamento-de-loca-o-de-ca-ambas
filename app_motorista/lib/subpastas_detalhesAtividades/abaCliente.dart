@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
 
 class Abacliente extends StatelessWidget {
-  const Abacliente({super.key});
+  final String clienteNome;
+  final String endereco;
+  final String cacambaNumero;
+  final String cacambaVelhaNumero;
+  final String atividade;
+
+  const Abacliente({
+    super.key,
+    required this.clienteNome,
+    required this.endereco,
+    required this.cacambaNumero,
+    this.cacambaVelhaNumero = '',
+    this.atividade = '',
+  });
 
   @override
   Widget build(BuildContext context) {
+    final isTroca = atividade.toUpperCase() == 'TROCA';
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -16,30 +31,45 @@ class Abacliente extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 6),
-            Text("Cliente:", style: TextStyle(fontSize: 16)),
+            const SizedBox(height: 6),
+            const Text("Cliente:", style: TextStyle(fontSize: 16)),
             Text(
-              "João Silva",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              clienteNome,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
-            SizedBox(height: 4),
-            Divider(thickness: 2),
-            SizedBox(height: 4),
-            Text("Endereço de entrega", style: TextStyle(fontSize: 16)),
+            const SizedBox(height: 4),
+            const Divider(thickness: 2),
+            const SizedBox(height: 4),
+            const Text("Endereço de entrega", style: TextStyle(fontSize: 16)),
             Text(
-              "Rua das Flores 123",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              endereco,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
-            Text("Setor sul, Goiânia - GO", style: TextStyle(fontSize: 16)),
-            SizedBox(height: 4),
-            Divider(thickness: 2),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
+            const Divider(thickness: 2),
+            const SizedBox(height: 4),
 
-            Text("Caçamba Alocada", style: TextStyle(fontSize: 16)),
-            Text(
-              "N° 25",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
+            if (isTroca) ...[
+              const Text("Caçamba a Entregar", style: TextStyle(fontSize: 16)),
+              Text(
+                "N° $cacambaNumero",
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.blue),
+              ),
+              const SizedBox(height: 4),
+              const Divider(thickness: 2),
+              const SizedBox(height: 4),
+              const Text("Caçamba a Retirar (Trazer de volta)", style: TextStyle(fontSize: 16)),
+              Text(
+                "N° $cacambaVelhaNumero",
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.orange),
+              ),
+            ] else ...[
+              const Text("Caçamba Alocada", style: TextStyle(fontSize: 16)),
+              Text(
+                "N° $cacambaNumero",
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ],
           ],
         ),
       ),

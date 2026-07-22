@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "972154992772",
+    "project_id": "gerenciamento-de-cacambas",
+    "storage_bucket": "gerenciamento-de-cacambas.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:972154992772:android:afe3aafca61690dd6caad1",
+        "android_client_info": {
+          "package_name": "com.example.app_motorista"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCK58XBPxi7Bc2iaxKwwYlaMHf1R8T85Ek"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

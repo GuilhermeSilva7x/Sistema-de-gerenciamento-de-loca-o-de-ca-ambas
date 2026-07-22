@@ -6,8 +6,8 @@
     <title>Gerenciamento de Locações - Despesas</title>
     
     <link rel="stylesheet" href="telaprincipal.css">
-    
     <link rel="stylesheet" href="despesas.css">
+    <link rel="stylesheet" href="clientes.css">
 </head>
 <body>
 
@@ -28,7 +28,7 @@
     <div class="conteudo-principal" id="titulo-principal">
         
         <header class="cabecalho-principal" id="cabecalho-principal">
-            <h2>Gerenciamento de Locações - Despesas <span>Admin Panel | Painel de Controle</span></h2>
+            <h2>Gerenciamento de Despesas <span>Painel Administrativo</span></h2>
             <div class="usuario" id="usuario">Administrador <small style="display:block; font-size:10px; color:#94a3b8; text-align:right;">ADMIN</small></div>
         </header>
 
@@ -102,7 +102,7 @@
     <div id="modalDespesa" class="modal-container">
         <div class="modal-conteudo">
             <div class="modal-cabecalho">
-                <h3>Cadastrar Nova Despesa</h3>
+                <h3 id="modalTituloDespesa">Cadastrar Nova Despesa</h3>
                 <span id="btnFecharModal" class="modal-fechar">&times;</span>
             </div>
             
@@ -141,7 +141,29 @@
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    
     <script>
+        let currentUser = null;
+
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'TeladeLogin.HTML';
+            } else {
+                currentUser = user;
+                await migrarDocumentosSemAdminId(user.uid);
+                inicializarDespesas(user);
+
+                const usuarioDiv = document.getElementById('usuario');
+                if (usuarioDiv) usuarioDiv.innerHTML = `${user.email} <small style="display:block; font-size:10px; color:#94a3b8; text-align:right;">ADMIN</small>`;
+            }
+        });
+
+        function inicializarDespesas(user) {
+
         const modal = document.getElementById('modalDespesa');
         const btnAbrir = document.getElementById('btnAbrirModal');
         const btnFecharX = document.getElementById('btnFecharModal');
@@ -149,72 +171,178 @@
         const formDespesa = document.getElementById('formDespesa');
         const corpoTabela = document.getElementById('corpoTabelaDespesas');
 
-        // Itens iniciais padrão da foto para o sistema não iniciar em branco
-        const despesasIniciais = [
-            { id: 1, descricao: "Troca de Óleo - Mercedes ABC-1234", categoria: "Manutenção", valor: 450.00, data: "2026-06-27", status: "Pago" },
-            { id: 2, descricao: "Abastecimento - Ford DEF-5678", categoria: "Combustível", valor: 780.00, data: "2026-06-26", status: "Pago" },
-            { id: 3, descricao: "Conserto de Freio - VW GHI-9012", categoria: "Oficina", valor: 2100.00, data: "2026-06-25", status: "Pendente" },
-            { id: 4, descricao: "Seguro Anual da Frota", categoria: "Seguros", valor: 6500.00, data: "2026-06-20", status: "Atrasado" },
-            { id: 5, descricao: "Compra de Pneus - Mercedes XYZ-4321", categoria: "Manutenção", valor: 3200.00, data: "2026-06-18", status: "Pago" }
-        ];
-
-        // Se não houver nada salvo no localStorage, carrega os dados da foto
-        if (!localStorage.getItem('listaDespesas')) {
-            localStorage.setItem('listaDespesas', JSON.stringify(despesasIniciais));
-        }
-
         // Converte a data do formato AAAA-MM-DD para DD/MM/AAAA
         function formatarData(dataString) {
+            if (!dataString) return '-';
             const partes = dataString.split('-');
+            if (partes.length < 3) return dataString;
             return `${partes[2]}/${partes[1]}/${partes[0]}`;
         }
 
-        // Desenha a tabela e recalcula os cards do topo
-        function renderizarTela() {
-            corpoTabela.innerHTML = '';
-            const despesas = JSON.parse(localStorage.getItem('listaDespesas')) || [];
+        let editandoDespesaId = null;
 
+        // Controles de abertura e fechamento do Modal
+        btnAbrir.addEventListener('click', () => {
+            editandoDespesaId = null;
+            document.getElementById('modalTituloDespesa').textContent = "Cadastrar Nova Despesa";
+            formDespesa.reset();
+            modal.classList.add('ativo');
+        });
+        btnFecharX.addEventListener('click', () => modal.classList.remove('ativo'));
+        btnCancelar.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.classList.remove('ativo');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('ativo');
+        });
+
+        // Salvar / Alterar Despesa
+        formDespesa.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const descricao = document.getElementById('descricao').value.trim();
+            const categoria = document.getElementById('categoria').value;
+            const valor = parseFloat(document.getElementById('valor').value);
+            const data = document.getElementById('dataPagamento').value;
+            const status = document.getElementById('status').value;
+
+            try {
+                if (editandoDespesaId) {
+                    await db.collection('despesas').doc(editandoDespesaId).update({
+                        descricao,
+                        categoria,
+                        valor,
+                        data,
+                        status
+                    });
+                    alert('Despesa alterada com sucesso!');
+                } else {
+                    await db.collection('despesas').add({
+                        admin_id: user.uid,
+                        descricao,
+                        categoria,
+                        valor,
+                        data,
+                        status
+                    });
+                    alert('Despesa registrada com sucesso!');
+                }
+                modal.classList.remove('ativo');
+                formDespesa.reset();
+                editandoDespesaId = null;
+                document.getElementById('modalTituloDespesa').textContent = "Cadastrar Nova Despesa";
+            } catch (error) {
+                alert('Erro ao salvar despesa: ' + error.message);
+            }
+        });
+
+        let despesasCache = [];
+
+        // Elementos de filtros
+        const buscaInput = document.getElementById('buscaDescricao');
+        const categoriaSelect = document.getElementById('filtroCategoria');
+
+        function aplicarFiltros() {
+            const busca = buscaInput.value.toLowerCase().trim();
+            const cat = categoriaSelect.value;
+
+            const despesasFiltradas = despesasCache.filter(desp => {
+                const matchBusca = !busca || (desp.descricao || '').toLowerCase().includes(busca);
+                const matchCat = !cat || desp.categoria === cat;
+                return matchBusca && matchCat;
+            });
+
+            renderizarTabela(despesasFiltradas);
+        }
+
+        buscaInput.addEventListener('input', aplicarFiltros);
+        categoriaSelect.addEventListener('change', aplicarFiltros);
+
+        // Ouvir despesas em tempo real
+        db.collection('despesas').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
+            despesasCache = [];
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                data.id = docSnap.id;
+                despesasCache.push(data);
+            });
+            aplicarFiltros();
+        });
+
+        // Renderiza a tabela de despesas e calcula totais
+        function renderizarTabela(lista) {
+            corpoTabela.innerHTML = '';
+            
             let totalMes = 0;
             let totalPendentes = 0;
             let gastosPorCategoria = {};
 
-            if (despesas.length === 0) {
-                corpoTabela.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhuma despesa registrada.</td></tr>';
+            if (lista.length === 0) {
+                corpoTabela.innerHTML = '<tr><td colspan="6" style="text-align:center; color: #64748b;">Nenhuma despesa encontrada.</td></tr>';
+                document.getElementById('cardTotalMes').textContent = `R$ 0,00`;
+                document.getElementById('cardMaiorGasto').textContent = `Nenhum: R$ 0,00`;
+                document.getElementById('cardPendentes').textContent = `R$ 0,00`;
+                return;
             }
 
-            despesas.forEach((desp, index) => {
-                const valorNum = parseFloat(desp.valor);
+            let index = 0;
+            lista.forEach((desp) => {
+                index++;
+                const valorNum = parseFloat(desp.valor || 0);
                 
-                // Soma os totais para os cards
                 totalMes += valorNum;
                 if (desp.status === 'Pendente' || desp.status === 'Atrasado') {
                     totalPendentes += valorNum;
                 }
 
-                // Agrupa gastos por categoria para descobrir o maior gasto
                 if (!gastosPorCategoria[desp.categoria]) gastosPorCategoria[desp.categoria] = 0;
                 gastosPorCategoria[desp.categoria] += valorNum;
 
-                // Define a classe CSS correta para a tag de status (Pago, Pendente ou Atrasado)
-                let statusClass = desp.status.toLowerCase();
+                let statusClass = (desp.status || 'pendente').toLowerCase();
 
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>${index + 1}. ${desp.descricao}</strong></td>
+                    <td><strong>${index}. ${desp.descricao}</strong></td>
                     <td><span class="tag-categoria">⚙️ ${desp.categoria}</span></td>
                     <td><strong>R$ ${valorNum.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong></td>
                     <td>${formatarData(desp.data)}</td>
                     <td><span class="status-badge ${statusClass}">${desp.status}</span></td>
                     <td>
-                        <button title="Editar" class="btn-acao">✏️</button>
-                        <button title="Excluir" class="btn-acao">🗑️</button>
-                        <button title="Ver Recibo" class="btn-acao">📄</button>
+                        <button class="btn-editar" data-id="${desp.id}" title="Editar" style="background: none; border: none; cursor: pointer; font-size: 16px; margin-right: 8px;">✏️</button>
+                        <button class="btn-excluir" data-id="${desp.id}" title="Excluir" style="background: none; border: none; cursor: pointer; font-size: 16px;">🗑️</button>
                     </td>
                 `;
+
+                // Evento editar
+                tr.querySelector('.btn-editar').addEventListener('click', () => {
+                    editandoDespesaId = desp.id;
+                    document.getElementById('modalTituloDespesa').textContent = "Editar Despesa";
+                    document.getElementById('descricao').value = desp.descricao || '';
+                    document.getElementById('categoria').value = desp.categoria || '';
+                    document.getElementById('valor').value = desp.valor || 0;
+                    document.getElementById('dataPagamento').value = desp.data || '';
+                    document.getElementById('status').value = desp.status || 'Pago';
+                    modal.classList.add('ativo');
+                });
+
+                // Evento excluir
+                tr.querySelector('.btn-excluir').addEventListener('click', async (e) => {
+                    if (confirm(`Deseja realmente remover a despesa "${desp.descricao}"?`)) {
+                        try {
+                            const despId = e.currentTarget.getAttribute('data-id');
+                            await db.collection('despesas').doc(despId).delete();
+                            alert('Despesa excluída.');
+                        } catch (err) {
+                            alert('Erro ao excluir: ' + err.message);
+                        }
+                    }
+                });
+
                 corpoTabela.appendChild(tr);
             });
 
-            // Descobre qual categoria teve o maior peso financeiro
             let maiorCat = "Nenhuma";
             let maiorValorCat = 0;
             for (let cat in gastosPorCategoria) {
@@ -224,40 +352,11 @@
                 }
             }
 
-            // Atualiza os textos dos cards com os valores reais somados
             document.getElementById('cardTotalMes').textContent = `R$ ${totalMes.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
             document.getElementById('cardMaiorGasto').textContent = `${maiorCat}: R$ ${maiorValorCat.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
             document.getElementById('cardPendentes').textContent = `R$ ${totalPendentes.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
         }
-
-        // Controles de abertura e fechamento do Modal
-        btnAbrir.addEventListener('click', () => modal.classList.add('ativo'));
-        btnFecharX.addEventListener('click', () => modal.classList.remove('ativo'));
-        btnCancelar.addEventListener('click', () => modal.classList.remove('ativo'));
-
-        // Salvar Nova Despesa
-        formDespesa.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const novaDespesa = {
-                descricao: document.getElementById('descricao').value,
-                categoria: document.getElementById('categoria').value,
-                valor: parseFloat(document.getElementById('valor').value),
-                data: document.getElementById('dataPagamento').value,
-                status: document.getElementById('status').value
-            };
-
-            let despesas = JSON.parse(localStorage.getItem('listaDespesas')) || [];
-            despesas.push(novaDespesa);
-            localStorage.setItem('listaDespesas', JSON.stringify(despesas));
-
-            modal.classList.remove('ativo');
-            formDespesa.reset();
-            renderizarTela(); // Atualiza tudo na hora
-        });
-
-        // Inicializa a tela com as informações
-        renderizarTela();
+    }
     </script>
 </body>
 </html>

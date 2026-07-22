@@ -1,58 +1,155 @@
 import 'package:app_motorista/paginas_principais/paginaAtividades.dart';
 import 'package:app_motorista/subpastas_homepage/cardsAtividades.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Atividades extends StatelessWidget {
-  const Atividades({super.key});
+  final List<QueryDocumentSnapshot> locacoes;
+  const Atividades({super.key, required this.locacoes});
 
   @override
   Widget build(BuildContext context) {
+    final todayStr = DateTime.now().toIso8601String().split('T')[0];
+
+    // Filtra as pendentes (não concluídas) para mostrar como próximas atividades
+    final proximas = locacoes.where((doc) {
+      final data = doc.data() as Map<String, dynamic>;
+      final status = data['status'] ?? 'entrega_pendente';
+      final isPending = status != 'concluida' && status != 'na_obra';
+
+      if (!isPending) return false;
+
+      // Não mostra atividades agendadas para datas futuras
+      final dataEntrega = data['data_entrega'] ?? '';
+      if (dataEntrega.isNotEmpty) {
+        try {
+          final parts = dataEntrega.split('-');
+          if (parts.length == 3) {
+            final year = int.parse(parts[0]);
+            final month = int.parse(parts[1]);
+            final day = int.parse(parts[2]);
+            final scheduledDate = DateTime(year, month, day);
+            final now = DateTime.now();
+            final today = DateTime(now.year, now.month, now.day);
+            if (scheduledDate.isAfter(today)) {
+              return false;
+            }
+          }
+        } catch (e) {
+          if (dataEntrega.compareTo(todayStr) > 0) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }).toList();
+
     return Padding(
       padding: const EdgeInsets.all(6.0),
-      child: Container(
-        child: Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Próximas atividade",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Paginaatividades(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Ver todas",
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+      child: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Próximas atividades",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Paginaatividades(),
                       ),
+                    );
+                  },
+                  child: const Text(
+                    "Ver todas",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 12),
-              CardsAtividades(atividade: "ENTREGA", cor: Colors.blue),
-              SizedBox(height: 8),
-              CardsAtividades(atividade: "TROCA", cor: Colors.orange),
-              SizedBox(height: 8),
-              CardsAtividades(atividade: "RETIRADA", cor: Colors.red),
-              SizedBox(height: 8),
-              CardsAtividades(atividade: "RETIRADA", cor: Colors.red),
-              SizedBox(height: 8),
-              CardsAtividades(atividade: "ENTREGA", cor: Colors.blue),
-            ],
-          ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (proximas.isEmpty)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20.0),
+                  child: Text(
+                    "Nenhuma atividade pendente para hoje!",
+                    style: TextStyle(color: Colors.grey, fontSize: 15),
+                  ),
+                ),
+              )
+            else
+              ...proximas.take(3).map((doc) {
+                final data = doc.data() as Map<String, dynamic>;
+                final id = doc.id;
+                final String status = data['status'] ?? 'entrega_pendente';
+
+                Color cor = Colors.blue;
+                String atividadeTexto = "ENTREGA";
+
+                if (status == 'troca_pendente' || status == 'aguardando_troca') {
+                  cor = Colors.orange;
+                  atividadeTexto = "TROCA";
+                } else if (status == 'retirada_pendente' || status == 'aguardando_retirada') {
+                  cor = Colors.red;
+                  atividadeTexto = "RETIRADA";
+                }
+
+                final rua = data['endereco']?['rua'] ?? '';
+                final num = data['endereco']?['numero'] ?? '';
+                final bairro = data['endereco']?['bairro'] ?? '';
+
+                final String dataEntrega = data['data_entrega'] ?? '';
+                bool isAtrasada = false;
+                if (dataEntrega.isNotEmpty) {
+                  try {
+                    final parts = dataEntrega.split('-');
+                    if (parts.length == 3) {
+                      final year = int.parse(parts[0]);
+                      final month = int.parse(parts[1]);
+                      final day = int.parse(parts[2]);
+                      final scheduledDate = DateTime(year, month, day);
+                      final now = DateTime.now();
+                      final today = DateTime(now.year, now.month, now.day);
+                      isAtrasada = scheduledDate.isBefore(today);
+                    }
+                  } catch (e) {
+                    if (dataEntrega.compareTo(todayStr) < 0) {
+                      isAtrasada = true;
+                    }
+                  }
+                }
+
+                return Column(
+                  children: [
+                    CardsAtividades(
+                      id: id,
+                      atividade: atividadeTexto,
+                      cor: cor,
+                      concluido: status == 'concluida' || status == 'na_obra',
+                      clienteNome: data['cliente_nome'] ?? '-',
+                      endereco: "$rua, $num - $bairro",
+                      cacambaNumero: data['cacamba_numero'] ?? '-',
+                      cacambaId: data['cacamba_id'] ?? '',
+                      cacambaVelhaNumero: data['cacamba_velha_numero'] ?? '',
+                      hora: "08:00",
+                      atrasada: isAtrasada,
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                );
+              }),
+          ],
         ),
       ),
     );

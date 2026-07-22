@@ -21,7 +21,10 @@
 
         <div class="campo-de-senha" id="campo-de-senha">
             <label class="titulo-senha" for="texto-senha">Senha</label>
-            <input type="password" id="texto-senha" class="texto-senha" placeholder="Digite sua senha">
+            <div style="position: relative; display: flex; align-items: center;">
+                <input type="password" id="texto-senha" class="texto-senha" placeholder="Digite sua senha" style="width: 100%; box-sizing: border-box; padding-right: 40px;">
+                <span id="alternar-senha" style="position: absolute; right: 12px; cursor: pointer; color: #718096; user-select: none; font-size: 18px; line-height: 1;">👁️</span>
+            </div>
         </div> 
         
         <div class="campo-lembrar" id="campo-lembrar">
@@ -31,5 +34,56 @@
 
         <button class="botao-login" id="botao-login">Entrar</button>
         
-    </div> </body>
+    </div> 
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    
+    <script>
+        const btnLogin = document.getElementById('botao-login');
+        const inputEmail = document.getElementById('texto-email');
+        const inputSenha = document.getElementById('texto-senha');
+        const alternarSenha = document.getElementById('alternar-senha');
+
+        // Alternar visualização da senha
+        alternarSenha.addEventListener('click', () => {
+            const tipo = inputSenha.getAttribute('type') === 'password' ? 'text' : 'password';
+            inputSenha.setAttribute('type', tipo);
+            alternarSenha.textContent = tipo === 'password' ? '👁️' : '🙈';
+        });
+
+        // Redireciona caso já esteja logado
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                window.location.href = 'telaprincipal.html';
+            }
+        });
+
+        btnLogin.addEventListener('click', async () => {
+            const email = inputEmail.value.trim();
+            const senha = inputSenha.value;
+
+            if (!email || !senha) {
+                alert('Por favor, preencha todos os campos.');
+                return;
+            }
+
+            try {
+                await auth.signInWithEmailAndPassword(email, senha);
+                window.location.href = 'telaprincipal.html';
+            } catch (error) {
+                console.error(error);
+                let msg = 'Erro ao realizar login.';
+                if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    msg = 'E-mail ou senha incorretos.';
+                } else if (error.code === 'auth/invalid-email') {
+                    msg = 'Formato de e-mail inválido.';
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    msg = 'O provedor de E-mail/Senha está desativado no console do Firebase. Ative-o em Authentication > Sign-in Method.';
+                }
+                alert(msg + '\n\nDetalhes do erro: ' + error.message);
+            }
+        });
+    </script>
+</body>
 </html>

@@ -7,6 +7,7 @@
     
     <link rel="stylesheet" href="telaprincipal.css">
     <link rel="stylesheet" href="caminhoes.css">
+    <link rel="stylesheet" href="clientes.css">
 </head>
 <body>
 
@@ -73,7 +74,43 @@
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    
     <script>
+        let editCaminhaoId = null;
+
+        // Controle de Sessão (Auth Guard com Validação de Regra de Acesso)
+        let currentUser = null;
+
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'TeladeLogin.HTML';
+            } else {
+                try {
+                    const checkDriver = await db.collection('motoristas').where('email', '==', user.email).get();
+                    if (!checkDriver.empty) {
+                        alert("Acesso negado: Motoristas não possuem permissão para acessar o painel administrativo.");
+                        await auth.signOut();
+                        window.location.href = 'TeladeLogin.HTML';
+                        return;
+                    }
+                } catch (err) {
+                    console.error("Erro ao validar perfil:", err);
+                }
+                currentUser = user;
+                await migrarDocumentosSemAdminId(user.uid);
+                inicializarCaminhoes(user);
+
+                const usuarioDiv = document.getElementById('usuario');
+                if (usuarioDiv) usuarioDiv.textContent = user.email;
+            }
+        });
+
+        function inicializarCaminhoes(user) {
+
         // Mapeamento de elementos
         const modal = document.getElementById('modalCaminhao');
         const btnAbrir = document.getElementById('btnAbrirModal');
@@ -82,65 +119,138 @@
         const formCaminhao = document.getElementById('formCaminhao');
         const corpoTabela = document.getElementById('corpoTabelaCaminhoes');
 
-        // Função para desenhar a tabela na tela
-        function renderizarTabela() {
-            corpoTabela.innerHTML = '';
-            
-            // Puxa os caminhões e os motoristas da memória (localStorage)
-            const caminhoes = JSON.parse(localStorage.getItem('listaCaminhoes')) || [];
-            const motoristas = JSON.parse(localStorage.getItem('listaMotoristas')) || [];
+        // Abrir/Fechar Modal
+        btnAbrir.addEventListener('click', () => {
+            editCaminhaoId = null;
+            modal.querySelector('h3').textContent = 'Cadastrar Novo Veículo';
+            formCaminhao.reset();
+            modal.classList.add('ativo');
+        });
+        btnFecharX.addEventListener('click', () => modal.classList.remove('ativo'));
+        btnCancelar.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.classList.remove('ativo');
+        });
 
-            if (caminhoes.length === 0) {
-                corpoTabela.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum caminhão cadastrado.</td></tr>';
+        window.addEventListener('click', (e) => { 
+            if (e.target === modal) modal.classList.remove('ativo'); 
+        });
+
+        // Salvar ou Editar Caminhão
+        formCaminhao.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const placa = document.getElementById('placa').value.toUpperCase().trim();
+            const chassi = document.getElementById('chassi').value.trim();
+
+            if (!placa || !chassi) {
+                alert('Placa e Chassi são obrigatórios!');
                 return;
             }
 
-            caminhoes.forEach(cam => {
-                // Lógica para descobrir qual motorista está com este caminhão
-                // Ele procura na lista de motoristas quem tem a placa igual à deste caminhão
+            if (editCaminhaoId) {
+                // Modo Edição
+                try {
+                    await db.collection('caminhoes').doc(editCaminhaoId).update({
+                        placa,
+                        chassi
+                    });
+                    alert("Caminhão atualizado com sucesso!");
+                    modal.classList.remove('ativo');
+                    formCaminhao.reset();
+                } catch (error) {
+                    alert('Erro ao atualizar caminhão: ' + error.message);
+                }
+            } else {
+                // Modo Cadastro
+                try {
+                    await db.collection('caminhoes').add({
+                        admin_id: user.uid,
+                        placa,
+                        chassi,
+                        data_cadastro: new Date().toISOString()
+                    });
+                    alert("Caminhão cadastrado! Ele já aparecerá nas opções da aba de Motoristas.");
+                    modal.classList.remove('ativo');
+                    formCaminhao.reset();
+                } catch (error) {
+                    alert('Erro ao salvar caminhão: ' + error.message);
+                }
+            }
+        });
+
+        // Cruzamento de dados de motoristas vinculados
+        let motoristas = [];
+        let snapshotCaminhoes = null;
+
+        db.collection('motoristas').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
+            motoristas = [];
+            snapshot.forEach((docSnap) => {
+                motoristas.push(docSnap.data());
+            });
+            if (snapshotCaminhoes) {
+                renderizarTabela(snapshotCaminhoes);
+            }
+        });
+
+        db.collection('caminhoes').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
+            snapshotCaminhoes = snapshot;
+            renderizarTabela(snapshot);
+        });
+
+        // Função para desenhar a tabela na tela
+        function renderizarTabela(snapshot) {
+            corpoTabela.innerHTML = '';
+            
+            if (snapshot.empty) {
+                corpoTabela.innerHTML = '<tr><td colspan="4" style="text-align:center; color: #64748b;">Nenhum caminhão cadastrado.</td></tr>';
+                return;
+            }
+
+            snapshot.forEach(docSnap => {
+                const cam = docSnap.data();
+                const id = docSnap.id;
+
                 const motoristaVinculado = motoristas.find(m => m.caminhao === cam.placa);
                 const nomeMotorista = motoristaVinculado ? motoristaVinculado.nome : '<span style="color: #94a3b8;">Nenhum</span>';
 
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><strong>${cam.placa}</strong></td>
-                    <td>${cam.chassi}</td>
+                    <td>${cam.chassi || '-'}</td>
                     <td>${nomeMotorista}</td>
                     <td>
-                        <button title="Editar" style="background:none; border:none; cursor:pointer;">✏️</button>
-                        <button title="Excluir" style="background:none; border:none; cursor:pointer;">🗑️</button>
+                        <button class="btn-editar" data-id="${id}" title="Editar" style="background:none; border:none; cursor:pointer; margin-right: 8px;">✏️</button>
+                        <button class="btn-excluir" data-id="${id}" title="Excluir" style="background:none; border:none; cursor:pointer;">🗑️</button>
                     </td>
                 `;
+
+                // Evento editar
+                tr.querySelector('.btn-editar').addEventListener('click', () => {
+                    editCaminhaoId = id;
+                    modal.querySelector('h3').textContent = 'Editar Veículo';
+                    document.getElementById('placa').value = cam.placa || '';
+                    document.getElementById('chassi').value = cam.chassi || '';
+                    modal.classList.add('ativo');
+                });
+
+                // Evento excluir
+                tr.querySelector('.btn-excluir').addEventListener('click', async (e) => {
+                    if (confirm(`Deseja realmente remover o veículo com placa ${cam.placa}?`)) {
+                        try {
+                            const camId = e.currentTarget.getAttribute('data-id');
+                            await db.collection('caminhoes').doc(camId).delete();
+                            alert('Caminhão removido com sucesso.');
+                        } catch (err) {
+                            alert('Erro ao excluir: ' + err.message);
+                        }
+                    }
+                });
+
                 corpoTabela.appendChild(tr);
             });
         }
-
-        // Abrir/Fechar Modal
-        btnAbrir.addEventListener('click', () => modal.classList.add('ativo'));
-        btnFecharX.addEventListener('click', () => modal.classList.remove('ativo'));
-        btnCancelar.addEventListener('click', () => modal.classList.remove('ativo'));
-
-        // Salvar Caminhão
-        formCaminhao.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const novoCaminhao = {
-                placa: document.getElementById('placa').value.toUpperCase(), // Salva sempre em maiúsculo
-                chassi: document.getElementById('chassi').value
-            };
-
-            let caminhoes = JSON.parse(localStorage.getItem('listaCaminhoes')) || [];
-            caminhoes.push(novoCaminhao);
-            localStorage.setItem('listaCaminhoes', JSON.stringify(caminhoes));
-
-            modal.classList.remove('ativo');
-            formCaminhao.reset();
-            renderizarTabela();
-            alert("Caminhão cadastrado! Ele já aparecerá na aba de Motoristas.");
-        });
-
-        // Carrega a tabela ao abrir a página
-        renderizarTabela();
+    }
     </script>
 </body>
 </html>

@@ -6,6 +6,7 @@
     <title>Locação de Caçambas - Gerenciamento</title>
     <link rel="stylesheet" href="telaprincipal.css">
     <link rel="stylesheet" href="cacambas.css">
+    <link rel="stylesheet" href="clientes.css">
 </head>
 <body>
 
@@ -34,38 +35,38 @@
         <main class="informacoes-principais" id="informacoes-principais">
             <section class="cards">
                 <div class="card disponiveis-card">
-                    <h2 id="disponiveis">15</h2>
+                    <h2 id="disponiveis">0</h2>
                     <p>Disponíveis</p>
                 </div>
                 <div class="card uso-card">
-                    <h2 id="em-uso">32</h2>
+                    <h2 id="em-uso">0</h2>
                     <p>Em Uso</p>
                 </div>
                 <div class="card troca-card">
-                    <h2 id="troca">8</h2>
+                    <h2 id="troca">0</h2>
                     <p>Aguardando Troca</p>
                 </div>
                 <div class="card retirada-card">
-                    <h2 id="retirada">5</h2>
+                    <h2 id="retirada">0</h2>
                     <p>Aguardando Retirada</p>
                 </div>
                 <div class="card manutencao-card">
-                    <h2 id="manutencao">2</h2>
+                    <h2 id="manutencao">0</h2>
                     <p>Em Manutenção</p>
                 </div>
             </section>
 
             <section class="filtros">
-                <input type="text" placeholder="Buscar número da caçamba...">
-                <select>
-                    <option>Todos os Status</option>
-                    <option>Disponível</option>
-                    <option>Em Uso</option>
-                    <option>Aguardando Troca</option>
-                    <option>Aguardando Retirada</option>
-                    <option>Em Manutenção</option>
+                <input type="text" id="filtroPesquisaCacamba" placeholder="Buscar número da caçamba...">
+                <select id="filtroStatusCacamba">
+                    <option value="Todos">Todos os Status</option>
+                    <option value="disponivel">Disponível</option>
+                    <option value="em_uso">Em Uso</option>
+                    <option value="aguardando_troca">Aguardando Troca</option>
+                    <option value="aguardando_retirada">Aguardando Retirada</option>
+                    <option value="manutencao">Em Manutenção</option>
                 </select>
-                <button class="btn-nova">+ Nova Caçamba</button>
+                <button class="btn-nova" id="btnAbrirModal">+ Nova Caçamba</button>
             </section>
 
             <section class="tabela">
@@ -81,56 +82,384 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>001</td>
-                            <td><span class="status disponivel">🟢 Disponível</span></td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td class="acoes">
-                                <button class="btn-ver">👁</button>
-                                <button class="btn-editar">✏</button>
-                                <button class="btn-excluir">🗑</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>002</td>
-                            <td><span class="status em-uso">🔵 Em Uso</span></td>
-                            <td>João Silva</td>
-                            <td>Rua das Flores</td>
-                            <td>15/06/2026</td>
-                            <td class="acoes">
-                                <button class="btn-ver">👁</button>
-                                <button class="btn-editar">✏</button>
-                                <button class="btn-excluir">🗑</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>003</td>
-                            <td><span class="status retirada">🔴 Retirada</span></td>
-                            <td>Construtora Silva</td>
-                            <td>Av. Brasil</td>
-                            <td>10/06/2026</td>
-                            <td class="acoes">
-                                <button class="btn-ver">👁</button>
-                                <button class="btn-editar">✏</button>
-                                <button class="btn-excluir">🗑</button>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
-            </section>
-
-            <section class="paginacao">
-                <button>Anterior</button>
-                <button class="pag-atual">1</button> 
-                <button>2</button>
-                <button>3</button>
-                <button>Próxima</button>
             </section>
         </main>
     </div>
 
-    <script src="cacambas.js"></script>
+    <div id="modalCacamba" class="modal-container">
+        <div class="modal-conteudo">
+            <div class="modal-cabecalho">
+                <h3 id="modalTituloCacamba">Cadastrar Nova Caçamba</h3>
+                <span id="btnFecharModal" class="modal-fechar">&times;</span>
+            </div>
+            <form id="formCacamba" class="modal-formulario">
+                <label>Número da Caçamba</label>
+                <input type="text" required placeholder="Ex: 085">
+
+                <label>Tamanho (m³)</label>
+                <input type="text" required placeholder="Ex: 5">
+
+                <label>Status</label>
+                <select id="statusInicial" style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px; font-size: 14px; background: #fff;">
+                    <option value="disponivel">🟢 Disponível</option>
+                    <option value="manutencao">🛠️ Em Manutenção</option>
+                </select>
+
+                <div class="modal-botoes">
+                    <button type="button" id="btnCancelar" class="btn-cancelar">Cancelar</button>
+                    <button type="submit" class="btn-salvar">Salvar Caçamba</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    
+    <script>
+        let currentUser = null;
+
+        // Controle de Sessão (Auth Guard)
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'TeladeLogin.HTML';
+            } else {
+                currentUser = user;
+                await migrarDocumentosSemAdminId(user.uid);
+                inicializarCacambas(user);
+
+                const usuarioDiv = document.getElementById('usuario');
+                if (usuarioDiv) usuarioDiv.textContent = user.email;
+            }
+        });
+
+        function inicializarCacambas(user) {
+
+        // Mapeia os elementos do HTML
+        const modal = document.getElementById('modalCacamba');
+        const btnAbrir = document.getElementById('btnAbrirModal');
+        const btnFecharX = document.getElementById('btnFecharModal');
+        const btnCancelar = document.getElementById('btnCancelar');
+        const formCacamba = document.getElementById('formCacamba');
+        let editandoCacambaId = null;
+
+        btnAbrir.addEventListener('click', () => {
+            editandoCacambaId = null;
+            document.getElementById('modalTituloCacamba').textContent = "Cadastrar Nova Caçamba";
+            formCacamba.reset();
+            modal.classList.add('ativo');
+        });
+
+        btnFecharX.addEventListener('click', () => {
+            modal.classList.remove('ativo');
+        });
+
+        btnCancelar.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.classList.remove('ativo');
+        });
+
+        window.addEventListener('click', (evento) => {
+            if (evento.target === modal) {
+                modal.classList.remove('ativo');
+            }
+        });
+
+        // Salvar Caçamba no Firestore
+        formCacamba.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const inputs = formCacamba.querySelectorAll('input');
+            const numero = inputs[0].value.trim();
+            const tamanho = inputs[1].value.trim();
+            const status = document.getElementById('statusInicial').value;
+
+            if (!numero || !tamanho) {
+                alert('Número e Tamanho são obrigatórios!');
+                return;
+            }
+
+            try {
+                if (editandoCacambaId) {
+                    await db.collection('cacambas').doc(editandoCacambaId).update({
+                        numero,
+                        tamanho,
+                        status
+                    });
+                    alert('Caçamba atualizada com sucesso!');
+                } else {
+                    await db.collection('cacambas').add({
+                        admin_id: user.uid,
+                        numero,
+                        tamanho,
+                        status: 'disponivel',
+                        data_cadastro: new Date().toISOString()
+                    });
+                    alert('Caçamba cadastrada com sucesso!');
+                }
+                formCacamba.reset();
+                modal.classList.remove('ativo');
+            } catch (error) {
+                alert('Erro ao salvar caçamba: ' + error.message);
+            }
+        });
+
+        // Mapeamento de locações ativas para consulta
+        let locacoesAtivas = {};
+        let snapshotCacambas = null;
+
+        // Ouvinte de Locações
+        db.collection('locacoes').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
+            locacoesAtivas = {};
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                if (data.status !== 'concluida' && data.cacamba_id) {
+                    locacoesAtivas[data.cacamba_id] = data; // Indexa usando o ID da Caçamba
+                }
+            });
+            if (snapshotCacambas) {
+                renderizarTabela(snapshotCacambas);
+            }
+        });
+
+        let todasCacambas = [];
+        let paginaAtual = 1;
+        const itensPorPagina = 10;
+
+        // Ouvinte de Caçambas
+        db.collection('cacambas').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
+            todasCacambas = [];
+            snapshot.forEach(doc => todasCacambas.push({ id: doc.id, data: doc.data() }));
+            renderizarTabela();
+        });
+
+        // Configura ouvintes dos filtros
+        document.getElementById('filtroPesquisaCacamba').addEventListener('input', () => {
+            paginaAtual = 1;
+            renderizarTabela();
+        });
+        document.getElementById('filtroStatusCacamba').addEventListener('change', () => {
+            paginaAtual = 1;
+            renderizarTabela();
+        });
+
+        // Renderiza a tabela de caçambas e atualiza contadores do topo
+        function renderizarTabela() {
+            const tbody = document.querySelector('table tbody');
+            tbody.innerHTML = '';
+
+            let disponiveis = 0;
+            let emUso = 0;
+            let troca = 0;
+            let retirada = 0;
+            let manutencao = 0;
+
+            const queryText = document.getElementById('filtroPesquisaCacamba').value.trim().toLowerCase();
+            const statusSel = document.getElementById('filtroStatusCacamba').value;
+
+            // Calcula contadores do topo baseado em todas as caçambas
+            todasCacambas.forEach((item) => {
+                const data = item.data;
+                if (data.status === 'disponivel') disponiveis++;
+                else if (data.status === 'em_uso' || data.status === 'na_obra') emUso++;
+                else if (data.status === 'aguardando_troca' || data.status === 'troca_pendente') troca++;
+                else if (data.status === 'aguardando_retirada' || data.status === 'retirada_pendente') retirada++;
+                else if (data.status === 'manutencao') manutencao++;
+            });
+
+            document.getElementById('disponiveis').textContent = disponiveis;
+            document.getElementById('em-uso').textContent = emUso;
+            document.getElementById('troca').textContent = troca;
+            document.getElementById('retirada').textContent = retirada;
+            document.getElementById('manutencao').textContent = manutencao;
+
+            // Filtra caçambas
+            const filtradas = todasCacambas.filter(item => {
+                const data = item.data;
+
+                // Filtro Status
+                if (statusSel !== 'Todos') {
+                    if (statusSel === 'disponivel' && data.status !== 'disponivel') return false;
+                    if (statusSel === 'em_uso' && data.status !== 'em_uso' && data.status !== 'na_obra') return false;
+                    if (statusSel === 'aguardando_troca' && data.status !== 'aguardando_troca' && data.status !== 'troca_pendente') return false;
+                    if (statusSel === 'aguardando_retirada' && data.status !== 'aguardando_retirada' && data.status !== 'retirada_pendente') return false;
+                    if (statusSel === 'manutencao' && data.status !== 'manutencao') return false;
+                }
+
+                // Filtro Pesquisa (Número da caçamba)
+                if (queryText) {
+                    const num = (data.numero || '').toLowerCase();
+                    if (!num.includes(queryText)) return false;
+                }
+
+                return true;
+            });
+
+            const totalPaginas = Math.ceil(filtradas.length / itensPorPagina);
+
+            if (filtradas.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #64748b;">Nenhuma caçamba encontrada.</td></tr>';
+                const paginacaoDiv = document.getElementById('paginacaoContainer');
+                if (paginacaoDiv) paginacaoDiv.style.display = 'none';
+                return;
+            }
+
+            // Fatiamento dos itens para a página atual
+            const inicio = (paginaAtual - 1) * itensPorPagina;
+            const fim = inicio + itensPorPagina;
+            const listaPaginada = filtradas.slice(inicio, fim);
+
+            listaPaginada.forEach((item) => {
+                const id = item.id;
+                const data = item.data;
+
+                const locacao = locacoesAtivas[id];
+                const cliente = locacao ? locacao.cliente_nome : '-';
+                const rua = locacao?.endereco?.rua || '';
+                const num = locacao?.endereco?.numero || '';
+                const endereco = locacao ? `${rua}, ${num}` : '-';
+                const dataEntrega = (locacao && locacao.data_entrega) ? new Date(locacao.data_entrega + 'T12:00:00').toLocaleDateString('pt-BR') : '-';
+
+                const tr = document.createElement('tr');
+
+                let statusBadge = '';
+                if (data.status === 'disponivel') {
+                    statusBadge = '<span class="status disponivel">🟢 Disponível</span>';
+                } else if (data.status === 'em_uso' || data.status === 'na_obra') {
+                    statusBadge = '<span class="status em-uso">🔵 Em Uso</span>';
+                } else if (data.status === 'aguardando_retirada' || data.status === 'retirada_pendente') {
+                    statusBadge = '<span class="status retirada">🔴 Retirada</span>';
+                } else if (data.status === 'aguardando_troca' || data.status === 'troca_pendente') {
+                    statusBadge = '<span class="status troca">🟡 Troca</span>';
+                } else if (data.status === 'manutencao') {
+                    statusBadge = '<span class="status" style="background-color: #ef4444; color: #fff;">🛠️ Manutenção</span>';
+                }
+
+                tr.innerHTML = `
+                    <td>${data.numero}</td>
+                    <td>${statusBadge}</td>
+                    <td>${cliente}</td>
+                    <td>${endereco}</td>
+                    <td>${dataEntrega}</td>
+                    <td class="acoes">
+                        <button class="btn-ver" data-id="${id}">👁</button>
+                        <button class="btn-editar" data-id="${id}">✏️</button>
+                        <button class="btn-excluir" data-id="${id}">🗑</button>
+                    </td>
+                `;
+
+                tr.querySelector('.btn-excluir').addEventListener('click', async (e) => {
+                    if (confirm(`Deseja realmente remover a caçamba Nº ${data.numero}?`)) {
+                        try {
+                            const cacId = e.currentTarget.getAttribute('data-id');
+                            await db.collection('cacambas').doc(cacId).delete();
+                            alert('Caçamba removida.');
+                        } catch (err) {
+                            alert('Erro ao excluir: ' + err.message);
+                        }
+                    }
+                });
+
+                tr.querySelector('.btn-editar').addEventListener('click', () => {
+                    const statusAtual = data.status || 'disponivel';
+                    const estaAlugada = locacoesAtivas[id] || (statusAtual !== 'disponivel' && statusAtual !== 'manutencao');
+
+                    if (estaAlugada) {
+                        const osInfo = locacoesAtivas[id] ? ` (OS ${locacoesAtivas[id].os_numero || '-'})` : '';
+                        alert(`Esta caçamba está vinculada a uma locação ativa${osInfo}. O status é controlado automaticamente e deve ser alterado através da conclusão da locação correspondente.`);
+                        return;
+                    }
+
+                    editandoCacambaId = id;
+                    document.getElementById('modalTituloCacamba').textContent = "Editar Caçamba";
+                    const inputs = formCacamba.querySelectorAll('input');
+                    inputs[0].value = data.numero || '';
+                    inputs[1].value = data.tamanho || '';
+                    document.getElementById('statusInicial').value = statusAtual;
+                    modal.classList.add('ativo');
+                });
+
+                tr.querySelector('.btn-ver').addEventListener('click', () => {
+                    let info = `
+                        Caçamba Nº ${data.numero}
+                        Tamanho: ${data.tamanho} m³
+                        Status: ${data.status}
+                    `;
+                    if (locacao) {
+                        info += `\nAlugada para: ${locacao.cliente_nome}\nOS: ${locacao.os_numero}\nEndereço: ${rua}, ${num}`;
+                    }
+                    alert(info);
+                });
+
+                tbody.appendChild(tr);
+            });
+
+            // Renderiza controles de paginação
+            let paginacaoDiv = document.getElementById('paginacaoContainer');
+            if (!paginacaoDiv) {
+                paginacaoDiv = document.createElement('div');
+                paginacaoDiv.id = 'paginacaoContainer';
+                document.querySelector('.tabela').appendChild(paginacaoDiv);
+            }
+            paginacaoDiv.className = 'paginacao';
+            paginacaoDiv.style.cssText = 'display: flex; justify-content: center; gap: 8px; margin-top: 25px; margin-bottom: 25px; align-items: center;';
+            paginacaoDiv.innerHTML = '';
+
+            if (totalPaginas <= 1) {
+                paginacaoDiv.style.display = 'none';
+            } else {
+                paginacaoDiv.style.display = 'flex';
+
+                // Botão Anterior
+                const btnAnterior = document.createElement('button');
+                btnAnterior.textContent = 'Anterior';
+                if (paginaAtual === 1) {
+                    btnAnterior.disabled = true;
+                    btnAnterior.style.opacity = '0.5';
+                    btnAnterior.style.cursor = 'not-allowed';
+                } else {
+                    btnAnterior.addEventListener('click', () => {
+                        paginaAtual--;
+                        renderizarTabela();
+                    });
+                }
+                paginacaoDiv.appendChild(btnAnterior);
+
+                // Páginas numéricas
+                for (let i = 1; i <= totalPaginas; i++) {
+                    const btnPagina = document.createElement('button');
+                    btnPagina.textContent = i;
+                    if (i === paginaAtual) {
+                        btnPagina.className = 'pag-atual';
+                    } else {
+                        btnPagina.addEventListener('click', () => {
+                            paginaAtual = i;
+                            renderizarTabela();
+                        });
+                    }
+                    paginacaoDiv.appendChild(btnPagina);
+                }
+
+                // Botão Próximo
+                const btnProximo = document.createElement('button');
+                btnProximo.textContent = 'Próxima';
+                if (paginaAtual === totalPaginas) {
+                    btnProximo.disabled = true;
+                    btnProximo.style.opacity = '0.5';
+                    btnProximo.style.cursor = 'not-allowed';
+                } else {
+                    btnProximo.addEventListener('click', () => {
+                        paginaAtual++;
+                        renderizarTabela();
+                    });
+                }
+                paginacaoDiv.appendChild(btnProximo);
+            }
+        }
+    }
+    </script>
 </body>
 </html>

@@ -75,6 +75,14 @@
                 <label>Telefone / Celular</label>
                 <input type="text" id="telefone" required placeholder="(00) 00000-0000">
 
+                <label>E-mail (Para Acesso ao App)</label>
+                <input type="email" id="email" required placeholder="motorista@email.com">
+
+                <div id="container-senha">
+                    <label>Senha de Acesso ao App (Mínimo 6 caracteres)</label>
+                    <input type="password" id="senha" required placeholder="Digite a senha do motorista">
+                </div>
+
                 <label>Número da CNH e Categoria</label>
                 <input type="text" id="cnh" required placeholder="Ex: 123456789-00 (Cat. D)">
 
@@ -82,8 +90,8 @@
                 <input type="date" id="vencimento" required>
 
                 <label>Vincular Caminhão Disponível</label>
-                <select id="selectCaminhao" required>
-                    <option value="">-- Selecione um Caminhão --</option>
+                <select id="selectCaminhao">
+                    <option value="">-- Nenhum caminhão vinculado --</option>
                 </select>
 
                 <div class="modal-botoes">
@@ -91,12 +99,34 @@
                     <button type="submit" class="btn-salvar">Salvar Motorista</button>
                 </div>
             </form>
-
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    
     <script>
-        // 1. Mapeando os elementos do HTML para o JavaScript poder controlar
+        // Controle de Sessão (Auth Guard)
+        let currentUser = null;
+
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'TeladeLogin.HTML';
+            } else {
+                currentUser = user;
+                await migrarDocumentosSemAdminId(user.uid);
+                inicializarMotoristas(user);
+
+                const usuarioDiv = document.getElementById('usuario');
+                if (usuarioDiv) usuarioDiv.textContent = user.email;
+            }
+        });
+
+        function inicializarMotoristas(user) {
+
+        // Mapeando os elementos do HTML
         const modal = document.getElementById('modalMotorista');
         const btnAbrir = document.getElementById('btnAbrirModal');
         const btnFecharX = document.getElementById('btnFecharModal');
@@ -105,95 +135,200 @@
         const selectCaminhao = document.getElementById('selectCaminhao');
         const corpoTabela = document.getElementById('corpoTabelaMotoristas');
 
-        // 2. Função para criar o link direto para o WhatsApp do motorista
-        function formatarZap(numero) {
-            let limpo = numero.replace(/\D/g, ''); // Tira traços e parênteses
-            return `https://wa.me/55${limpo}`;
-        }
+        let editDriverId = null;
 
-        // 3. Função que pega os motoristas salvos na memória e desenha a tabela
-        function renderizarTabela() {
-            corpoTabela.innerHTML = ''; // Limpa a tabela antes de preencher
-            let motoristas = JSON.parse(localStorage.getItem('listaMotoristas')) || [];
-
-            // Se não tiver nenhum motorista, mostra uma mensagem
-            if (motoristas.length === 0) {
-                corpoTabela.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum motorista cadastrado ainda.</td></tr>';
-                return;
+        async function carregarCaminhoes(caminhaoSelecionado = '') {
+            selectCaminhao.innerHTML = '<option value="">-- Nenhum caminhão vinculado --</option>';
+            try {
+                const qCaminhoes = await db.collection('caminhoes').where('admin_id', '==', user.uid).get();
+                qCaminhoes.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const opt = document.createElement('option');
+                    opt.value = data.placa;
+                    opt.textContent = `Placa: ${data.placa}`;
+                    if (data.placa === caminhaoSelecionado) {
+                        opt.selected = true;
+                    }
+                    selectCaminhao.appendChild(opt);
+                });
+            } catch (error) {
+                console.error("Erro ao obter caminhões: ", error);
             }
-
-            // Se tiver, cria uma linha (<tr>) para cada motorista
-            motoristas.forEach(mot => {
-                let tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${mot.nome}</strong></td>
-                    <td>${mot.cpf}</td>
-                    <td><a href="${formatarZap(mot.telefone)}" target="_blank" style="color: #25D366; font-weight: bold; text-decoration: none;">${mot.telefone}</a></td>
-                    <td>${mot.cnh}</td>
-                    <td>Placa: ${mot.caminhao}</td>
-                    <td>
-                        <button title="Editar" style="background:none; border:none; cursor:pointer;">✏️</button>
-                        <button title="Excluir" style="background:none; border:none; cursor:pointer;">🗑️</button>
-                    </td>
-                `;
-                corpoTabela.appendChild(tr); // Adiciona a linha na tabela
-            });
         }
 
-        // 4. Lógica para ABRIR a janela flutuante
-        btnAbrir.addEventListener('click', () => {
-            // Limpa as opções de caminhões
-            selectCaminhao.innerHTML = '<option value="">-- Selecione um Caminhão --</option>';
-            
-            // Placas de teste (já que a tela de caminhões não está pronta)
-            const opcoesPadrao = ['ABC-1234', 'DEF-5678', 'XYZ-9999'];
-            opcoesPadrao.forEach(placa => {
-                const opt = document.createElement('option');
-                opt.value = placa;
-                opt.textContent = `Placa: ${placa}`;
-                selectCaminhao.appendChild(opt);
-            });
-
-            // Mostra a janela flutuante na tela
+        // Abre a janela flutuante e carrega os caminhões
+        btnAbrir.addEventListener('click', async () => {
+            editDriverId = null;
+            modal.querySelector('h3').textContent = 'Cadastrar Novo Motorista';
+            document.getElementById('container-senha').style.display = 'block';
+            document.getElementById('senha').required = true;
+            document.getElementById('email').disabled = false;
+            formMotorista.reset();
+            await carregarCaminhoes();
             modal.classList.add('ativo');
         });
 
-        // 5. Lógica para FECHAR a janela flutuante
-        btnFecharX.addEventListener('click', () => modal.classList.remove('ativo')); // Fecha no X
-        btnCancelar.addEventListener('click', () => modal.classList.remove('ativo')); // Fecha no Cancelar
+        btnFecharX.addEventListener('click', () => modal.classList.remove('ativo'));
+        btnCancelar.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.classList.remove('ativo');
+        });
         
-        // Fecha se o usuário clicar na área escura fora da janela
         window.addEventListener('click', (e) => { 
             if (e.target === modal) modal.classList.remove('ativo'); 
         });
 
-        // 6. Lógica para SALVAR o motorista quando o formulário for enviado
-        formMotorista.addEventListener('submit', (e) => {
-            e.preventDefault(); // Impede que a página recarregue
+        // Salvar motorista no Firestore e no Firebase Auth
+        formMotorista.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-            // Monta o "pacote" com os dados digitados
-            const novoMotorista = {
-                nome: document.getElementById('nome').value,
-                cpf: document.getElementById('cpf').value,
-                telefone: document.getElementById('telefone').value,
-                cnh: document.getElementById('cnh').value,
-                vencimento: document.getElementById('vencimento').value,
-                caminhao: selectCaminhao.value
-            };
+            const nome = document.getElementById('nome').value.trim();
+            const cpf = document.getElementById('cpf').value.trim();
+            const telefone = document.getElementById('telefone').value.trim();
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const senha = document.getElementById('senha').value;
+            const cnh = document.getElementById('cnh').value.trim();
+            const vencimento = document.getElementById('vencimento').value;
+            const caminhao = selectCaminhao.value;
 
-            // Puxa a lista antiga, adiciona o novo motorista e salva de novo
-            let motoristas = JSON.parse(localStorage.getItem('listaMotoristas')) || [];
-            motoristas.push(novoMotorista);
-            localStorage.setItem('listaMotoristas', JSON.stringify(motoristas));
+            if (editDriverId) {
+                // Atualiza perfil no Firestore (Modo Edição)
+                try {
+                    await db.collection('motoristas').doc(editDriverId).update({
+                        nome,
+                        cpf,
+                        telefone,
+                        cnh,
+                        vencimento,
+                        caminhao
+                    });
+                    alert('Dados do motorista atualizados com sucesso!');
+                    formMotorista.reset();
+                    modal.classList.remove('ativo');
+                } catch (error) {
+                    alert('Erro ao atualizar motorista: ' + error.message);
+                }
+                return;
+            }
 
-            // Esconde o modal, limpa os campos e atualiza a tabela na hora
-            modal.classList.remove('ativo');
-            formMotorista.reset();
-            renderizarTabela(); 
+            if (!nome || !telefone || !email || !senha) {
+                alert('Nome, Telefone, E-mail e Senha são obrigatórios!');
+                return;
+            }
+
+            if (senha.length < 6) {
+                alert('A senha do motorista deve ter no mínimo 6 caracteres.');
+                return;
+            }
+
+            // 1. Criar credencial de acesso do motorista no Firebase Auth
+            let secondaryApp;
+            try {
+                secondaryApp = firebase.initializeApp(firebaseConfig, "DriverAuthCreator");
+                await secondaryApp.auth().createUserWithEmailAndPassword(email, senha);
+            } catch (authError) {
+                console.error("Erro no Firebase Auth:", authError);
+                if (authError.code === 'auth/email-already-in-use') {
+                    alert('Atenção: Este e-mail já está cadastrado no Firebase Auth! O motorista foi cadastrado no banco de dados, mas para fazer login no celular ele deve usar a senha antiga. Caso queira usar a nova senha cadastrada agora, redefina a senha deste e-mail diretamente no Console do Firebase Auth.');
+                } else {
+                    alert('Erro ao gerar login de acesso do motorista: ' + authError.message);
+                    if (secondaryApp) await secondaryApp.delete();
+                    return;
+                }
+            } finally {
+                if (secondaryApp) {
+                    await secondaryApp.delete();
+                }
+            }
+
+            // 2. Criar perfil do motorista no Firestore
+            try {
+                await db.collection('motoristas').add({
+                    admin_id: user.uid,
+                    nome,
+                    cpf,
+                    telefone,
+                    email,
+                    cnh,
+                    vencimento,
+                    caminhao,
+                    ativo: true,
+                    data_cadastro: new Date().toISOString()
+                });
+                alert('Motorista cadastrado com sucesso no banco de dados e habilitado para acessar o app mobile!');
+                formMotorista.reset();
+                modal.classList.remove('ativo');
+            } catch (error) {
+                alert('Erro ao salvar motorista no banco: ' + error.message);
+            }
         });
 
-        // 7. Assim que a página abre, ele já puxa e exibe a tabela atualizada
-        renderizarTabela();
+        // Listar Motoristas em Tempo Real
+        db.collection('motoristas').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
+            corpoTabela.innerHTML = '';
+
+            if (snapshot.empty) {
+                corpoTabela.innerHTML = '<tr><td colspan="6" style="text-align:center; color: #64748b;">Nenhum motorista cadastrado ainda.</td></tr>';
+                return;
+            }
+
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const id = docSnap.id;
+                const tr = document.createElement('tr');
+
+                const foneLimpo = (data.telefone || '').replace(/[^\d]/g, '');
+
+                tr.innerHTML = `
+                    <td><strong>${data.nome}</strong></td>
+                    <td>${data.cpf || '-'}</td>
+                    <td><a href="https://wa.me/55${foneLimpo}" target="_blank" style="color: #25D366; font-weight: bold; text-decoration: none;">${data.telefone}</a></td>
+                    <td>${data.cnh || '-'}</td>
+                    <td>Placa: ${data.caminhao || '-'}</td>
+                    <td>
+                        <button class="btn-editar" data-id="${id}" title="Editar" style="background:none; border:none; cursor:pointer; margin-right: 8px;">✏️</button>
+                        <button class="btn-excluir" data-id="${id}" title="Excluir" style="background:none; border:none; cursor:pointer;">🗑️</button>
+                    </td>
+                `;
+
+                // Evento editar
+                tr.querySelector('.btn-editar').addEventListener('click', async (e) => {
+                    editDriverId = id;
+                    modal.querySelector('h3').textContent = 'Editar Motorista';
+                    
+                    document.getElementById('nome').value = data.nome || '';
+                    document.getElementById('cpf').value = data.cpf || '';
+                    document.getElementById('telefone').value = data.telefone || '';
+                    document.getElementById('email').value = data.email || '';
+                    document.getElementById('email').disabled = true;
+                    document.getElementById('cnh').value = data.cnh || '';
+                    document.getElementById('vencimento').value = data.vencimento || '';
+                    
+                    document.getElementById('container-senha').style.display = 'none';
+                    document.getElementById('senha').required = false;
+                    document.getElementById('senha').value = '';
+
+                    await carregarCaminhoes(data.caminhao || '');
+                    modal.classList.add('ativo');
+                });
+
+                // Evento excluir
+                tr.querySelector('.btn-excluir').addEventListener('click', async (e) => {
+                    if (confirm(`Deseja realmente excluir o motorista ${data.nome}?`)) {
+                        try {
+                            const motId = e.currentTarget.getAttribute('data-id');
+                            await db.collection('motoristas').doc(motId).delete();
+                            alert('Motorista excluído com sucesso.');
+                        } catch (err) {
+                            alert('Erro ao excluir: ' + err.message);
+                        }
+                    }
+                });
+
+                corpoTabela.appendChild(tr);
+            });
+        });
+    }
     </script>
 </body>
 </html>
