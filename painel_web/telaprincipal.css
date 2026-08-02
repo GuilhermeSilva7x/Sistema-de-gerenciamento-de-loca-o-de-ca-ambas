@@ -98,3 +98,45 @@ body {
 #informacoes-principais {
     padding: 40px;
 }
+
+/* ================= PAGINAÇÃO PADRONIZADA ================= */
+.paginacao {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    align-items: center;
+}
+
+.paginacao button {
+    padding: 8px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.paginacao button:hover:not(:disabled) {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #1e293b;
+}
+
+.paginacao button.pag-atual {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+    cursor: default;
+}
+
+.paginacao button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f8fafc;
+    color: #94a3b8;
+}

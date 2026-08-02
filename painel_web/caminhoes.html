@@ -33,7 +33,7 @@
         </header>
 
         <section class="filtros">
-            <input type="text" placeholder="Buscar por placa ou chassi...">
+            <input type="text" id="filtroPesquisaCaminhao" placeholder="Buscar por placa ou chassi...">
             <button class="btn-nova" id="btnAbrirModal">+ Novo Caminhão</button>
         </section>
         
@@ -181,35 +181,70 @@
 
         // Cruzamento de dados de motoristas vinculados
         let motoristas = [];
-        let snapshotCaminhoes = null;
+        let todosCaminhoes = [];
+        let paginaAtual = 1;
+        const itensPorPagina = 10;
 
         db.collection('motoristas').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
             motoristas = [];
             snapshot.forEach((docSnap) => {
                 motoristas.push(docSnap.data());
             });
-            if (snapshotCaminhoes) {
-                renderizarTabela(snapshotCaminhoes);
-            }
+            renderizarTabela();
         });
 
         db.collection('caminhoes').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
-            snapshotCaminhoes = snapshot;
-            renderizarTabela(snapshot);
+            todosCaminhoes = [];
+            snapshot.forEach(doc => todosCaminhoes.push({ id: doc.id, data: doc.data() }));
+            
+            // Ordenar por placa de A-Z
+            todosCaminhoes.sort((a, b) => (a.data.placa || '').localeCompare(b.data.placa || ''));
+            
+            renderizarTabela();
+        });
+
+        // Ouvinte do filtro de pesquisa
+        document.getElementById('filtroPesquisaCaminhao').addEventListener('input', () => {
+            paginaAtual = 1;
+            renderizarTabela();
         });
 
         // Função para desenhar a tabela na tela
-        function renderizarTabela(snapshot) {
+        function renderizarTabela() {
             corpoTabela.innerHTML = '';
             
-            if (snapshot.empty) {
-                corpoTabela.innerHTML = '<tr><td colspan="4" style="text-align:center; color: #64748b;">Nenhum caminhão cadastrado.</td></tr>';
+            const queryText = document.getElementById('filtroPesquisaCaminhao').value.trim().toLowerCase();
+
+            // Filtrar caminhoes
+            const filtrados = todosCaminhoes.filter(item => {
+                const data = item.data;
+                const placa = (data.placa || '').toLowerCase();
+                const chassi = (data.chassi || '').toLowerCase();
+                
+                const motoristaVinculado = motoristas.find(m => m.caminhao === data.placa);
+                const nomeMotorista = motoristaVinculado ? motoristaVinculado.nome.toLowerCase() : '';
+
+                return placa.includes(queryText) || chassi.includes(queryText) || nomeMotorista.includes(queryText);
+            });
+
+            // Paginação
+            const totalPaginas = Math.ceil(filtrados.length / itensPorPagina);
+            if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
+            if (paginaAtual < 1) paginaAtual = 1;
+
+            const inicio = (paginaAtual - 1) * itensPorPagina;
+            const fim = inicio + itensPorPagina;
+            const paginados = filtrados.slice(inicio, fim);
+
+            if (paginados.length === 0) {
+                corpoTabela.innerHTML = '<tr><td colspan="4" style="text-align:center; color: #64748b;">Nenhum caminhão encontrado.</td></tr>';
+                renderizarPaginacao(0, 0);
                 return;
             }
 
-            snapshot.forEach(docSnap => {
-                const cam = docSnap.data();
-                const id = docSnap.id;
+            paginados.forEach(item => {
+                const cam = item.data;
+                const id = item.id;
 
                 const motoristaVinculado = motoristas.find(m => m.caminhao === cam.placa);
                 const nomeMotorista = motoristaVinculado ? motoristaVinculado.nome : '<span style="color: #94a3b8;">Nenhum</span>';
@@ -249,8 +284,69 @@
 
                 corpoTabela.appendChild(tr);
             });
+
+            renderizarPaginacao(filtrados.length, totalPaginas);
         }
-    }
+
+        function renderizarPaginacao(totalItens, totalPaginas) {
+            let container = document.getElementById('paginacaoContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'paginacaoContainer';
+                document.querySelector('.tabela').appendChild(container);
+            }
+            container.className = 'paginacao';
+            container.style.cssText = 'display: flex; justify-content: center; gap: 8px; margin-top: 25px; margin-bottom: 25px; align-items: center;';
+            container.innerHTML = '';
+
+            if (totalPaginas <= 1) {
+                container.style.display = 'none';
+                return;
+            }
+            container.style.display = 'flex';
+
+            // Botão Anterior
+            const btnAnterior = document.createElement('button');
+            btnAnterior.textContent = 'Anterior';
+            if (paginaAtual === 1) {
+                btnAnterior.disabled = true;
+            } else {
+                btnAnterior.addEventListener('click', () => {
+                    paginaAtual--;
+                    renderizarTabela();
+                });
+            }
+            container.appendChild(btnAnterior);
+
+            // Páginas numéricas
+            for (let i = 1; i <= totalPaginas; i++) {
+                const btnPagina = document.createElement('button');
+                btnPagina.textContent = i;
+                if (i === paginaAtual) {
+                    btnPagina.className = 'pag-atual';
+                } else {
+                    btnPagina.addEventListener('click', () => {
+                        paginaAtual = i;
+                        renderizarTabela();
+                    });
+                }
+                container.appendChild(btnPagina);
+            }
+
+            // Botão Próximo
+            const btnProximo = document.createElement('button');
+            btnProximo.textContent = 'Próxima';
+            if (paginaAtual === totalPaginas) {
+                btnProximo.disabled = true;
+            } else {
+                btnProximo.addEventListener('click', () => {
+                    paginaAtual++;
+                    renderizarTabela();
+                });
+            }
+            container.appendChild(btnProximo);
+        }
+        }
     </script>
 </body>
 </html>

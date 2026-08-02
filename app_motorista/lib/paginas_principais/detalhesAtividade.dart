@@ -76,20 +76,40 @@ class _DetalhesatividadeState extends State<Detalhesatividade> {
       String novoStatusLocacao = 'na_obra';
       String novoStatusCacamba = 'em_uso';
 
-      if (widget.atividade == 'RETIRADA' || widget.atividade == 'retirada_pendente' || widget.atividade == 'aguardando_retirada') {
+      final nowObj = DateTime.now();
+      final String dataHojeStr = "${nowObj.year}-${nowObj.month.toString().padLeft(2, '0')}-${nowObj.day.toString().padLeft(2, '0')}";
+      final retirObj = nowObj.add(const Duration(days: 15));
+      final String dataRetiradaCalculada = "${retirObj.year}-${retirObj.month.toString().padLeft(2, '0')}-${retirObj.day.toString().padLeft(2, '0')}";
+
+      final bool isRetirada = widget.atividade == 'RETIRADA' || widget.atividade == 'retirada_pendente' || widget.atividade == 'aguardando_retirada';
+      final bool isTroca = widget.atividade.toUpperCase() == 'TROCA' || widget.atividade == 'troca_pendente' || widget.atividade == 'aguardando_troca';
+
+      if (isRetirada) {
         novoStatusLocacao = 'concluida';
         novoStatusCacamba = 'disponivel';
       }
 
-      final dataConclusao = DateTime.now().toIso8601String();
-
       // 2. Atualiza a Locação e a Caçamba no Firestore IMEDIATAMENTE (sem await) para atualizar a UI instantaneamente
       final docRef = FirebaseFirestore.instance.collection('locacoes').doc(widget.id);
-      docRef.update({
+      
+      final Map<String, dynamic> updateFields = {
         'status': novoStatusLocacao,
         'foto_confirmacao_url': 'uploading',
-        if (novoStatusLocacao == 'concluida') 'data_retirada': dataConclusao,
-      });
+      };
+
+      if (isRetirada) {
+        updateFields['data_retirada'] = dataHojeStr;
+      } else if (isTroca) {
+        updateFields['tipo_servico'] = 'entrega';
+        updateFields['data_entrega'] = dataHojeStr;
+        updateFields['data_retirada'] = dataRetiradaCalculada;
+      } else {
+        // Entrega
+        updateFields['data_entrega'] = dataHojeStr;
+        updateFields['data_retirada'] = dataRetiradaCalculada;
+      }
+
+      docRef.update(updateFields);
 
       if (widget.cacambaId.isNotEmpty) {
         FirebaseFirestore.instance.collection('cacambas').doc(widget.cacambaId).update({

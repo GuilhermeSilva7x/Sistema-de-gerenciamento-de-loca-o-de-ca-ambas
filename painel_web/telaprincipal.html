@@ -156,7 +156,20 @@
                 </div>
             </div>
 
+            <!-- ÁREA PARA CONCLUIR ATIVIDADE PELO PAINEL -->
+            <div id="areaConcluirPainel" style="display: none; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 15px;">
+                <h4 style="margin: 0 0 10px 0; color: #10b981; font-family: sans-serif;">Concluir Atividade pelo Painel</h4>
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Selecione o Motorista que realizou:</label>
+                <select id="selectMotoristaConcluir" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px; font-size: 13px;"></select>
+                
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" id="btnCancelarConcluirPainel" style="padding: 8px 12px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-size: 13px;">Cancelar</button>
+                    <button type="button" id="btnConfirmarConcluirPainel" style="padding: 8px 12px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">Confirmar Conclusão</button>
+                </div>
+            </div>
+
             <div class="modal-botoes" style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                <button type="button" id="btnConcluirPeloPainel" style="padding: 10px 16px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; font-family: sans-serif;">✅ Concluir Atividade</button>
                 <button type="button" id="btnAlterarOrdemRetirada" style="padding: 10px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; font-family: sans-serif;">📦 Solicitar Retirada</button>
                 <button type="button" id="btnAlterarOrdemTroca" style="padding: 10px 16px; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; font-family: sans-serif;">🔄 Solicitar Troca</button>
                 <button type="button" id="btnFecharDetalhesConfig" style="padding: 10px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-family: sans-serif;">Fechar</button>
@@ -357,7 +370,7 @@
                     }
 
                     let cacambaCell = `Nº ${data.cacamba_numero || '-'}`;
-                    if (data.tipo_servico === 'troca') {
+                    if (data.tipo_servico === 'troca' && (data.status === 'troca_pendente' || data.status === 'aguardando_troca')) {
                         cacambaCell = `
                             <div style="line-height: 1.2; font-size: 11px;">
                                 <span style="color: #2563eb; font-weight: bold;">Nº ${data.cacamba_numero || '-'}</span> <span style="font-size: 9px; color: #2563eb; font-weight: bold;">(Indo)</span><br>
@@ -393,49 +406,56 @@
                     container.id = 'paginacaoContainer';
                     document.querySelector('.tabela').appendChild(container);
                 }
+                container.className = 'paginacao';
+                container.style.cssText = 'display: flex; justify-content: center; gap: 8px; margin-top: 25px; margin-bottom: 25px; align-items: center;';
                 container.innerHTML = '';
 
-                const divPagRef = document.createElement('div');
-                divPagRef.className = 'paginacao';
-                divPagRef.style.display = 'flex';
-                divPagRef.style.justifyContent = 'center';
-                divPagRef.style.alignItems = 'center';
-                divPagRef.style.gap = '10px';
-                divPagRef.style.marginTop = '20px';
+                if (totalPaginas <= 1) {
+                    container.style.display = 'none';
+                    return;
+                }
+                container.style.display = 'flex';
 
+                // Botão Anterior
                 const btnAnterior = document.createElement('button');
                 btnAnterior.textContent = 'Anterior';
-                btnAnterior.disabled = paginaAtual === 1;
-                btnAnterior.style.padding = '6px 12px';
-                btnAnterior.style.cursor = paginaAtual === 1 ? 'not-allowed' : 'pointer';
-                btnAnterior.addEventListener('click', () => {
-                    if (paginaAtual > 1) {
+                if (paginaAtual === 1) {
+                    btnAnterior.disabled = true;
+                } else {
+                    btnAnterior.addEventListener('click', () => {
                         paginaAtual--;
                         renderizarTabela();
+                    });
+                }
+                container.appendChild(btnAnterior);
+
+                // Páginas numéricas
+                for (let i = 1; i <= totalPaginas; i++) {
+                    const btnPagina = document.createElement('button');
+                    btnPagina.textContent = i;
+                    if (i === paginaAtual) {
+                        btnPagina.className = 'pag-atual';
+                    } else {
+                        btnPagina.addEventListener('click', () => {
+                            paginaAtual = i;
+                            renderizarTabela();
+                        });
                     }
-                });
+                    container.appendChild(btnPagina);
+                }
 
-                const spanInfo = document.createElement('span');
-                spanInfo.className = 'pag-atual';
-                spanInfo.textContent = `Página ${paginaAtual} de ${totalPaginas}`;
-                spanInfo.style.fontWeight = 'bold';
-
+                // Botão Próximo
                 const btnProximo = document.createElement('button');
-                btnProximo.textContent = 'Próximo';
-                btnProximo.disabled = paginaAtual === totalPaginas;
-                btnProximo.style.padding = '6px 12px';
-                btnProximo.style.cursor = paginaAtual === totalPaginas ? 'not-allowed' : 'pointer';
-                btnProximo.addEventListener('click', () => {
-                    if (paginaAtual < totalPaginas) {
+                btnProximo.textContent = 'Próxima';
+                if (paginaAtual === totalPaginas) {
+                    btnProximo.disabled = true;
+                } else {
+                    btnProximo.addEventListener('click', () => {
                         paginaAtual++;
                         renderizarTabela();
-                    }
-                });
-
-                divPagRef.appendChild(btnAnterior);
-                divPagRef.appendChild(spanInfo);
-                divPagRef.appendChild(btnProximo);
-                container.appendChild(divPagRef);
+                    });
+                }
+                container.appendChild(btnProximo);
             }
 
             // Modal de Configurações de Logística
@@ -490,7 +510,9 @@
             function abrirDetalhesLocacao(id, data) {
                 const modalDet = document.getElementById('modalDetalhesLocacao');
                 
-                const tipoServico = data.tipo_servico || (data.pagamento_forma === 'Sem Custo (Retirada)' ? 'retirada' : 'entrega');
+                // Se a caçamba já está na obra/em uso, tratamos como locação normal de entrega/ativa
+                const isFinalizadoNaObra = (data.status === 'na_obra' || data.status === 'em_uso');
+                const tipoServico = isFinalizadoNaObra ? 'entrega' : (data.tipo_servico || (data.pagamento_forma === 'Sem Custo (Retirada)' ? 'retirada' : 'entrega'));
                 
                 if (tipoServico === 'retirada') {
                     document.getElementById('detalheOS').textContent = `Ordem de Retirada OS ${data.os_numero || '-'}`;
@@ -521,6 +543,9 @@
                             statusCompData = ` em ${dataConcl} às ${horaConcl}`;
                         }
                     } catch (e) {}
+                }
+                if (data.concluida_pelo_painel_web) {
+                    statusCompData += ' <span style="color:#10b981; font-weight:bold; font-size:11px;">(Concluída via Painel Web 💻)</span>';
                 }
                 const statusTexto = (statusLabels[data.status] || data.status) + statusCompData;
 
@@ -574,7 +599,7 @@
                     `;
                 }
 
-                const cacambaInfo = tipoServico === 'troca'
+                const cacambaInfo = (tipoServico === 'troca' && (data.status === 'troca_pendente' || data.status === 'aguardando_troca'))
                     ? `Nº ${data.cacamba_numero || '-'} <span style="color: #2563eb; font-weight: bold;">(Indo)</span> | Nº ${data.cacamba_velha_numero || '-'} <span style="color: #ea580c; font-weight: bold;">(Voltando)</span>`
                     : `Nº ${data.cacamba_numero || '-'}`;
 
@@ -620,17 +645,23 @@
                 // Esconde as áreas de agendamento inicialmente
                 const areaRetirada = document.getElementById('areaSolicitarRetirada');
                 const areaTroca = document.getElementById('areaSolicitarTroca');
+                const areaConcluirPainel = document.getElementById('areaConcluirPainel');
                 areaRetirada.style.display = 'none';
                 areaTroca.style.display = 'none';
+                areaConcluirPainel.style.display = 'none';
 
                 // Botão de Alterar Ordem para Retirada e Troca
                 const btnRetirar = document.getElementById('btnAlterarOrdemRetirada');
                 const btnTrocar = document.getElementById('btnAlterarOrdemTroca');
                 const btnFechar = document.getElementById('btnFecharDetalhesConfig');
+                const btnConcluirPainel = document.getElementById('btnConcluirPeloPainel');
 
                 const isAtivo = (data.status === 'em_uso' || data.status === 'na_obra');
+                const isPendente = (data.status === 'entrega_pendente' || data.status === 'retirada_pendente' || data.status === 'troca_pendente' || data.status === 'aguardando_retirada' || data.status === 'aguardando_troca');
+
                 btnRetirar.style.display = isAtivo ? 'block' : 'none';
                 btnTrocar.style.display = isAtivo ? 'block' : 'none';
+                btnConcluirPainel.style.display = isPendente ? 'block' : 'none';
                 btnFechar.style.display = 'block';
 
                 // Configurar clique no Solicitar Retirada
@@ -882,6 +913,114 @@
                         modalDet.style.display = 'none';
                     } catch (err) {
                         alert("Erro ao agendar troca: " + err.message);
+                    }
+                });
+
+                // Configurar clique no Concluir pelo Painel
+                const novoBtnConcluir = btnConcluirPainel.cloneNode(true);
+                btnConcluirPainel.parentNode.replaceChild(novoBtnConcluir, btnConcluirPainel);
+
+                novoBtnConcluir.addEventListener('click', async () => {
+                    areaConcluirPainel.style.display = 'block';
+                    areaRetirada.style.display = 'none';
+                    areaTroca.style.display = 'none';
+                    novoBtnRetirar.style.display = 'none';
+                    novoBtnTrocar.style.display = 'none';
+                    novoBtnConcluir.style.display = 'none';
+                    btnFechar.style.display = 'none';
+
+                    // Carrega motoristas dinamicamente
+                    const selectMotConc = document.getElementById('selectMotoristaConcluir');
+                    selectMotConc.innerHTML = '<option value="">Carregando motoristas...</option>';
+                    try {
+                        const snap = await db.collection('motoristas').where('admin_id', '==', user.uid).get();
+                        selectMotConc.innerHTML = '<option value="">Selecionar Motorista</option>';
+                        snap.forEach(docSnap => {
+                            const mot = docSnap.data();
+                            const opt = document.createElement('option');
+                            opt.value = docSnap.id;
+                            opt.textContent = mot.nome;
+                            if (docSnap.id === data.motorista_id) {
+                                opt.selected = true;
+                            }
+                            selectMotConc.appendChild(opt);
+                        });
+                    } catch (err) {
+                        selectMotConc.innerHTML = '<option value="">Erro ao carregar motoristas</option>';
+                    }
+                });
+
+                const btnCancelarConcluir = document.getElementById('btnCancelarConcluirPainel');
+                const btnConfirmarConcluir = document.getElementById('btnConfirmarConcluirPainel');
+
+                const novoBtnCancelarConcluir = btnCancelarConcluir.cloneNode(true);
+                btnCancelarConcluir.parentNode.replaceChild(novoBtnCancelarConcluir, btnCancelarConcluir);
+                novoBtnCancelarConcluir.addEventListener('click', () => {
+                    areaConcluirPainel.style.display = 'none';
+                    novoBtnRetirar.style.display = isAtivo ? 'block' : 'none';
+                    novoBtnTrocar.style.display = isAtivo ? 'block' : 'none';
+                    novoBtnConcluir.style.display = isPendente ? 'block' : 'none';
+                    btnFechar.style.display = 'block';
+                });
+
+                const novoBtnConfirmarConcluir = btnConfirmarConcluir.cloneNode(true);
+                btnConfirmarConcluir.parentNode.replaceChild(novoBtnConfirmarConcluir, btnConfirmarConcluir);
+                novoBtnConfirmarConcluir.addEventListener('click', async () => {
+                    const selectMotConc = document.getElementById('selectMotoristaConcluir');
+                    const motId = selectMotConc.value;
+                    const motNome = selectMotConc.options[selectMotConc.selectedIndex]?.text;
+
+                    if (!motId) {
+                        alert("Por favor, selecione o motorista que realizou a atividade!");
+                        return;
+                    }
+
+                    try {
+                        const promessas = [];
+                        const novoStatusLocacao = (data.tipo_servico === 'retirada') ? 'concluida' : 'na_obra';
+                        const updateData = {
+                            status: novoStatusLocacao,
+                            motorista_id: motId,
+                            motorista_nome: motNome,
+                            concluida_pelo_painel_web: true,
+                            foto_confirmacao_url: 'Concluído pelo Painel Web'
+                        };
+
+                        if (data.tipo_servico === 'entrega') {
+                            updateData.data_entrega = obterDataLocalFormatada();
+                            const dateObj = new Date();
+                            dateObj.setDate(dateObj.getDate() + 15);
+                            updateData.data_retirada = obterDataLocalFormatada(dateObj);
+                        } else if (data.tipo_servico === 'troca') {
+                            updateData.tipo_servico = 'entrega';
+                            updateData.data_entrega = obterDataLocalFormatada();
+                            const dateObj = new Date();
+                            dateObj.setDate(dateObj.getDate() + 15);
+                            updateData.data_retirada = obterDataLocalFormatada(dateObj);
+                        } else if (data.tipo_servico === 'retirada') {
+                            updateData.data_retirada = obterDataLocalFormatada();
+                        }
+                        
+                        promessas.push(db.collection('locacoes').doc(id).update(updateData));
+
+                        const novoStatusCacamba = (data.tipo_servico === 'retirada') ? 'disponivel' : 'em_uso';
+                        if (data.cacamba_id) {
+                            promessas.push(db.collection('cacambas').doc(data.cacamba_id).update({
+                                status: novoStatusCacamba
+                            }));
+                        }
+                        if (data.tipo_servico === 'troca' && data.cacamba_velha_id) {
+                            promessas.push(db.collection('cacambas').doc(data.cacamba_velha_id).update({
+                                status: 'disponivel'
+                            }));
+                        }
+
+                        await Promise.all(promessas);
+
+                        alert("Atividade concluída com sucesso via Painel Web!");
+                        modalDet.style.display = 'none';
+                    } catch (err) {
+                        alert("Erro ao concluir atividade: " + err.message);
                     }
                 });
 

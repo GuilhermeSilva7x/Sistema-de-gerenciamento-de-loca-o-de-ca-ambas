@@ -170,30 +170,6 @@ tbody tr:hover {
 .btn-editar:hover { background: #fde68a; }
 .btn-excluir:hover { background: #fecaca; }
 
-/* Botões de paginação no rodapé */
-.paginacao {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-}
-
-.paginacao button {
-    padding: 8px 14px;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    background: white;
-    cursor: pointer;
-    color: #475569;
-    font-size: 14px;
-    transition: 0.2s;
-}
-
-.paginacao button:hover, .paginacao button.pag-atual {
-    background: #2563eb;
-    color: white;
-    border-color: #2563eb;
-}
-
 /* Ajustes para telas menores (Responsividade) */
 @media(max-width: 1024px){
     .filtros {

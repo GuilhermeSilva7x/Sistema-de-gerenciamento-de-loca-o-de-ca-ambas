@@ -72,9 +72,15 @@
                     <option value="Seguros">Seguros</option>
                 </select>
 
-                <select id="filtroData">
-                    <option value="">Data (Este Mês)</option>
-                </select>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 13px; font-weight: bold; color: #475569; white-space: nowrap;">Início:</span>
+                    <input type="date" id="filtroDataInicio" style="padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; background: white; color: #334155; outline: none; height: 39px; box-sizing: border-box;">
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 13px; font-weight: bold; color: #475569; white-space: nowrap;">Fim:</span>
+                    <input type="date" id="filtroDataFim" style="padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; background: white; color: #334155; outline: none; height: 39px; box-sizing: border-box;">
+                </div>
             </div>
             
             <button class="btn-nova" id="btnAbrirModal">+ Nova Despesa</button>
@@ -243,22 +249,98 @@
         // Elementos de filtros
         const buscaInput = document.getElementById('buscaDescricao');
         const categoriaSelect = document.getElementById('filtroCategoria');
+        const dataInicioInput = document.getElementById('filtroDataInicio');
+        const dataFimInput = document.getElementById('filtroDataFim');
+        let paginaAtual = 1;
+        const itensPorPagina = 10;
+
+        // Configura datas iniciais (Início e Fim do mês atual)
+        const dateNow = new Date();
+        const y = dateNow.getFullYear();
+        const m = dateNow.getMonth();
+        const primeiroDia = new Date(y, m, 1);
+        const primeiroDiaStr = `${primeiroDia.getFullYear()}-${String(primeiroDia.getMonth() + 1).padStart(2, '0')}-01`;
+        const ultimoDia = new Date(y, m + 1, 0);
+        const ultimoDiaStr = `${ultimoDia.getFullYear()}-${String(ultimoDia.getMonth() + 1).padStart(2, '0')}-${String(ultimoDia.getDate()).padStart(2, '0')}`;
+
+        dataInicioInput.value = primeiroDiaStr;
+        dataFimInput.value = ultimoDiaStr;
+
+        function normalizarDataParaComparacao(dataInput) {
+            if (!dataInput) return '';
+            if (dataInput.seconds) {
+                const d = new Date(dataInput.seconds * 1000);
+                return d.toISOString().split('T')[0];
+            }
+            if (dataInput instanceof Date) {
+                return dataInput.toISOString().split('T')[0];
+            }
+            if (typeof dataInput === 'string') {
+                const str = dataInput.trim();
+                if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+                    return str;
+                }
+                if (/^\d{2}\/\d{2}\/\d{4}$/.test(str)) {
+                    const partes = str.split('/');
+                    return `${partes[2]}-${partes[1]}-${partes[0]}`;
+                }
+                if (str.includes('-')) {
+                    const partes = str.split('-');
+                    if (partes[0].length === 4) return str;
+                    if (partes[2].length === 4) return `${partes[2]}-${partes[1]}-${partes[0]}`;
+                }
+                if (str.includes('/')) {
+                    const partes = str.split('/');
+                    if (partes[2].length === 4) return `${partes[2]}-${partes[1]}-${partes[0]}`;
+                }
+            }
+            return '';
+        }
 
         function aplicarFiltros() {
-            const busca = buscaInput.value.toLowerCase().trim();
-            const cat = categoriaSelect.value;
+            try {
+                const busca = buscaInput.value.toLowerCase().trim();
+                const cat = categoriaSelect.value;
+                const startVal = dataInicioInput.value;
+                const endVal = dataFimInput.value;
 
-            const despesasFiltradas = despesasCache.filter(desp => {
-                const matchBusca = !busca || (desp.descricao || '').toLowerCase().includes(busca);
-                const matchCat = !cat || desp.categoria === cat;
-                return matchBusca && matchCat;
-            });
+                const despesasFiltradas = despesasCache.filter(desp => {
+                    const matchBusca = !busca || (desp.descricao || '').toLowerCase().includes(busca);
+                    const matchCat = !cat || desp.categoria === cat;
+                    
+                    let matchData = true;
+                    const dataNormalizada = normalizarDataParaComparacao(desp.data);
+                    
+                    if (dataNormalizada) {
+                        if (startVal && dataNormalizada < startVal) matchData = false;
+                        if (endVal && dataNormalizada > endVal) matchData = false;
+                    } else {
+                        if (startVal || endVal) matchData = false;
+                    }
+                    
+                    return matchBusca && matchCat && matchData;
+                });
 
-            renderizarTabela(despesasFiltradas);
+                // Ordenar por data desc
+                despesasFiltradas.sort((a, b) => {
+                    const da = normalizarDataParaComparacao(a.data);
+                    const dbDate = normalizarDataParaComparacao(b.data);
+                    return dbDate.localeCompare(da);
+                });
+
+                renderizarTabela(despesasFiltradas);
+            } catch (err) {
+                console.error("Erro ao aplicar filtros:", err);
+            }
         }
 
         buscaInput.addEventListener('input', aplicarFiltros);
         categoriaSelect.addEventListener('change', aplicarFiltros);
+        
+        dataInicioInput.addEventListener('input', aplicarFiltros);
+        dataInicioInput.addEventListener('change', aplicarFiltros);
+        dataFimInput.addEventListener('input', aplicarFiltros);
+        dataFimInput.addEventListener('change', aplicarFiltros);
 
         // Ouvir despesas em tempo real
         db.collection('despesas').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
@@ -279,27 +361,49 @@
             let totalPendentes = 0;
             let gastosPorCategoria = {};
 
-            if (lista.length === 0) {
-                corpoTabela.innerHTML = '<tr><td colspan="6" style="text-align:center; color: #64748b;">Nenhuma despesa encontrada.</td></tr>';
-                document.getElementById('cardTotalMes').textContent = `R$ 0,00`;
-                document.getElementById('cardMaiorGasto').textContent = `Nenhum: R$ 0,00`;
-                document.getElementById('cardPendentes').textContent = `R$ 0,00`;
-                return;
-            }
-
-            let index = 0;
+            // Totais calculados na lista filtrada completa
             lista.forEach((desp) => {
-                index++;
                 const valorNum = parseFloat(desp.valor || 0);
-                
                 totalMes += valorNum;
                 if (desp.status === 'Pendente' || desp.status === 'Atrasado') {
                     totalPendentes += valorNum;
                 }
-
                 if (!gastosPorCategoria[desp.categoria]) gastosPorCategoria[desp.categoria] = 0;
                 gastosPorCategoria[desp.categoria] += valorNum;
+            });
 
+            // Paginação
+            const totalPaginas = Math.ceil(lista.length / itensPorPagina);
+            if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
+            if (paginaAtual < 1) paginaAtual = 1;
+
+            const inicio = (paginaAtual - 1) * itensPorPagina;
+            const fim = inicio + itensPorPagina;
+            const paginados = lista.slice(inicio, fim);
+
+            if (paginados.length === 0) {
+                corpoTabela.innerHTML = '<tr><td colspan="6" style="text-align:center; color: #64748b;">Nenhuma despesa encontrada.</td></tr>';
+                document.getElementById('cardTotalMes').textContent = `R$ ${totalMes.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                
+                let maiorCat = "Nenhuma";
+                let maiorValorCat = 0;
+                for (let cat in gastosPorCategoria) {
+                    if (gastosPorCategoria[cat] > maiorValorCat) {
+                        maiorValorCat = gastosPorCategoria[cat];
+                        maiorCat = cat;
+                    }
+                }
+                document.getElementById('cardMaiorGasto').textContent = `${maiorCat}: R$ ${maiorValorCat.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                document.getElementById('cardPendentes').textContent = `R$ ${totalPendentes.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                
+                renderizarPaginacao(0, 0);
+                return;
+            }
+
+            let index = inicio;
+            paginados.forEach((desp) => {
+                index++;
+                const valorNum = parseFloat(desp.valor || 0);
                 let statusClass = (desp.status || 'pendente').toLowerCase();
 
                 let tr = document.createElement('tr');
@@ -355,8 +459,69 @@
             document.getElementById('cardTotalMes').textContent = `R$ ${totalMes.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
             document.getElementById('cardMaiorGasto').textContent = `${maiorCat}: R$ ${maiorValorCat.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
             document.getElementById('cardPendentes').textContent = `R$ ${totalPendentes.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            
+            renderizarPaginacao(lista.length, totalPaginas);
         }
-    }
+
+        function renderizarPaginacao(totalItens, totalPaginas) {
+            let container = document.getElementById('paginacaoContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'paginacaoContainer';
+                document.querySelector('.tabela').appendChild(container);
+            }
+            container.className = 'paginacao';
+            container.style.cssText = 'display: flex; justify-content: center; gap: 8px; margin-top: 25px; margin-bottom: 25px; align-items: center;';
+            container.innerHTML = '';
+
+            if (totalPaginas <= 1) {
+                container.style.display = 'none';
+                return;
+            }
+            container.style.display = 'flex';
+
+            // Botão Anterior
+            const btnAnterior = document.createElement('button');
+            btnAnterior.textContent = 'Anterior';
+            if (paginaAtual === 1) {
+                btnAnterior.disabled = true;
+            } else {
+                btnAnterior.addEventListener('click', () => {
+                    paginaAtual--;
+                    aplicarFiltros();
+                });
+            }
+            container.appendChild(btnAnterior);
+
+            // Páginas numéricas
+            for (let i = 1; i <= totalPaginas; i++) {
+                const btnPagina = document.createElement('button');
+                btnPagina.textContent = i;
+                if (i === paginaAtual) {
+                    btnPagina.className = 'pag-atual';
+                } else {
+                    btnPagina.addEventListener('click', () => {
+                        paginaAtual = i;
+                        aplicarFiltros();
+                    });
+                }
+                container.appendChild(btnPagina);
+            }
+
+            // Botão Próximo
+            const btnProximo = document.createElement('button');
+            btnProximo.textContent = 'Próxima';
+            if (paginaAtual === totalPaginas) {
+                btnProximo.disabled = true;
+            } else {
+                btnProximo.addEventListener('click', () => {
+                    paginaAtual++;
+                    aplicarFiltros();
+                });
+            }
+            container.appendChild(btnProximo);
+        }
+        }
     </script>
 </body>
 </html>
