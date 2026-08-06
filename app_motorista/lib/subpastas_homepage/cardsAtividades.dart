@@ -1,5 +1,6 @@
 import 'package:app_motorista/paginas_principais/detalhesAtividade.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CardsAtividades extends StatefulWidget {
   final String id;
@@ -12,6 +13,9 @@ class CardsAtividades extends StatefulWidget {
   final String cacambaId;
   final String hora;
   final String cacambaVelhaNumero;
+  final String dataEntrega;
+  final String horaEntrega;
+  final Timestamp? concluidoEm;
 
   const CardsAtividades({
     super.key,
@@ -26,6 +30,9 @@ class CardsAtividades extends StatefulWidget {
     this.cacambaVelhaNumero = '',
     this.concluido = false,
     this.atrasada = false,
+    this.dataEntrega = '',
+    this.horaEntrega = '',
+    this.concluidoEm,
   });
 
   final bool atrasada;
@@ -61,6 +68,9 @@ class _CardsAtividadesState extends State<CardsAtividades> {
               cacambaNumero: widget.cacambaNumero,
               cacambaId: widget.cacambaId,
               cacambaVelhaNumero: widget.cacambaVelhaNumero,
+              dataEntrega: widget.dataEntrega,
+              horaEntrega: widget.horaEntrega,
+              concluidoEm: widget.concluidoEm,
             ),
           ),
         );

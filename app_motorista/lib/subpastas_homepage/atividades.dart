@@ -11,6 +11,20 @@ class Atividades extends StatelessWidget {
   Widget build(BuildContext context) {
     final todayStr = DateTime.now().toIso8601String().split('T')[0];
 
+    String normalizeDate(dynamic value) {
+      if (value == null) return '';
+      final str = value.toString().trim();
+      if (str.isEmpty) return '';
+      if (str.length >= 10 && str.substring(4, 5) == '-' && str.substring(7, 8) == '-') {
+        return str.substring(0, 10);
+      }
+      if (str.length >= 10 && str.substring(2, 3) == '/' && str.substring(5, 6) == '/') {
+        final parts = str.substring(0, 10).split('/');
+        return '${parts[2]}-${parts[1]}-${parts[0]}';
+      }
+      return str;
+    }
+
     // Filtra as pendentes (não concluídas) para mostrar como próximas atividades
     final proximas = locacoes.where((doc) {
       final data = doc.data() as Map<String, dynamic>;
@@ -20,10 +34,10 @@ class Atividades extends StatelessWidget {
       if (!isPending) return false;
 
       // Não mostra atividades agendadas para datas futuras
-      final dataEntrega = data['data_entrega'] ?? '';
-      if (dataEntrega.isNotEmpty) {
+      final dataEntregaNorm = normalizeDate(data['data_entrega']);
+      if (dataEntregaNorm.isNotEmpty) {
         try {
-          final parts = dataEntrega.split('-');
+          final parts = dataEntregaNorm.split('-');
           if (parts.length == 3) {
             final year = int.parse(parts[0]);
             final month = int.parse(parts[1]);
@@ -36,7 +50,7 @@ class Atividades extends StatelessWidget {
             }
           }
         } catch (e) {
-          if (dataEntrega.compareTo(todayStr) > 0) {
+          if (dataEntregaNorm.compareTo(todayStr) > 0) {
             return false;
           }
         }
@@ -108,12 +122,13 @@ class Atividades extends StatelessWidget {
                 final rua = data['endereco']?['rua'] ?? '';
                 final num = data['endereco']?['numero'] ?? '';
                 final bairro = data['endereco']?['bairro'] ?? '';
+                final hora = data['hora_entrega'] ?? '08:00';
 
-                final String dataEntrega = data['data_entrega'] ?? '';
+                final dataEntregaNorm = normalizeDate(data['data_entrega']);
                 bool isAtrasada = false;
-                if (dataEntrega.isNotEmpty) {
+                if (dataEntregaNorm.isNotEmpty) {
                   try {
-                    final parts = dataEntrega.split('-');
+                    final parts = dataEntregaNorm.split('-');
                     if (parts.length == 3) {
                       final year = int.parse(parts[0]);
                       final month = int.parse(parts[1]);
@@ -124,7 +139,7 @@ class Atividades extends StatelessWidget {
                       isAtrasada = scheduledDate.isBefore(today);
                     }
                   } catch (e) {
-                    if (dataEntrega.compareTo(todayStr) < 0) {
+                    if (dataEntregaNorm.compareTo(todayStr) < 0) {
                       isAtrasada = true;
                     }
                   }
@@ -142,8 +157,11 @@ class Atividades extends StatelessWidget {
                       cacambaNumero: data['cacamba_numero'] ?? '-',
                       cacambaId: data['cacamba_id'] ?? '',
                       cacambaVelhaNumero: data['cacamba_velha_numero'] ?? '',
-                      hora: "08:00",
+                      hora: hora,
                       atrasada: isAtrasada,
+                      dataEntrega: data['data_entrega'] ?? '',
+                      horaEntrega: data['hora_entrega'] ?? '',
+                      concluidoEm: data['concluido_em'] as Timestamp?,
                     ),
                     const SizedBox(height: 8),
                   ],

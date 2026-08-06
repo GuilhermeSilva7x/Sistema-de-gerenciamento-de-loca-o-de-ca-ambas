@@ -129,7 +129,7 @@
                 inicializarClientes(user);
 
                 const usuarioDiv = document.getElementById('usuario');
-                if (usuarioDiv) usuarioDiv.textContent = user.email;
+                if (usuarioDiv) usuarioDiv.textContent = 'Administrador';
             }
         });
 
@@ -196,7 +196,6 @@
                         telefone,
                         email
                     });
-                    alert('Dados do cliente atualizados com sucesso!');
                     modal.classList.remove('ativo');
                     formCliente.reset();
                 } catch (error) {
@@ -212,7 +211,6 @@
                         email,
                         data_cadastro: new Date().toISOString()
                     });
-                    alert('Cliente cadastrado com sucesso!');
                     formCliente.reset();
                     modal.classList.remove('ativo');
                 } catch (error) {
@@ -318,7 +316,6 @@
                         try {
                             const cliId = e.currentTarget.getAttribute('data-id');
                             await db.collection('clientes').doc(cliId).delete();
-                            alert('Cliente excluído com sucesso.');
                         } catch (err) {
                             alert('Erro ao excluir: ' + err.message);
                         }

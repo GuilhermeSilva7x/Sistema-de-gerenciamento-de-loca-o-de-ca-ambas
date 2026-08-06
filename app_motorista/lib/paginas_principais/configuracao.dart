@@ -50,11 +50,6 @@ class Configuracao extends StatelessWidget {
                 .doc('geral')
                 .snapshots(),
             builder: (context, configSnapshot) {
-              final configData = configSnapshot.hasData && configSnapshot.data!.exists
-                  ? configSnapshot.data!.data() as Map<String, dynamic>
-                  : null;
-              final telefoneLogistica = configData?['telefone_logistica'] as String?;
-
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
@@ -62,11 +57,10 @@ class Configuracao extends StatelessWidget {
                   children: [
                     Perfil(nome: motoristaNome),
                     const SizedBox(height: 20),
-                    Suporte(
-                      caminhao: caminhaoPlaca,
-                      telefoneLogistica: telefoneLogistica,
-                      motoristaNome: motoristaNome,
-                    ),
+                      Suporte(
+                        caminhao: caminhaoPlaca,
+                        motoristaNome: motoristaNome,
+                      ),
                     const SizedBox(height: 30),
                     // Botão Sair da Conta 100% Funcional
                     SizedBox(

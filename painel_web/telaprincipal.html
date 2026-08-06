@@ -27,9 +27,6 @@
         <header class="cabecalho-principal" id="cabecalho-principal">
             <h2>Painel Principal <span>Visão geral da operação</span></h2>
             <div style="display: flex; align-items: center; gap: 15px;">
-                <button id="btnConfigLogistica" style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 5px;">
-                    ⚙️ WhatsApp Logística
-                </button>
                 <div class="usuario" id="usuario">Administrador</div>
             </div>
         </header>
@@ -148,7 +145,24 @@
                 <input type="date" id="dataTrocaAgendamento" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
 
                 <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Horário da Troca:</label>
-                <input type="time" id="horaTroca" value="08:00" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px; font-size: 13px;">
+                <input type="time" id="horaTroca" value="08:00" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Valor da Troca:</label>
+                <input type="text" id="valorTroca" value="R$ 350,00" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Forma de Pagamento:</label>
+                <select id="pagamentoFormaTroca" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+                    <option value="Pix">Pix</option>
+                    <option value="Boleto">Boleto</option>
+                    <option value="Cartão">Cartão</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                </select>
+
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Status do Pagamento:</label>
+                <select id="pagamentoStatusTroca" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px; font-size: 13px;">
+                    <option value="Pendente">Pendente</option>
+                    <option value="Pago">Pago</option>
+                </select>
                 
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
                     <button type="button" id="btnCancelarAgendamentoTroca" style="padding: 8px 12px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-size: 13px;">Cancelar</button>
@@ -185,27 +199,27 @@
     <script>
         let currentUser = null;
 
+        const formatarTimestamp = (ts) => {
+            if (!ts) return '-';
+            const date = ts.toDate ? ts.toDate() : new Date(ts);
+            if (isNaN(date.getTime())) return '-';
+            // Converte para UTC-3 (Horário de Brasília)
+            const utc = date.getTime() + (date.getTimezoneOffset() * 60000);
+            const dataSp = new Date(utc + (3600000 * -3));
+            const dia = String(dataSp.getDate()).padStart(2, '0');
+            const mes = String(dataSp.getMonth() + 1).padStart(2, '0');
+            const ano = dataSp.getFullYear();
+            const hora = String(dataSp.getHours()).padStart(2, '0');
+            const min = String(dataSp.getMinutes()).padStart(2, '0');
+            return `${dia}/${mes}/${ano} ${hora}:${min}`;
+        };
+
         // Controle de Sessão (Auth Guard com Validação de Regra de Acesso)
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
                 window.location.href = 'TeladeLogin.HTML';
             } else {
-                try {
-                    const checkDriver = await db.collection('motoristas').where('email', '==', user.email).get();
-                    if (!checkDriver.empty) {
-                        alert("Acesso negado: Motoristas não possuem permissão para acessar o painel administrativo.");
-                        await auth.signOut();
-                        window.location.href = 'TeladeLogin.HTML';
-                        return;
-                    }
-                } catch (err) {
-                    console.error("Erro ao validar perfil:", err);
-                }
-
-                currentUser = user;
-                inicializarPainel(user);
-
-                // Exibe o email do usuário e adiciona opção de sair
+                // Exibe o email do usuário e adiciona opção de sair imediatamente
                 const usuarioDiv = document.getElementById('usuario');
                 if (usuarioDiv) {
                     usuarioDiv.innerHTML = `
@@ -221,6 +235,21 @@
                         }
                     });
                 }
+
+                try {
+                    const checkDriver = await db.collection('motoristas').where('email', '==', user.email).get();
+                    if (!checkDriver.empty) {
+                        alert("Acesso negado: Motoristas não possuem permissão para acessar o painel administrativo.");
+                        await auth.signOut();
+                        window.location.href = 'TeladeLogin.HTML';
+                        return;
+                    }
+                } catch (err) {
+                    console.error("Erro ao validar perfil:", err);
+                }
+
+                currentUser = user;
+                inicializarPainel(user);
             }
         });
 
@@ -289,6 +318,14 @@
 
                     if (orderA !== orderB) {
                         return orderA - orderB;
+                    }
+
+                    // Se ambos forem concluídos, ordena pelo horário de conclusão (último concluído primeiro)
+                    if ((aData.status === 'concluida' || aData.status === 'na_obra') && 
+                        (bData.status === 'concluida' || bData.status === 'na_obra')) {
+                        const timeA = aData.concluido_em ? (aData.concluido_em.seconds || new Date(aData.concluido_em).getTime() / 1000) : 0;
+                        const timeB = bData.concluido_em ? (bData.concluido_em.seconds || new Date(bData.concluido_em).getTime() / 1000) : 0;
+                        if (timeA !== timeB) return timeB - timeA;
                     }
 
                     const timeA = aData.criado_em ? aData.criado_em.seconds : 0;
@@ -369,15 +406,35 @@
                         cobrancaAlerta = '<span style="background: #dcfce7; color: #166534; border: 1px solid #dcfce7; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 6px; white-space: nowrap;">✔️ Pago</span>';
                     }
 
-                    let cacambaCell = `Nº ${data.cacamba_numero || '-'}`;
-                    if (data.tipo_servico === 'troca' && (data.status === 'troca_pendente' || data.status === 'aguardando_troca')) {
+                    let cacambaCell = '';
+                    if (data.tipo_servico === 'troca') {
                         cacambaCell = `
-                            <div style="line-height: 1.2; font-size: 11px;">
-                                <span style="color: #2563eb; font-weight: bold;">Nº ${data.cacamba_numero || '-'}</span> <span style="font-size: 9px; color: #2563eb; font-weight: bold;">(Indo)</span><br>
-                                <span style="color: #ea580c; font-weight: bold;">Nº ${data.cacamba_velha_numero || '-'}</span> <span style="font-size: 9px; color: #ea580c; font-weight: bold;">(Voltando)</span>
+                            <div style="line-height: 1.3; font-size: 11px;">
+                                <strong>Nº ${data.cacamba_numero || '-'}</strong> <span style="font-size: 9px; color: #16a34a; font-weight: bold;">(Entregue)</span><br>
+                                <strong>Nº ${data.cacamba_velha_numero || '-'}</strong> <span style="font-size: 9px; color: #dc2626; font-weight: bold;">(Retirada)</span>
                             </div>
                         `;
+                    } else {
+                        cacambaCell = `<strong>Nº ${data.cacamba_numero || '-'}</strong>`;
                     }
+
+                    const formatarDataBr = (dStr) => {
+                        if (!dStr) return '-';
+                        return dStr.split('-').reverse().join('/');
+                    };
+
+
+
+                    const progData = formatarDataBr(data.data_entrega);
+                    const progHora = data.hora_entrega || '';
+                    const realDataHora = formatarTimestamp(data.concluido_em);
+
+                    cacambaCell += `
+                        <div style="font-size: 10px; margin-top: 4px; line-height: 1.2; color: #475569;">
+                            <span style="color: #64748b;">Prog: ${progData} ${progHora}</span><br>
+                            <span style="color: #10b981; font-weight: 500;">Realizado: ${realDataHora}</span>
+                        </div>
+                    `;
 
                     tr.innerHTML = `
                         <td><strong>${data.os_numero || '-'}</strong></td>
@@ -534,15 +591,11 @@
                 };
                 
                 let statusCompData = '';
-                if (data.status === 'concluida' && data.data_retirada) {
-                    try {
-                        const dt = new Date(data.data_retirada);
-                        if (!isNaN(dt.getTime())) {
-                            const dataConcl = dt.toLocaleDateString('pt-BR');
-                            const horaConcl = dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                            statusCompData = ` em ${dataConcl} às ${horaConcl}`;
-                        }
-                    } catch (e) {}
+                if (data.status === 'concluida' && data.concluido_em) {
+                    const dataHoraConcl = formatarTimestamp(data.concluido_em);
+                    if (dataHoraConcl !== '-') {
+                        statusCompData = ` em ${dataHoraConcl}`;
+                    }
                 }
                 if (data.concluida_pelo_painel_web) {
                     statusCompData += ' <span style="color:#10b981; font-weight:bold; font-size:11px;">(Concluída via Painel Web 💻)</span>';
@@ -636,10 +689,16 @@
 
                 // Foto comprovante
                 const compFoto = document.getElementById('comprovanteFoto');
-                if (data.foto_confirmacao_url) {
-                    compFoto.innerHTML = `<img src="${data.foto_confirmacao_url}" alt="Comprovante" style="max-width: 100%; max-height: 200px; border-radius: 8px;">`;
-                } else {
+                if (!data.foto_confirmacao_url) {
                     compFoto.innerHTML = `<span style="color: #64748b; font-style: italic;">Nenhuma foto enviada pelo motorista ainda.</span>`;
+                } else if (data.foto_confirmacao_url.startsWith('http')) {
+                    compFoto.innerHTML = `<img src="${data.foto_confirmacao_url}" alt="Comprovante" style="max-width: 100%; max-height: 200px; border-radius: 8px;">`;
+                } else if (data.foto_confirmacao_url === 'uploading') {
+                    compFoto.innerHTML = `<span style="color: #2563eb; font-weight: bold; font-style: italic;">Enviando comprovante...</span>`;
+                } else if (data.foto_confirmacao_url === 'erro_upload_comprovante') {
+                    compFoto.innerHTML = `<span style="color: #dc2626; font-weight: bold; font-style: italic;">Erro no envio do comprovante pelo motorista.</span>`;
+                } else {
+                    compFoto.innerHTML = `<span style="color: #475569; font-weight: bold;">${data.foto_confirmacao_url}</span>`;
                 }
 
                 // Esconde as áreas de agendamento inicialmente
@@ -675,6 +734,9 @@
                     novoBtnTrocar.style.display = 'none';
                     btnFechar.style.display = 'none';
                     document.getElementById('dataRetiradaAgendamento').value = obterDataLocalFormatada();
+                    const agoraTime = new Date();
+                    const horaFormatada = `${String(agoraTime.getHours()).padStart(2, '0')}:${String(agoraTime.getMinutes()).padStart(2, '0')}`;
+                    document.getElementById('horaRetirada').value = horaFormatada;
 
                     // Carrega motoristas dinamicamente
                     const selectMot = document.getElementById('selectMotoristaRetirada');
@@ -705,6 +767,9 @@
                     novoBtnTrocar.style.display = 'none';
                     btnFechar.style.display = 'none';
                     document.getElementById('dataTrocaAgendamento').value = obterDataLocalFormatada();
+                    const agoraTime = new Date();
+                    const horaFormatada = `${String(agoraTime.getHours()).padStart(2, '0')}:${String(agoraTime.getMinutes()).padStart(2, '0')}`;
+                    document.getElementById('horaTroca').value = horaFormatada;
 
                     // Carrega motoristas dinamicamente
                     const selectMotTroca = document.getElementById('selectMotoristaTroca');
@@ -777,12 +842,21 @@
                         alert("Erro: Não é possível solicitar uma retirada para uma data retroativa (que já passou).");
                         return;
                     }
+                    const agora = new Date();
+                    const horaAtual = String(agora.getHours()).padStart(2, '0');
+                    const minAtual = String(agora.getMinutes()).padStart(2, '0');
+                    const horarioAtual = `${horaAtual}:${minAtual}`;
+                    if (dataRet === hojeLocal && hora < horarioAtual) {
+                        alert(`Erro: O horário selecionado (${hora}) não pode ser anterior ao horário atual (${horarioAtual}).`);
+                        return;
+                    }
 
                     try {
                         const promessas = [];
                         promessas.push(db.collection('locacoes').doc(id).update({
                             status: 'concluida',
-                            data_retirada: dataRet
+                            data_retirada: dataRet,
+                            concluido_em: firebase.firestore.FieldValue.serverTimestamp()
                         }));
 
                         const newOS = '#' + Math.floor(100 + Math.random() * 900);
@@ -816,7 +890,6 @@
 
                         await Promise.all(promessas);
 
-                        alert("Retirada agendada e nova OS criada com sucesso!");
                         modalDet.style.display = 'none';
                     } catch (err) {
                         alert("Erro ao agendar retirada: " + err.message);
@@ -847,6 +920,9 @@
                     const cacambaNumSubstitutaText = selectCacTr.options[selectCacTr.selectedIndex]?.text;
                     const hora = document.getElementById('horaTroca').value;
                     const dataTroca = document.getElementById('dataTrocaAgendamento').value;
+                    const valor = document.getElementById('valorTroca').value.trim();
+                    const pagamentoForma = document.getElementById('pagamentoFormaTroca').value;
+                    const pagamentoStatus = document.getElementById('pagamentoStatusTroca').value;
 
                     if (!motId) {
                         alert("Por favor, selecione um motorista!");
@@ -862,6 +938,14 @@
                         alert("Erro: Não é possível solicitar uma troca para uma data retroativa (que já passou).");
                         return;
                     }
+                    const agora = new Date();
+                    const horaAtual = String(agora.getHours()).padStart(2, '0');
+                    const minAtual = String(agora.getMinutes()).padStart(2, '0');
+                    const horarioAtual = `${horaAtual}:${minAtual}`;
+                    if (dataTroca === hojeLocal && hora < horarioAtual) {
+                        alert(`Erro: O horário selecionado (${hora}) não pode ser anterior ao horário atual (${horarioAtual}).`);
+                        return;
+                    }
 
                     const cacambaNumSubstituta = cacambaNumSubstitutaText.replace("Nº ", "").split(" (")[0];
 
@@ -869,7 +953,8 @@
                         const promessas = [];
                         promessas.push(db.collection('locacoes').doc(id).update({
                             status: 'concluida',
-                            data_retirada: dataTroca
+                            data_retirada: dataTroca,
+                            concluido_em: firebase.firestore.FieldValue.serverTimestamp()
                         }));
 
                         if (data.cacamba_id) {
@@ -897,9 +982,9 @@
                             data_entrega: dataTroca,
                             hora_entrega: hora,
                             data_retirada: '',
-                            valor: '',
-                            pagamento_forma: 'Sem Custo (Troca)',
-                            pagamento_status: 'Pago',
+                            valor: valor,
+                            pagamento_forma: pagamentoForma,
+                            pagamento_status: pagamentoStatus,
                             foto_confirmacao_url: ''
                         }));
 
@@ -909,7 +994,6 @@
 
                         await Promise.all(promessas);
 
-                        alert("Troca agendada e nova OS de troca gerada com sucesso!");
                         modalDet.style.display = 'none';
                     } catch (err) {
                         alert("Erro ao agendar troca: " + err.message);
@@ -983,7 +1067,8 @@
                             motorista_id: motId,
                             motorista_nome: motNome,
                             concluida_pelo_painel_web: true,
-                            foto_confirmacao_url: 'Concluído pelo Painel Web'
+                            foto_confirmacao_url: 'Concluído pelo Painel Web',
+                            concluido_em: firebase.firestore.FieldValue.serverTimestamp()
                         };
 
                         if (data.tipo_servico === 'entrega') {
@@ -992,7 +1077,6 @@
                             dateObj.setDate(dateObj.getDate() + 15);
                             updateData.data_retirada = obterDataLocalFormatada(dateObj);
                         } else if (data.tipo_servico === 'troca') {
-                            updateData.tipo_servico = 'entrega';
                             updateData.data_entrega = obterDataLocalFormatada();
                             const dateObj = new Date();
                             dateObj.setDate(dateObj.getDate() + 15);
@@ -1017,7 +1101,6 @@
 
                         await Promise.all(promessas);
 
-                        alert("Atividade concluída com sucesso via Painel Web!");
                         modalDet.style.display = 'none';
                     } catch (err) {
                         alert("Erro ao concluir atividade: " + err.message);

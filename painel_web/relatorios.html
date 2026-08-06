@@ -144,7 +144,7 @@
                 inicializarRelatorios(user);
 
                 const usuarioDiv = document.getElementById('usuario');
-                if (usuarioDiv) usuarioDiv.textContent = user.email;
+                if (usuarioDiv) usuarioDiv.textContent = 'Administrador';
             }
         });
 
@@ -235,6 +235,7 @@
         // 4. Gráfico de Locações por Bairro
         const bairrosMap = {};
         locacoesFiltradas.forEach(loc => {
+            if (loc.tipo_servico === 'retirada') return; // Retiradas não contam como nova locação
             const bairro = loc.endereco?.bairro || 'Não informado';
             bairrosMap[bairro] = (bairrosMap[bairro] || 0) + 1;
         });

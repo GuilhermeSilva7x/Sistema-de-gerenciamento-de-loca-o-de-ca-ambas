@@ -12,7 +12,26 @@ class Resumo extends StatelessWidget {
     int retiradas = 0;
     int concluidas = 0;
 
-    final todayStr = DateTime.now().toIso8601String().split('T')[0];
+    final now = DateTime.now();
+    final todayStr = "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+    final yesterday = now.subtract(const Duration(days: 1));
+    final yesterdayStr = "${yesterday.year}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.day.toString().padLeft(2, '0')}";
+    final tomorrow = now.add(const Duration(days: 1));
+    final tomorrowStr = "${tomorrow.year}-${tomorrow.month.toString().padLeft(2, '0')}-${tomorrow.day.toString().padLeft(2, '0')}";
+
+    String normalizeDate(dynamic value) {
+      if (value == null) return '';
+      final str = value.toString().trim();
+      if (str.isEmpty) return '';
+      if (str.length >= 10 && str.substring(4, 5) == '-' && str.substring(7, 8) == '-') {
+        return str.substring(0, 10);
+      }
+      if (str.length >= 10 && str.substring(2, 3) == '/' && str.substring(5, 6) == '/') {
+        final parts = str.substring(0, 10).split('/');
+        return '${parts[2]}-${parts[1]}-${parts[0]}';
+      }
+      return str;
+    }
 
     for (var doc in locacoes) {
       final data = doc.data() as Map<String, dynamic>;
@@ -20,13 +39,13 @@ class Resumo extends StatelessWidget {
       final dataEntrega = data['data_entrega'] ?? '';
 
       if (status == 'concluida') {
-        final dataRetirada = data['data_retirada'] ?? '';
-        if (dataRetirada.toString().startsWith(todayStr)) {
+        final dataRetirada = normalizeDate(data['data_retirada']);
+        if (dataRetirada == todayStr || dataRetirada == yesterdayStr || dataRetirada == tomorrowStr) {
           concluidas++;
         }
-      } else if (status == 'na_obra') {
-        final dataEntr = data['data_entrega'] ?? '';
-        if (dataEntr.toString().startsWith(todayStr)) {
+      } else if (status == 'na_obra' || status == 'em_uso') {
+        final dataEntr = normalizeDate(data['data_entrega']);
+        if (dataEntr == todayStr || dataEntr == yesterdayStr || dataEntr == tomorrowStr) {
           concluidas++;
         }
       } else {

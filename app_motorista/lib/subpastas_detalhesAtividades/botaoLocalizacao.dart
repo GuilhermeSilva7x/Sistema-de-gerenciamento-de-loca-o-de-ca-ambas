@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter/material.dart';
 
 class Botaolocalizacao extends StatelessWidget {
-  const Botaolocalizacao({super.key});
+  final String endereco;
+  const Botaolocalizacao({super.key, required this.endereco});
 
   // 🚀 FUNÇÃO PARA ABRIR O GPS
   Future<void> _abrirNoGPS(String enderecoEntrega) async {
@@ -33,12 +33,12 @@ class Botaolocalizacao extends StatelessWidget {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.blue,
-        fixedSize: Size(3000, 50),
+        fixedSize: const Size(3000, 50),
       ),
       onPressed: () {
-        _abrirNoGPS("Rua Santa Helena, 271 - Alvorada, Bom Jesus -GO");
+        _abrirNoGPS(endereco);
       },
-      child: Text(
+      child: const Text(
         "Abrir no GPS (MAPS)",
         style: TextStyle(
           color: Colors.white,

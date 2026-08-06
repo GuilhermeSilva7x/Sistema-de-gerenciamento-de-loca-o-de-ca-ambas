@@ -66,6 +66,21 @@ class Paginaatividades extends StatelessWidget {
               }
 
               final todayStr = DateTime.now().toIso8601String().split('T')[0];
+
+              String normalizeDate(dynamic value) {
+                if (value == null) return '';
+                final str = value.toString().trim();
+                if (str.isEmpty) return '';
+                if (str.length >= 10 && str.substring(4, 5) == '-' && str.substring(7, 8) == '-') {
+                  return str.substring(0, 10);
+                }
+                if (str.length >= 10 && str.substring(2, 3) == '/' && str.substring(5, 6) == '/') {
+                  final parts = str.substring(0, 10).split('/');
+                  return '${parts[2]}-${parts[1]}-${parts[0]}';
+                }
+                return str;
+              }
+
               final allDocs = locacoesSnapshot.data?.docs ?? [];
               final activeDocs = allDocs.where((doc) {
                 final data = doc.data() as Map<String, dynamic>;
@@ -79,10 +94,10 @@ class Paginaatividades extends StatelessWidget {
                 if (!isPending) return false;
 
                 // Não mostra atividades agendadas para datas futuras
-                final dataEntrega = data['data_entrega'] ?? '';
-                if (dataEntrega.isNotEmpty) {
+                final dataEntregaNorm = normalizeDate(data['data_entrega']);
+                if (dataEntregaNorm.isNotEmpty) {
                   try {
-                    final parts = dataEntrega.split('-');
+                    final parts = dataEntregaNorm.split('-');
                     if (parts.length == 3) {
                       final year = int.parse(parts[0]);
                       final month = int.parse(parts[1]);
@@ -95,7 +110,7 @@ class Paginaatividades extends StatelessWidget {
                       }
                     }
                   } catch (e) {
-                    if (dataEntrega.compareTo(todayStr) > 0) {
+                    if (dataEntregaNorm.compareTo(todayStr) > 0) {
                       return false;
                     }
                   }
@@ -147,11 +162,11 @@ class Paginaatividades extends StatelessWidget {
                   final bairro = data['endereco']?['bairro'] ?? '';
                   final hora = data['hora_entrega'] ?? '08:00';
                   
-                  final String dataEntrega = data['data_entrega'] ?? '';
+                  final dataEntregaNorm = normalizeDate(data['data_entrega']);
                   bool isAtrasada = false;
-                  if (dataEntrega.isNotEmpty) {
+                  if (dataEntregaNorm.isNotEmpty) {
                     try {
-                      final parts = dataEntrega.split('-');
+                      final parts = dataEntregaNorm.split('-');
                       if (parts.length == 3) {
                         final year = int.parse(parts[0]);
                         final month = int.parse(parts[1]);
@@ -162,7 +177,7 @@ class Paginaatividades extends StatelessWidget {
                         isAtrasada = scheduledDate.isBefore(today);
                       }
                     } catch (e) {
-                      if (dataEntrega.compareTo(todayStr) < 0) {
+                      if (dataEntregaNorm.compareTo(todayStr) < 0) {
                         isAtrasada = true;
                       }
                     }
@@ -182,6 +197,9 @@ class Paginaatividades extends StatelessWidget {
                         cacambaVelhaNumero: data['cacamba_velha_numero'] ?? '',
                         hora: hora,
                         atrasada: isAtrasada,
+                        dataEntrega: data['data_entrega'] ?? '',
+                        horaEntrega: data['hora_entrega'] ?? '',
+                        concluidoEm: data['concluido_em'] as Timestamp?,
                       ),
                       const SizedBox(height: 8),
                     ],

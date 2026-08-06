@@ -66,7 +66,10 @@
                     <option value="aguardando_retirada">Aguardando Retirada</option>
                     <option value="manutencao">Em Manutenção</option>
                 </select>
-                <button class="btn-nova" id="btnAbrirModal">+ Nova Caçamba</button>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-nova" id="btnSincronizarCacambas" style="background-color: #2563eb; color: #fff;">🔄 Sincronizar</button>
+                    <button class="btn-nova" id="btnAbrirModal">+ Nova Caçamba</button>
+                </div>
             </section>
 
             <section class="tabela">
@@ -133,7 +136,7 @@
                 inicializarCacambas(user);
 
                 const usuarioDiv = document.getElementById('usuario');
-                if (usuarioDiv) usuarioDiv.textContent = user.email;
+                if (usuarioDiv) usuarioDiv.textContent = 'Administrador';
             }
         });
 
@@ -146,6 +149,52 @@
         const btnCancelar = document.getElementById('btnCancelar');
         const formCacamba = document.getElementById('formCacamba');
         let editandoCacambaId = null;
+
+        const btnSincronizar = document.getElementById('btnSincronizarCacambas');
+        btnSincronizar.addEventListener('click', async () => {
+            if (!confirm("Deseja realmente sincronizar os status de todas as caçambas com base nas locações ativas e concluídas?")) {
+                return;
+            }
+            btnSincronizar.disabled = true;
+            btnSincronizar.textContent = "Sincronizando...";
+            try {
+                const promessas = [];
+                for (const item of todasCacambas) {
+                    const id = item.id;
+                    const currentStatus = item.data.status;
+                    const activeLoc = locacoesAtivas[id];
+                    
+                    let expectedStatus = 'disponivel';
+                    if (activeLoc) {
+                        const locStatus = activeLoc.status;
+                        if (locStatus === 'retirada_pendente' || locStatus === 'aguardando_retirada') {
+                            expectedStatus = 'aguardando_retirada';
+                        } else if (locStatus === 'troca_pendente' || locStatus === 'aguardando_troca') {
+                            expectedStatus = 'aguardando_troca';
+                        } else {
+                            expectedStatus = 'em_uso';
+                        }
+                    }
+                    
+                    if (currentStatus !== expectedStatus) {
+                        promessas.push(db.collection('cacambas').doc(id).update({
+                            status: expectedStatus
+                        }));
+                    }
+                }
+                if (promessas.length > 0) {
+                    await Promise.all(promessas);
+                    alert(`${promessas.length} caçamba(s) sincronizada(s) e corrigida(s) com sucesso!`);
+                } else {
+                    alert("Todas as caçambas já estão com os status corretos!");
+                }
+            } catch (err) {
+                alert("Erro ao sincronizar caçambas: " + err.message);
+            } finally {
+                btnSincronizar.disabled = false;
+                btnSincronizar.textContent = "🔄 Sincronizar";
+            }
+        });
 
         btnAbrir.addEventListener('click', () => {
             editandoCacambaId = null;
@@ -189,7 +238,6 @@
                         tamanho,
                         status
                     });
-                    alert('Caçamba atualizada com sucesso!');
                 } else {
                     await db.collection('cacambas').add({
                         admin_id: user.uid,
@@ -198,7 +246,6 @@
                         status: 'disponivel',
                         data_cadastro: new Date().toISOString()
                     });
-                    alert('Caçamba cadastrada com sucesso!');
                 }
                 formCacamba.reset();
                 modal.classList.remove('ativo');
@@ -356,7 +403,6 @@
                         try {
                             const cacId = e.currentTarget.getAttribute('data-id');
                             await db.collection('cacambas').doc(cacId).delete();
-                            alert('Caçamba removida.');
                         } catch (err) {
                             alert('Erro ao excluir: ' + err.message);
                         }
@@ -365,7 +411,7 @@
 
                 tr.querySelector('.btn-editar').addEventListener('click', () => {
                     const statusAtual = data.status || 'disponivel';
-                    const estaAlugada = locacoesAtivas[id] || (statusAtual !== 'disponivel' && statusAtual !== 'manutencao');
+                    const estaAlugada = locacoesAtivas[id];
 
                     if (estaAlugada) {
                         const osInfo = locacoesAtivas[id] ? ` (OS ${locacoesAtivas[id].os_numero || '-'})` : '';

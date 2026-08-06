@@ -164,7 +164,7 @@
                 inicializarDespesas(user);
 
                 const usuarioDiv = document.getElementById('usuario');
-                if (usuarioDiv) usuarioDiv.innerHTML = `${user.email} <small style="display:block; font-size:10px; color:#94a3b8; text-align:right;">ADMIN</small>`;
+                if (usuarioDiv) usuarioDiv.textContent = 'Administrador';
             }
         });
 
@@ -223,7 +223,6 @@
                         data,
                         status
                     });
-                    alert('Despesa alterada com sucesso!');
                 } else {
                     await db.collection('despesas').add({
                         admin_id: user.uid,
@@ -233,7 +232,6 @@
                         data,
                         status
                     });
-                    alert('Despesa registrada com sucesso!');
                 }
                 modal.classList.remove('ativo');
                 formDespesa.reset();
@@ -437,7 +435,6 @@
                         try {
                             const despId = e.currentTarget.getAttribute('data-id');
                             await db.collection('despesas').doc(despId).delete();
-                            alert('Despesa excluída.');
                         } catch (err) {
                             alert('Erro ao excluir: ' + err.message);
                         }

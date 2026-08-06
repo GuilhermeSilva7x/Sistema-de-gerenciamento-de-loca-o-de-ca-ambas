@@ -83,11 +83,11 @@
                     <input type="password" id="senha" required placeholder="Digite a senha do motorista">
                 </div>
 
-                <label>Número da CNH e Categoria</label>
-                <input type="text" id="cnh" required placeholder="Ex: 123456789-00 (Cat. D)">
+                <label>Número da CNH e Categoria (Opcional)</label>
+                <input type="text" id="cnh" placeholder="Ex: 123456789-00 (Cat. D)">
 
-                <label>Vencimento da CNH</label>
-                <input type="date" id="vencimento" required>
+                <label>Vencimento da CNH (Opcional)</label>
+                <input type="date" id="vencimento">
 
                 <label>Vincular Caminhão Disponível</label>
                 <select id="selectCaminhao">
@@ -153,7 +153,7 @@
                 inicializarMotoristas(user);
 
                 const usuarioDiv = document.getElementById('usuario');
-                if (usuarioDiv) usuarioDiv.textContent = user.email;
+                if (usuarioDiv) usuarioDiv.textContent = 'Administrador';
             }
         });
 
@@ -243,7 +243,6 @@
                         vencimento,
                         caminhao
                     });
-                    alert('Dados do motorista atualizados com sucesso!');
                     formMotorista.reset();
                     modal.classList.remove('ativo');
                 } catch (error) {
@@ -254,6 +253,11 @@
 
             if (!nome || !telefone || !email || !senha) {
                 alert('Nome, Telefone, E-mail e Senha são obrigatórios!');
+                return;
+            }
+
+            if (currentUser && email === currentUser.email.toLowerCase()) {
+                alert('Erro: Não é permitido cadastrar o e-mail do administrador como e-mail de motorista!');
                 return;
             }
 
@@ -296,7 +300,6 @@
                     ativo: true,
                     data_cadastro: new Date().toISOString()
                 });
-                alert('Motorista cadastrado com sucesso no banco de dados e habilitado para acessar o app mobile!');
                 formMotorista.reset();
                 modal.classList.remove('ativo');
             } catch (error) {
@@ -410,7 +413,6 @@
                         try {
                             const motId = e.currentTarget.getAttribute('data-id');
                             await db.collection('motoristas').doc(motId).delete();
-                            alert('Motorista excluído com sucesso.');
                         } catch (err) {
                             alert('Erro ao excluir: ' + err.message);
                         }
@@ -531,11 +533,23 @@
                     atividades.push({ id, data });
                 });
 
-                // Ordenar por data desc
+                // Ordenar por concluído_em desc (a última concluída primeiro). Se não tiver, ordena por criado_em ou data_entrega desc.
                 atividades.sort((a, b) => {
-                    const aDate = a.data.data_entrega || '';
-                    const bDate = b.data.data_entrega || '';
-                    return bDate.localeCompare(aDate);
+                    const getSortTime = (doc) => {
+                        if (doc.data.concluido_em) {
+                            const ts = doc.data.concluido_em;
+                            return ts.seconds ? ts.seconds : new Date(ts).getTime() / 1000;
+                        }
+                        if (doc.data.criado_em) {
+                            const ts = doc.data.criado_em;
+                            return ts.seconds ? ts.seconds : new Date(ts).getTime() / 1000;
+                        }
+                        if (doc.data.data_entrega) {
+                            return new Date(doc.data.data_entrega + 'T00:00:00').getTime() / 1000;
+                        }
+                        return 0;
+                    };
+                    return getSortTime(b) - getSortTime(a);
                 });
 
                 // Filtrar em memória pelas datas
@@ -585,11 +599,47 @@
 
                     // Caçamba cell
                     let cacambaCell = '';
-                    if (data.tipo_servico === 'troca' && (data.status === 'troca_pendente' || data.status === 'aguardando_troca')) {
-                        cacambaCell = `<span style="color:#2563eb;">Nº ${data.cacamba_numero || '-'} (Indo)</span><br><span style="color:#ea580c;">Nº ${data.cacamba_velha_numero || '-'} (Voltando)</span>`;
+                    if (data.tipo_servico === 'troca') {
+                        cacambaCell = `
+                            <div style="line-height: 1.3;">
+                                <strong>Nº ${data.cacamba_numero || '-'}</strong> <span style="font-size: 10px; color: #16a34a; font-weight: bold;">(Entregue)</span><br>
+                                <strong>Nº ${data.cacamba_velha_numero || '-'}</strong> <span style="font-size: 10px; color: #dc2626; font-weight: bold;">(Retirada)</span>
+                            </div>
+                        `;
                     } else {
-                        cacambaCell = `Nº ${data.cacamba_numero || '-'}`;
+                        cacambaCell = `<strong>Nº ${data.cacamba_numero || '-'}</strong>`;
                     }
+
+                    const formatarDataBr = (dStr) => {
+                        if (!dStr) return '-';
+                        return dStr.split('-').reverse().join('/');
+                    };
+
+                    const formatarTimestamp = (ts) => {
+                        if (!ts) return '-';
+                        const date = ts.toDate ? ts.toDate() : new Date(ts);
+                        if (isNaN(date.getTime())) return '-';
+                        // Converte para UTC-3 (Horário de Brasília)
+                        const utc = date.getTime() + (date.getTimezoneOffset() * 60000);
+                        const dataSp = new Date(utc + (3600000 * -3));
+                        const dia = String(dataSp.getDate()).padStart(2, '0');
+                        const mes = String(dataSp.getMonth() + 1).padStart(2, '0');
+                        const ano = dataSp.getFullYear();
+                        const hora = String(dataSp.getHours()).padStart(2, '0');
+                        const min = String(dataSp.getMinutes()).padStart(2, '0');
+                        return `${dia}/${mes}/${ano} ${hora}:${min}`;
+                    };
+
+                    const progData = formatarDataBr(data.data_entrega);
+                    const progHora = data.hora_entrega || '';
+                    const realDataHora = formatarTimestamp(data.concluido_em);
+
+                    cacambaCell += `
+                        <div style="font-size: 11px; margin-top: 4px; line-height: 1.2; color: #475569;">
+                            <span style="color: #64748b;">Prog: ${progData} ${progHora}</span><br>
+                            <span style="color: #10b981; font-weight: 500;">Realizado: ${realDataHora}</span>
+                        </div>
+                    `;
 
                     // Status badge
                     let statusBadge = '';
