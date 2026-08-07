@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assinatura do Sistema - Locação de Caçambas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #3b82f6;
+            margin-bottom: 12px;
+            letter-spacing: -0.025em;
+        }
+
+        .header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .alerta-pagamento {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .grid-planos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .card-plano {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border-radius: 16px;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-plano:hover {
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-plano.destaque {
+            border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(30, 41, 59, 0.95);
+        }
+
+        .card-plano.destaque::before {
+            content: 'MAIS POPULAR';
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: #2563eb;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 30px;
+            transform: rotate(45deg);
+        }
+
+        .nome-plano {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 8px;
+        }
+
+        .preco-plano {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: #3b82f6;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+        }
+
+        .preco-plano span {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #64748b;
+            margin-left: 4px;
+        }
+
+        .caracteristicas {
+            list-style: none;
+            margin-bottom: 30px;
+            text-align: left;
+            flex-grow: 1;
+        }
+
+        .caracteristicas li {
+            padding: 10px 0;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .caracteristicas li svg {
+            color: #10b981;
+            flex-shrink: 0;
+        }
+
+        .btn-assinar {
+            background: #3b82f6;
+            color: white;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: background 0.2s;
+            text-align: center;
+        }
+
+        .btn-assinar:hover {
+            background: #2563eb;
+        }
+
+        .card-plano.destaque .btn-assinar {
+            background: #2563eb;
+        }
+
+        .card-plano.destaque .btn-assinar:hover {
+            background: #1d4ed8;
+        }
+
+        .footer-action {
+            margin-top: 20px;
+        }
+
+        .btn-sair {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-sair:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #f1f5f9;
+        }
+
+        .btn-voltar {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f1f5f9;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+            transition: all 0.2s;
+        }
+
+        .btn-voltar:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+        }
+
+        .selo-plano-atual {
+            background: #10b981;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Botão Voltar ao Painel (exibido apenas se o plano estiver ativo) -->
+        <div id="container-voltar" style="text-align: left; display: none;">
+            <a href="telaprincipal.html" class="btn-voltar">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Voltar ao Painel
+            </a>
+        </div>
+
+        <div class="header">
+            <h1>Locação de Caçambas</h1>
+            <p>Seu assistente digital de logística e gerenciamento de frotas de caçambas.</p>
+        </div>
+
+        <div class="alerta-pagamento" style="display: none;">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            Assinatura pendente ou suspensa. Escolha um plano abaixo para liberar o acesso ao sistema.
+        </div>
+
+        <div class="grid-planos">
+            <!-- Plano Bronze -->
+            <div class="card-plano">
+                <div class="nome-plano">Bronze (Até 10 Caçambas)</div>
+                <div class="preco-plano">R$ 149,90<span>/mês</span></div>
+                <ul class="caracteristicas">
+                    <li>
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Até 10 Caçambas Ativas
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Aplicativo do Motorista Ilimitado
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Envio de Comprovantes por Imagem
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Financeiro e Relatórios
+                    </li>
+                </ul>
+                <a href="https://mpago.la/1BVeWpD" target="_blank" class="btn-assinar">Assinar Bronze</a>
+            </div>
+
+            <!-- Plano Prata -->
+            <div class="card-plano destaque">
+                <div class="nome-plano">Prata (Até 25 Caçambas)</div>
+                <div class="preco-plano">R$ 289,90<span>/mês</span></div>
+                <ul class="caracteristicas">
+                    <li>
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Até 25 Caçambas Ativas
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Aplicativo do Motorista Ilimitado
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Envio de Comprovantes por Imagem
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Financeiro e Relatórios
+                    </li>
+                </ul>
+                <a href="https://mpago.la/1o1fD5g" target="_blank" class="btn-assinar">Assinar Prata</a>
+            </div>
+
+            <!-- Plano Ouro -->
+            <div class="card-plano">
+                <div class="nome-plano">Ouro (Ilimitado)</div>
+                <div class="preco-plano">R$ 399,90<span>/mês</span></div>
+                <ul class="caracteristicas">
+                    <li>
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Caçambas Ilimitadas
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Aplicativo do Motorista Ilimitado
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Envio de Comprovantes por Imagem
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Financeiro e Relatórios
+                    </li>
+                </ul>
+                <a href="https://mpago.la/2g7Gif3" target="_blank" class="btn-assinar">Assinar Ouro</a>
+            </div>
+        </div>
+
+        <div class="footer-action">
+            <button id="btn-sair-assinatura" class="btn-sair">Sair da Conta</button>
+        </div>
+    </div>
+
+    <!-- SDKs do Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script>
+        let foiBloqueadoInicialmente = false;
+
+        function configurarExibicaoPlano(status, limite) {
+            const alerta = document.querySelector('.alerta-pagamento');
+            const containerVoltar = document.getElementById('container-voltar');
+            
+            // Remove qualquer selo anterior e restaura botões
+            document.querySelectorAll('.selo-plano-atual').forEach(el => el.remove());
+            document.querySelectorAll('.btn-assinar').forEach(btn => {
+                btn.style.background = '';
+                btn.style.pointerEvents = '';
+                
+                const planType = btn.getAttribute('href');
+                if (planType.includes('1BVeWpD')) btn.textContent = 'Assinar Bronze';
+                if (planType.includes('1o1fD5g')) btn.textContent = 'Assinar Prata';
+                if (planType.includes('2g7Gif3')) btn.textContent = 'Assinar Ouro';
+            });
+
+            if (status === 'ativo') {
+                alerta.style.display = 'none';
+                if (containerVoltar) containerVoltar.style.display = 'block';
+
+                // Adiciona o selo de Plano Atual no card correspondente
+                const cards = document.querySelectorAll('.card-plano');
+                let cardAlvo = null;
+                
+                if (limite === 10) {
+                    cardAlvo = cards[0]; // Bronze
+                } else if (limite === 25) {
+                    cardAlvo = cards[1]; // Prata
+                } else if (limite >= 999) {
+                    cardAlvo = cards[2]; // Ouro
+                }
+
+                if (cardAlvo) {
+                    const selo = document.createElement('div');
+                    selo.className = 'selo-plano-atual';
+                    selo.textContent = 'SEU PLANO ATUAL';
+                    cardAlvo.appendChild(selo);
+                    
+                    const btn = cardAlvo.querySelector('.btn-assinar');
+                    if (btn) {
+                        btn.textContent = 'Plano Ativo';
+                        btn.style.background = '#10b981';
+                        btn.style.pointerEvents = 'none'; // Impede clicar no próprio plano ativo
+                    }
+                }
+            } else {
+                alerta.style.display = 'inline-flex';
+                if (containerVoltar) containerVoltar.style.display = 'none';
+            }
+        }
+
+        // Monitoramento do status do plano
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = 'TeladeLogin.HTML';
+            } else {
+                // Injeta o UID como external_reference nos links do Mercado Pago
+                document.querySelectorAll('.btn-assinar').forEach(btn => {
+                    const baseHref = btn.getAttribute('href');
+                    if (baseHref && !baseHref.includes('external_reference')) {
+                        btn.setAttribute('href', `${baseHref}?external_reference=${user.uid}`);
+                    }
+                });
+
+                // Escuta em tempo real do documento do plano
+                db.collection('empresas').doc(user.uid).onSnapshot((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        const status = data.plano_status;
+                        const limite = data.plano_limite || 10;
+                        
+                        configurarExibicaoPlano(status, limite);
+                        
+                        if (status === 'ativo') {
+                            if (foiBloqueadoInicialmente) {
+                                // Se o usuário estava bloqueado e acabou de pagar, redireciona automático
+                                window.location.href = 'telaprincipal.html';
+                            }
+                        } else {
+                            foiBloqueadoInicialmente = true; // Se carregar bloqueado, ativa redirecionamento
+                        }
+                    } else {
+                        foiBloqueadoInicialmente = true;
+                    }
+                });
+            }
+        });
+
+        // Evento de Logoff
+        document.getElementById('btn-sair-assinatura').addEventListener('click', async () => {
+            try {
+                await auth.signOut();
+                window.location.href = 'TeladeLogin.HTML';
+            } catch (error) {
+                alert('Erro ao sair da conta: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

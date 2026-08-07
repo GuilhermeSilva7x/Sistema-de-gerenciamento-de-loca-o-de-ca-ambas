@@ -22,6 +22,7 @@
             <a href="caminhoes.html">Caminhões</a>
             <a href="despesas.html">Despesas</a>
             <a href="relatorios.html">Relatórios</a>
+            <a href="assinatura.html">Assinaturas</a>
         </nav>
     </aside>
 
@@ -148,6 +149,31 @@
             if (!user) {
                 window.location.href = 'TeladeLogin.HTML';
             } else {
+                // Verifica o status do plano do admin
+                try {
+                    const empDoc = await db.collection('empresas').doc(user.uid).get();
+                    if (!empDoc.exists) {
+                        // Inicializa como pendente por padrão
+                        await db.collection('empresas').doc(user.uid).set({
+                            nome_empresa: 'Locadora de Caçambas',
+                            email_admin: user.email,
+                            plano_status: 'pendente',
+                            plano_limite: 10,
+                            data_cadastro: new Date().toISOString()
+                        });
+                        window.location.href = 'assinatura.html';
+                        return;
+                    } else {
+                        const empData = empDoc.data();
+                        if (empData.plano_status !== 'ativo') {
+                            window.location.href = 'assinatura.html';
+                            return;
+                        }
+                    }
+                } catch (err) {
+                    console.error("Erro ao validar plano:", err);
+                }
+
                 currentUser = user;
                 await migrarDocumentosSemAdminId(user.uid);
                 inicializarMotoristas(user);

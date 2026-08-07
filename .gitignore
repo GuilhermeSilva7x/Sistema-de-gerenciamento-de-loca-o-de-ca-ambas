@@ -1,0 +1,15 @@
+# Dependências de Node
+node_modules/
+functions/node_modules/
+
+# Chaves e Variáveis de Ambiente Secretas
+.env
+.env.local
+.env.*
+functions/.env
+functions/.env.local
+functions/.env.*
+
+# Logs de depuração do Firebase
+*-debug.log
+.firebase/

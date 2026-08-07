@@ -3,6 +3,7 @@ import 'package:app_motorista/subpastas_homepage/paginaDeNavegacao.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:app_motorista/paginas_principais/login.dart';
 
 class Paginahistorico extends StatelessWidget {
   const Paginahistorico({super.key});
@@ -44,14 +45,77 @@ class Paginahistorico extends StatelessWidget {
             );
           }
 
+          final motoristaData = motoristaSnapshot.data!.docs.first.data() as Map<String, dynamic>;
           final motoristaId = motoristaSnapshot.data!.docs.first.id;
+          final adminId = motoristaData['admin_id'] ?? '';
 
-          return StreamBuilder<QuerySnapshot>(
-            // 2. Busca todas as locações do motorista
+          return StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
-                .collection('locacoes')
-                .where('motorista_id', isEqualTo: motoristaId)
+                .collection('empresas')
+                .doc(adminId)
                 .snapshots(),
+            builder: (context, empresaSnapshot) {
+              if (empresaSnapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              final empresaData = empresaSnapshot.data?.data() as Map<String, dynamic>?;
+              final planoStatus = empresaData?['plano_status'] ?? 'pendente';
+
+              if (planoStatus != 'ativo') {
+                return Container(
+                  color: Colors.red[900],
+                  width: double.infinity,
+                  height: double.infinity,
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.error_outline, size: 80, color: Colors.white),
+                      const SizedBox(height: 24),
+                      const Text(
+                        "ACESSO SUSPENSO",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        "O plano de serviços de sua empresa encontra-se temporariamente suspenso.\n\nPor favor, entre em contato com a gerência administrativa para regularizar o acesso.",
+                        style: TextStyle(color: Colors.white70, fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 32),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.red[900],
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        ),
+                        onPressed: () async {
+                          await FirebaseAuth.instance.signOut();
+                          if (context.mounted) {
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(builder: (context) => const LoginScreen()),
+                              (route) => false,
+                            );
+                          }
+                        },
+                        child: const Text("SAIR DA CONTA", style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              return StreamBuilder<QuerySnapshot>(
+                // 2. Busca todas as locações do motorista
+                stream: FirebaseFirestore.instance
+                    .collection('locacoes')
+                    .where('motorista_id', isEqualTo: motoristaId)
+                    .snapshots(),
             builder: (context, locacoesSnapshot) {
               if (locacoesSnapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -130,7 +194,9 @@ class Paginahistorico extends StatelessWidget {
             },
           );
         },
-      ),
+      );
+    },
+  ),
       bottomNavigationBar: const Paginadenavegacao(index: 2),
     );
   }
