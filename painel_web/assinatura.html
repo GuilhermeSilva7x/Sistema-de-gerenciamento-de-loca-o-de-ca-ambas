@@ -282,7 +282,7 @@
                         Financeiro e Relatórios
                     </li>
                 </ul>
-                <a href="https://mpago.la/1BVeWpD" target="_blank" class="btn-assinar">Assinar Bronze</a>
+                <a href="https://www.asaas.com/c/20yfzyixl2smnlex" target="_blank" class="btn-assinar" data-plano="bronze">Assinar Bronze</a>
             </div>
 
             <!-- Plano Prata -->
@@ -307,7 +307,7 @@
                         Financeiro e Relatórios
                     </li>
                 </ul>
-                <a href="https://mpago.la/1o1fD5g" target="_blank" class="btn-assinar">Assinar Prata</a>
+                <a href="https://www.asaas.com/c/9676xvpc1xkln572" target="_blank" class="btn-assinar" data-plano="prata">Assinar Prata</a>
             </div>
 
             <!-- Plano Ouro -->
@@ -332,7 +332,7 @@
                         Financeiro e Relatórios
                     </li>
                 </ul>
-                <a href="https://mpago.la/2g7Gif3" target="_blank" class="btn-assinar">Assinar Ouro</a>
+                <a href="https://www.asaas.com/c/fc3xafgitgj60wl2" target="_blank" class="btn-assinar" data-plano="ouro">Assinar Ouro</a>
             </div>
         </div>
 
@@ -360,10 +360,10 @@
                 btn.style.background = '';
                 btn.style.pointerEvents = '';
                 
-                const planType = btn.getAttribute('href');
-                if (planType.includes('1BVeWpD')) btn.textContent = 'Assinar Bronze';
-                if (planType.includes('1o1fD5g')) btn.textContent = 'Assinar Prata';
-                if (planType.includes('2g7Gif3')) btn.textContent = 'Assinar Ouro';
+                const planType = btn.getAttribute('data-plano');
+                if (planType === 'bronze') btn.textContent = 'Assinar Bronze';
+                if (planType === 'prata') btn.textContent = 'Assinar Prata';
+                if (planType === 'ouro') btn.textContent = 'Assinar Ouro';
             });
 
             if (status === 'ativo') {
@@ -406,14 +406,6 @@
             if (!user) {
                 window.location.href = 'TeladeLogin.HTML';
             } else {
-                // Injeta o UID como external_reference nos links do Mercado Pago
-                document.querySelectorAll('.btn-assinar').forEach(btn => {
-                    const baseHref = btn.getAttribute('href');
-                    if (baseHref && !baseHref.includes('external_reference')) {
-                        btn.setAttribute('href', `${baseHref}?external_reference=${user.uid}`);
-                    }
-                });
-
                 // Escuta em tempo real do documento do plano
                 db.collection('empresas').doc(user.uid).onSnapshot((doc) => {
                     if (doc.exists) {
