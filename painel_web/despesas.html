@@ -152,6 +152,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="notificacoes.js"></script>
     
     <script>
         let currentUser = null;
@@ -249,6 +251,7 @@
                         data,
                         status
                     });
+                    Alerta.sucesso('Despesa atualizada com sucesso!');
                 } else {
                     await db.collection('despesas').add({
                         admin_id: user.uid,
@@ -258,13 +261,14 @@
                         data,
                         status
                     });
+                    Alerta.sucesso('Despesa cadastrada com sucesso!');
                 }
                 modal.classList.remove('ativo');
                 formDespesa.reset();
                 editandoDespesaId = null;
                 document.getElementById('modalTituloDespesa').textContent = "Cadastrar Nova Despesa";
             } catch (error) {
-                alert('Erro ao salvar despesa: ' + error.message);
+                Alerta.erro('Erro ao salvar despesa: ' + error.message);
             }
         });
 
@@ -456,13 +460,22 @@
                 });
 
                 // Evento excluir
-                tr.querySelector('.btn-excluir').addEventListener('click', async (e) => {
-                    if (confirm(`Deseja realmente remover a despesa "${desp.descricao}"?`)) {
+                tr.querySelector('.btn-excluir').addEventListener('click', async () => {
+                    const despId = id;
+                    const descDespesa = desp.descricao || '';
+                    const confirmou = await Alerta.confirmar({
+                        titulo: 'Remover Despesa',
+                        texto: `Deseja realmente remover a despesa "${descDespesa}"?`,
+                        confirmText: 'Sim, remover',
+                        icone: 'warning',
+                        perigo: true
+                    });
+                    if (confirmou) {
                         try {
-                            const despId = e.currentTarget.getAttribute('data-id');
                             await db.collection('despesas').doc(despId).delete();
+                            Alerta.toast(`Despesa "${descDespesa}" removida com sucesso!`);
                         } catch (err) {
-                            alert('Erro ao excluir: ' + err.message);
+                            Alerta.erro('Erro ao excluir: ' + err.message);
                         }
                     }
                 });

@@ -79,6 +79,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="notificacoes.js"></script>
     
     <script>
         let editCaminhaoId = null;
@@ -93,7 +95,7 @@
                 try {
                     const checkDriver = await db.collection('motoristas').where('email', '==', user.email).get();
                     if (!checkDriver.empty) {
-                        alert("Acesso negado: Motoristas não possuem permissão para acessar o painel administrativo.");
+                        Alerta.erro("Motoristas não possuem permissão para acessar o painel administrativo.", "Acesso Negado");
                         await auth.signOut();
                         window.location.href = 'TeladeLogin.HTML';
                         return;
@@ -171,7 +173,7 @@
             const chassi = document.getElementById('chassi').value.trim();
 
             if (!placa || !chassi) {
-                alert('Placa e Chassi são obrigatórios!');
+                Alerta.aviso('Placa e Chassi são obrigatórios!');
                 return;
             }
 
@@ -182,10 +184,11 @@
                         placa,
                         chassi
                     });
+                    Alerta.sucesso('Caminhão atualizado com sucesso!');
                     modal.classList.remove('ativo');
                     formCaminhao.reset();
                 } catch (error) {
-                    alert('Erro ao atualizar caminhão: ' + error.message);
+                    Alerta.erro('Erro ao atualizar caminhão: ' + error.message);
                 }
             } else {
                 // Modo Cadastro
@@ -196,10 +199,11 @@
                         chassi,
                         data_cadastro: new Date().toISOString()
                     });
+                    Alerta.sucesso('Caminhão cadastrado com sucesso!');
                     modal.classList.remove('ativo');
                     formCaminhao.reset();
                 } catch (error) {
-                    alert('Erro ao salvar caminhão: ' + error.message);
+                    Alerta.erro('Erro ao salvar caminhão: ' + error.message);
                 }
             }
         });
@@ -295,13 +299,22 @@
                 });
 
                 // Evento excluir
-                tr.querySelector('.btn-excluir').addEventListener('click', async (e) => {
-                    if (confirm(`Deseja realmente remover o veículo com placa ${cam.placa}?`)) {
+                tr.querySelector('.btn-excluir').addEventListener('click', async () => {
+                    const camId = id;
+                    const placaCaminhao = cam.placa || '';
+                    const confirmou = await Alerta.confirmar({
+                        titulo: 'Remover Caminhão',
+                        texto: `Deseja realmente remover o veículo com placa ${placaCaminhao}?`,
+                        confirmText: 'Sim, remover',
+                        icone: 'warning',
+                        perigo: true
+                    });
+                    if (confirmou) {
                         try {
-                            const camId = e.currentTarget.getAttribute('data-id');
                             await db.collection('caminhoes').doc(camId).delete();
+                            Alerta.toast(`Veículo ${placaCaminhao} removido com sucesso!`);
                         } catch (err) {
-                            alert('Erro ao excluir: ' + err.message);
+                            Alerta.erro('Erro ao excluir: ' + err.message);
                         }
                     }
                 });

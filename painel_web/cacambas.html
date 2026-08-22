@@ -123,6 +123,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="notificacoes.js"></script>
     
     <script>
         let currentUser = null;
@@ -183,7 +185,14 @@
 
         const btnSincronizar = document.getElementById('btnSincronizarCacambas');
         btnSincronizar.addEventListener('click', async () => {
-            if (!confirm("Deseja realmente sincronizar os status de todas as caçambas com base nas locações ativas e concluídas?")) {
+            const confirmou = await Alerta.confirmar({
+                titulo: 'Sincronizar Caçambas',
+                texto: 'Deseja sincronizar e corrigir os status de todas as caçambas com base nas locações ativas e concluídas?',
+                confirmText: 'Sim, sincronizar',
+                icone: 'question',
+                perigo: false
+            });
+            if (!confirmou) {
                 return;
             }
             btnSincronizar.disabled = true;
@@ -215,12 +224,12 @@
                 }
                 if (promessas.length > 0) {
                     await Promise.all(promessas);
-                    alert(`${promessas.length} caçamba(s) sincronizada(s) e corrigida(s) com sucesso!`);
+                    Alerta.sucesso(`${promessas.length} caçamba(s) sincronizada(s) e corrigida(s) com sucesso!`);
                 } else {
-                    alert("Todas as caçambas já estão com os status corretos!");
+                    Alerta.info("Todas as caçambas já estão com os status corretos!");
                 }
             } catch (err) {
-                alert("Erro ao sincronizar caçambas: " + err.message);
+                Alerta.erro("Erro ao sincronizar caçambas: " + err.message);
             } finally {
                 btnSincronizar.disabled = false;
                 btnSincronizar.textContent = "🔄 Sincronizar";
@@ -258,7 +267,7 @@
             const status = document.getElementById('statusInicial').value;
 
             if (!numero || !tamanho) {
-                alert('Número e Tamanho são obrigatórios!');
+                Alerta.aviso('Número e Tamanho são obrigatórios!');
                 return;
             }
 
@@ -269,6 +278,7 @@
                         tamanho,
                         status
                     });
+                    Alerta.sucesso('Caçamba atualizada com sucesso!');
                 } else {
                     // Verifica o limite de caçambas do plano
                     const empDoc = await db.collection('empresas').doc(user.uid).get();
@@ -282,7 +292,7 @@
                             .get();
                         
                         if (cacambasSnapshot.size >= limite) {
-                            alert(`Limite atingido! O seu plano atual permite cadastrar no máximo ${limite} caçambas. Faça um upgrade de plano na aba de faturamento para liberar mais caçambas.`);
+                            Alerta.aviso(`Limite atingido! O seu plano atual permite cadastrar no máximo ${limite} caçambas. Faça um upgrade de plano na aba de faturamento para liberar mais caçambas.`, 'Limite do Plano Atingido');
                             return;
                         }
                     }
@@ -294,11 +304,12 @@
                         status: 'disponivel',
                         data_cadastro: new Date().toISOString()
                     });
+                    Alerta.sucesso('Caçamba cadastrada com sucesso!');
                 }
                 formCacamba.reset();
                 modal.classList.remove('ativo');
             } catch (error) {
-                alert('Erro ao salvar caçamba: ' + error.message);
+                Alerta.erro('Erro ao salvar caçamba: ' + error.message);
             }
         });
 
@@ -447,12 +458,21 @@
                 `;
 
                 tr.querySelector('.btn-excluir').addEventListener('click', async (e) => {
-                    if (confirm(`Deseja realmente remover a caçamba Nº ${data.numero}?`)) {
+                    const cacId = id;
+                    const numeroCacamba = data.numero || '';
+                    const confirmou = await Alerta.confirmar({
+                        titulo: 'Remover Caçamba',
+                        texto: `Deseja realmente remover a caçamba Nº ${numeroCacamba}?`,
+                        confirmText: 'Sim, remover',
+                        icone: 'warning',
+                        perigo: true
+                    });
+                    if (confirmou) {
                         try {
-                            const cacId = e.currentTarget.getAttribute('data-id');
                             await db.collection('cacambas').doc(cacId).delete();
+                            Alerta.toast(`Caçamba Nº ${numeroCacamba} removida com sucesso!`);
                         } catch (err) {
-                            alert('Erro ao excluir: ' + err.message);
+                            Alerta.erro('Erro ao excluir: ' + err.message);
                         }
                     }
                 });
@@ -463,7 +483,7 @@
 
                     if (estaAlugada) {
                         const osInfo = locacoesAtivas[id] ? ` (OS ${locacoesAtivas[id].os_numero || '-'})` : '';
-                        alert(`Esta caçamba está vinculada a uma locação ativa${osInfo}. O status é controlado automaticamente e deve ser alterado através da conclusão da locação correspondente.`);
+                        Alerta.aviso(`Esta caçamba está vinculada a uma locação ativa${osInfo}. O status é controlado automaticamente e deve ser alterado através da conclusão da locação correspondente.`, 'Caçamba em Uso');
                         return;
                     }
 
@@ -477,15 +497,7 @@
                 });
 
                 tr.querySelector('.btn-ver').addEventListener('click', () => {
-                    let info = `
-                        Caçamba Nº ${data.numero}
-                        Tamanho: ${data.tamanho} m³
-                        Status: ${data.status}
-                    `;
-                    if (locacao) {
-                        info += `\nAlugada para: ${locacao.cliente_nome}\nOS: ${locacao.os_numero}\nEndereço: ${rua}, ${num}`;
-                    }
-                    alert(info);
+                    Alerta.detalhesCacamba(data, locacao);
                 });
 
                 tbody.appendChild(tr);

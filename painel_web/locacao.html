@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="telaprincipal.css">
     <link rel="stylesheet" href="locacao.css">
 </head>
+
 <body>
 
     <aside class="barra-lateral">
@@ -25,14 +27,14 @@
     </aside>
 
     <div class="titulo-principal" id="titulo-principal">
-        
+
         <header class="cabecalho-principal" id="cabecalho-principal">
             <h2>Gerenciamento de Locações <span>Painel de controle</span></h2>
             <div class="usuario" id="usuario">Administrador</div>
         </header>
 
         <main class="informacoes-principais" id="informacoes-principais">
-            
+
             <section class="cards">
                 <div class="card disponiveis-card">
                     <h2>0</h2>
@@ -49,7 +51,8 @@
             </section>
 
             <section class="filtros" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
-                <input type="text" id="filtroPesquisa" placeholder="Buscar cliente ou obra..." style="flex: 2; min-width: 200px;">
+                <input type="text" id="filtroPesquisa" placeholder="Buscar cliente ou obra..."
+                    style="flex: 2; min-width: 200px;">
                 <select id="filtroStatus" style="flex: 1; min-width: 150px;">
                     <option value="Todos">Todos os Status</option>
                     <option value="na_obra">Na Obra</option>
@@ -58,16 +61,22 @@
                     <option value="troca_pendente">Aguardando Troca</option>
                     <option value="concluida">Concluídas</option>
                 </select>
-                
+
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <span style="font-size: 14px; font-weight: bold; color: #475569;">Início:</span>
-                    <input type="date" id="filtroDataInicio" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; background: white; color: #334155; width: 160px; outline: none; height: 44px; box-sizing: border-box;">
+                    <input type="date" id="filtroDataInicio"
+                        style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; background: white; color: #334155; width: 160px; outline: none; height: 44px; box-sizing: border-box;">
                 </div>
 
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <span style="font-size: 14px; font-weight: bold; color: #475569;">Fim:</span>
-                    <input type="date" id="filtroDataFim" style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; background: white; color: #334155; width: 160px; outline: none; height: 44px; box-sizing: border-box;">
+                    <input type="date" id="filtroDataFim"
+                        style="padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; background: white; color: #334155; width: 160px; outline: none; height: 44px; box-sizing: border-box;">
                 </div>
+
+                <button type="button" class="btn-filtrar-data" id="btnFiltrarData"> Filtrar Data</button>
+                <button type="button" class="btn-limpar-data" id="btnLimparFiltroData" title="Limpar filtro de data">✕
+                    Limpar</button>
 
                 <button class="btn-nova" id="btnAbrirModal">+ Nova Locação</button>
             </section>
@@ -98,19 +107,21 @@
 
     <div class="modal-overlay" id="modalLocacao">
         <div class="modal-container">
-            
+
             <header class="modal-header">
                 <h3>📋 NOVA LOCAÇÃO (ORDEM DE SERVIÇO)</h3>
                 <button class="modal-fechar" id="btnFecharModal">✕</button>
             </header>
 
             <form class="modal-form">
-                
+
                 <div class="form-secao">
                     <label class="secao-titulo">👤 SELECIONE O CLIENTE</label>
                     <div class="linha-dupla">
-                        <select id="selectCliente" style="flex: 3; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; background: #fff;"></select>
-                        <button type="button" class="btn-form-novo" id="btnAbrirNovoCliente" style="flex: 1;">+ Novo</button>
+                        <select id="selectCliente"
+                            style="flex: 3; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; background: #fff;"></select>
+                        <button type="button" class="btn-form-novo" id="btnAbrirNovoCliente" style="flex: 1;">+
+                            Novo</button>
                     </div>
                 </div>
                 <div class="form-secao">
@@ -198,13 +209,13 @@
                     <button type="button" class="btn-cancelar" id="btnCancelarModal">Cancelar</button>
                     <button type="submit" class="btn-salvar">🚀 SALVAR E LANÇAR</button>
                 </footer>
-                </form>
+            </form>
         </div>
     </div>
 
     <div class="modal-overlay-mini" id="modalNovoCliente">
         <div class="modal-container-mini">
-            
+
             <header class="modal-header">
                 <h3>👤 NOVO CLIENTE (RÁPIDO)</h3>
                 <button class="modal-fechar" id="btnFecharMiniModal">✕</button>
@@ -236,95 +247,178 @@
     </div>
 
     <!-- MODAL DETALHES DA LOCAÇÃO COM AGENDAMENTO DE RETIRADA -->
-    <div id="modalDetalhesLocacao" class="modal-overlay" style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
-        <div class="modal-conteudo" style="background-color: #fefefe; padding: 24px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: sans-serif;">
-            <div class="modal-cabecalho" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+    <div id="modalDetalhesLocacao" class="modal-overlay"
+        style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+        <div class="modal-conteudo"
+            style="background-color: #fefefe; padding: 24px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: sans-serif;">
+            <div class="modal-cabecalho"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
                 <h3 id="detalheOS" style="margin: 0; color: #1e3a8a;">Detalhes da Locação</h3>
-                <span id="btnFecharModalDetalhes" style="font-size: 24px; font-weight: bold; cursor: pointer; color: #64748b;">&times;</span>
+                <span id="btnFecharModalDetalhes"
+                    style="font-size: 24px; font-weight: bold; cursor: pointer; color: #64748b;">&times;</span>
             </div>
             <div id="detalhesCorpo" style="font-size: 14px; color: #334155; line-height: 1.6;">
                 <!-- Preenchido via JS -->
             </div>
             <div id="comprovanteArea" style="margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
                 <h4 style="margin: 0 0 10px 0; color: #1e3a8a;">Comprovante de Entrega/Troca/Retirada</h4>
-                <div id="comprovanteFoto" style="text-align: center; background: #f1f5f9; border-radius: 8px; padding: 10px; min-height: 100px; display: flex; align-items: center; justify-content: center;">
+                <div id="comprovanteFoto"
+                    style="text-align: center; background: #f1f5f9; border-radius: 8px; padding: 10px; min-height: 100px; display: flex; align-items: center; justify-content: center;">
                     <!-- Preenchido via JS -->
                 </div>
             </div>
 
             <!-- ÁREA PARA AGENDAR RETIRADA -->
-            <div id="areaSolicitarRetirada" style="display: none; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 15px;">
-                <h4 style="margin: 0 0 10px 0; color: #ef4444; font-family: sans-serif;">Agendar Retirada da Caçamba</h4>
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Selecione o Motorista Responsável:</label>
-                <select id="selectMotoristaRetirada" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;"></select>
-                
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Data da Retirada:</label>
-                <input type="date" id="dataRetiradaAgendamento" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+            <div id="areaSolicitarRetirada"
+                style="display: none; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 15px;">
+                <h4 style="margin: 0 0 10px 0; color: #ef4444; font-family: sans-serif;">Agendar Retirada da Caçamba
+                </h4>
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Selecione o
+                    Motorista Responsável:</label>
+                <select id="selectMotoristaRetirada"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;"></select>
 
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Horário da Retirada:</label>
-                <input type="time" id="horaRetirada" value="08:00" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px; font-size: 13px;">
-                
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Data da
+                    Retirada:</label>
+                <input type="date" id="dataRetiradaAgendamento"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Horário da
+                    Retirada:</label>
+                <input type="time" id="horaRetirada" value="08:00"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px; font-size: 13px;">
+
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <button type="button" id="btnCancelarAgendamentoRetirada" style="padding: 8px 12px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-size: 13px;">Cancelar</button>
-                    <button type="button" id="btnConfirmarAgendamentoRetirada" style="padding: 8px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">Confirmar e Gerar OS de Retirada</button>
+                    <button type="button" id="btnCancelarAgendamentoRetirada"
+                        style="padding: 8px 12px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-size: 13px;">Cancelar</button>
+                    <button type="button" id="btnConfirmarAgendamentoRetirada"
+                        style="padding: 8px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">Confirmar
+                        e Gerar OS de Retirada</button>
                 </div>
             </div>
 
             <!-- ÁREA PARA AGENDAR TROCA -->
-            <div id="areaSolicitarTroca" style="display: none; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 15px;">
+            <div id="areaSolicitarTroca"
+                style="display: none; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 15px;">
                 <h4 style="margin: 0 0 10px 0; color: #f59e0b; font-family: sans-serif;">Agendar Troca da Caçamba</h4>
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Selecione o Motorista Responsável:</label>
-                <select id="selectMotoristaTroca" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;"></select>
-                
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Caçamba para Levar (Substituta disponível):</label>
-                <select id="selectCacambaTroca" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;"></select>
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Selecione o
+                    Motorista Responsável:</label>
+                <select id="selectMotoristaTroca"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;"></select>
 
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Data da Troca:</label>
-                <input type="date" id="dataTrocaAgendamento" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Caçamba para Levar
+                    (Substituta disponível):</label>
+                <select id="selectCacambaTroca"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;"></select>
 
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Horário da Troca:</label>
-                <input type="time" id="horaTroca" value="08:00" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Data da
+                    Troca:</label>
+                <input type="date" id="dataTrocaAgendamento"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
 
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Valor da Troca:</label>
-                <input type="text" id="valorTroca" value="R$ 350,00" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Horário da
+                    Troca:</label>
+                <input type="time" id="horaTroca" value="08:00"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
 
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Forma de Pagamento:</label>
-                <select id="pagamentoFormaTroca" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Valor da
+                    Troca:</label>
+                <input type="text" id="valorTroca" value="R$ 350,00"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Forma de
+                    Pagamento:</label>
+                <select id="pagamentoFormaTroca"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
                     <option value="Pix">Pix</option>
                     <option value="Boleto">Boleto</option>
                     <option value="Cartão">Cartão</option>
                     <option value="Dinheiro">Dinheiro</option>
                 </select>
 
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Status do Pagamento:</label>
-                <select id="pagamentoStatusTroca" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px; font-size: 13px;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Status do
+                    Pagamento:</label>
+                <select id="pagamentoStatusTroca"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px; font-size: 13px;">
                     <option value="Pendente">Pendente</option>
                     <option value="Pago">Pago</option>
                 </select>
-                
+
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <button type="button" id="btnCancelarAgendamentoTroca" style="padding: 8px 12px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-size: 13px;">Cancelar</button>
-                    <button type="button" id="btnConfirmarAgendamentoTroca" style="padding: 8px 12px; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">Confirmar e Gerar OS de Troca</button>
+                    <button type="button" id="btnCancelarAgendamentoTroca"
+                        style="padding: 8px 12px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-size: 13px;">Cancelar</button>
+                    <button type="button" id="btnConfirmarAgendamentoTroca"
+                        style="padding: 8px 12px; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">Confirmar
+                        e Gerar OS de Troca</button>
                 </div>
             </div>
 
             <!-- ÁREA PARA CONCLUIR ATIVIDADE PELO PAINEL -->
-            <div id="areaConcluirPainel" style="display: none; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 15px;">
-                <h4 style="margin: 0 0 10px 0; color: #10b981; font-family: sans-serif;">Concluir Atividade pelo Painel</h4>
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Selecione o Motorista que realizou:</label>
-                <select id="selectMotoristaConcluir" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px; font-size: 13px;"></select>
-                
+            <div id="areaConcluirPainel"
+                style="display: none; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 15px;">
+                <h4 style="margin: 0 0 10px 0; color: #10b981; font-family: sans-serif;">Concluir Atividade pelo Painel
+                </h4>
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Selecione o
+                    Motorista que realizou:</label>
+                <select id="selectMotoristaConcluir"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px; font-size: 13px;"></select>
+
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <button type="button" id="btnCancelarConcluirPainel" style="padding: 8px 12px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-size: 13px;">Cancelar</button>
-                    <button type="button" id="btnConfirmarConcluirPainel" style="padding: 8px 12px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">Confirmar Conclusão</button>
+                    <button type="button" id="btnCancelarConcluirPainel"
+                        style="padding: 8px 12px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-size: 13px;">Cancelar</button>
+                    <button type="button" id="btnConfirmarConcluirPainel"
+                        style="padding: 8px 12px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">Confirmar
+                        Conclusão</button>
                 </div>
             </div>
 
-            <div class="modal-botoes" style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
-                <button type="button" id="btnConcluirPeloPainel" style="padding: 10px 16px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; font-family: sans-serif;">✅ Concluir Atividade</button>
-                <button type="button" id="btnAlterarOrdemRetirada" style="padding: 10px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; font-family: sans-serif;">📦 Solicitar Retirada</button>
-                <button type="button" id="btnAlterarOrdemTroca" style="padding: 10px 16px; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; font-family: sans-serif;">🔄 Solicitar Troca</button>
-                <button type="button" id="btnFecharDetalhesConfig" style="padding: 10px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-family: sans-serif;">Fechar</button>
+            <div class="modal-botoes"
+                style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                <button type="button" id="btnConcluirPeloPainel"
+                    style="padding: 10px 16px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; font-family: sans-serif;">✅
+                    Concluir Atividade</button>
+                <button type="button" id="btnAlterarOrdemRetirada"
+                    style="padding: 10px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; font-family: sans-serif;">📦
+                    Solicitar Retirada</button>
+                <button type="button" id="btnAlterarOrdemTroca"
+                    style="padding: 10px 16px; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; font-family: sans-serif;">🔄
+                    Solicitar Troca</button>
+                <button type="button" id="btnFecharDetalhesConfig"
+                    style="padding: 10px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-family: sans-serif;">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRMAÇÃO DE EXCLUSÃO DE LOCAÇÃO -->
+    <div id="modalConfirmarExcluirLocacao" class="modal-overlay-mini">
+        <div class="modal-confirmacao-box">
+            <div class="modal-confirmacao-header">
+                <div class="modal-confirmacao-icone">🗑️</div>
+                <div style="flex: 1;">
+                    <h3>Excluir Locação</h3>
+                    <p style="margin: 2px 0 0 0; font-size: 12px; color: #64748b;">Esta ação removerá o registro
+                        permanentemente.</p>
+                </div>
+                <button type="button" class="modal-fechar" id="btnFecharModalExcluir"
+                    style="font-size: 20px;">✕</button>
+            </div>
+            <div class="modal-confirmacao-corpo">
+                <p style="margin: 0; font-size: 14px; color: #334155;">
+                    Tem certeza de que deseja remover esta locação? A caçamba correspondente será liberada e voltará ao
+                    status <strong>Disponível</strong>.
+                </p>
+                <div class="modal-confirmacao-card-info" id="infoExclusaoLocacao">
+                    <p><strong>Ordem de Serviço:</strong> <span id="excluirOS"
+                            style="font-weight: 700; color: #1e3a8a;">-</span></p>
+                    <p><strong>Cliente:</strong> <span id="excluirCliente">-</span></p>
+                    <p><strong>Caçamba:</strong> <span id="excluirCacamba">-</span></p>
+                </div>
+            </div>
+            <div class="modal-confirmacao-rodape">
+                <button type="button" class="btn-cancelar" id="btnCancelarExcluirLocacao">Cancelar</button>
+                <button type="button" class="btn-confirmar-excluir" id="btnConfirmarExcluirLocacao">
+                    <span>🗑️ Sim, Excluir</span>
+                </button>
             </div>
         </div>
     </div>
@@ -333,7 +427,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="notificacoes.js"></script>
+
     <script>
         let currentUser = null;
 
@@ -360,7 +456,7 @@
                 try {
                     const checkDriver = await db.collection('motoristas').where('email', '==', user.email).get();
                     if (!checkDriver.empty) {
-                        alert("Acesso negado: Motoristas não possuem permissão para acessar o painel administrativo.");
+                        Alerta.erro("Motoristas não possuem permissão para acessar o painel administrativo.", "Acesso Negado");
                         await auth.signOut();
                         window.location.href = 'TeladeLogin.HTML';
                         return;
@@ -405,480 +501,481 @@
 
         function inicializarLocacoes(user) {
 
-        // Elementos do Modal 1 (Locação)
-        const modal = document.getElementById('modalLocacao');
-        const btnAbrir = document.getElementById('btnAbrirModal');
-        const btnFechar = document.getElementById('btnFecharModal');
-        const btnCancelar = document.getElementById('btnCancelarModal');
+            // Elementos do Modal 1 (Locação)
+            const modal = document.getElementById('modalLocacao');
+            const btnAbrir = document.getElementById('btnAbrirModal');
+            const btnFechar = document.getElementById('btnFecharModal');
+            const btnCancelar = document.getElementById('btnCancelarModal');
 
-        // Elementos do Modal 2 (Cliente Rápido)
-        const miniModal = document.getElementById('modalNovoCliente');
-        const btnAbrirMini = document.getElementById('btnAbrirNovoCliente');
-        const btnFecharMini = document.getElementById('btnFecharMiniModal');
-        const btnCancelarMini = document.getElementById('btnCancelarMiniModal');
-        const btnSalvarMini = document.getElementById('btnSalvarMiniModal');
+            // Elementos do Modal 2 (Cliente Rápido)
+            const miniModal = document.getElementById('modalNovoCliente');
+            const btnAbrirMini = document.getElementById('btnAbrirNovoCliente');
+            const btnFecharMini = document.getElementById('btnFecharMiniModal');
+            const btnCancelarMini = document.getElementById('btnCancelarMiniModal');
+            const btnSalvarMini = document.getElementById('btnSalvarMiniModal');
 
-        // Cliques do Modal 1
-        function obterDataLocalFormatada(date = new Date()) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
+            // Cliques do Modal 1
+            function obterDataLocalFormatada(date = new Date()) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
 
-        // Cliques do Modal 1
-        btnAbrir.addEventListener('click', () => {
-            carregarListasSelects();
-            const todayStr = obterDataLocalFormatada();
-            document.getElementById('dataEntregaLocacao').value = todayStr;
-            
-            const dateParts = todayStr.split('-');
-            const dateObj = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]) + 15);
-            document.getElementById('dataRetiradaLocacao').value = obterDataLocalFormatada(dateObj);
+            // Cliques do Modal 1
+            btnAbrir.addEventListener('click', () => {
+                carregarListasSelects();
+                const todayStr = obterDataLocalFormatada();
+                document.getElementById('dataEntregaLocacao').value = todayStr;
 
-            const agora = new Date();
-            const hora = String(agora.getHours()).padStart(2, '0');
-            const minuto = String(agora.getMinutes()).padStart(2, '0');
-            document.getElementById('horaEntregaLocacao').value = `${hora}:${minuto}`;
-
-            modal.classList.add('active');
-        });
-        btnFechar.addEventListener('click', () => modal.classList.remove('active'));
-        btnCancelar.addEventListener('click', (e) => {
-            e.preventDefault();
-            modal.classList.remove('active');
-        });
-
-        // Atualização automática de retirada ao alterar entrega
-        document.getElementById('dataEntregaLocacao').addEventListener('change', (e) => {
-            const dt = e.target.value;
-            if (dt) {
-                const dateParts = dt.split('-');
+                const dateParts = todayStr.split('-');
                 const dateObj = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]) + 15);
                 document.getElementById('dataRetiradaLocacao').value = obterDataLocalFormatada(dateObj);
+
+                const agora = new Date();
+                const hora = String(agora.getHours()).padStart(2, '0');
+                const minuto = String(agora.getMinutes()).padStart(2, '0');
+                document.getElementById('horaEntregaLocacao').value = `${hora}:${minuto}`;
+
+                modal.classList.add('active');
+            });
+            btnFechar.addEventListener('click', () => modal.classList.remove('active'));
+            btnCancelar.addEventListener('click', (e) => {
+                e.preventDefault();
+                modal.classList.remove('active');
+            });
+
+            // Atualização automática de retirada ao alterar entrega
+            document.getElementById('dataEntregaLocacao').addEventListener('change', (e) => {
+                const dt = e.target.value;
+                if (dt) {
+                    const dateParts = dt.split('-');
+                    const dateObj = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]) + 15);
+                    document.getElementById('dataRetiradaLocacao').value = obterDataLocalFormatada(dateObj);
+                }
+            });
+
+            // Cliques do Modal 2
+            btnAbrirMini.addEventListener('click', (e) => {
+                e.preventDefault();
+                miniModal.classList.add('active');
+            });
+            btnFecharMini.addEventListener('click', () => miniModal.classList.remove('active'));
+            btnCancelarMini.addEventListener('click', (e) => {
+                e.preventDefault();
+                miniModal.classList.remove('active');
+            });
+
+            // Fechar clicando no fundo escuro
+            modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+            miniModal.addEventListener('click', (e) => { if (e.target === miniModal) miniModal.classList.remove('active'); });
+
+            const selectCliente = document.getElementById('selectCliente');
+            const selectCacamba = document.getElementById('selectCacamba');
+            const selectMotorista = document.getElementById('selectMotorista');
+
+            // Escuta real-time para preenchimento de Cards do Topo
+            db.collection('locacoes').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
+                let ativas = 0;
+                let vencendo = 0;
+                let totalAReceber = 0;
+
+                const hoje = new Date();
+                hoje.setHours(0, 0, 0, 0);
+                const limiteMs = 2 * 24 * 60 * 60 * 1000; // 2 dias em milissegundos
+
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    if (data.status !== 'concluida') {
+                        ativas++;
+
+                        // Verifica se já está em status de retirada ou troca pendente
+                        const statusOperacionalPendente = (
+                            data.status === 'aguardando_retirada' ||
+                            data.status === 'retirada_pendente' ||
+                            data.status === 'troca_pendente' ||
+                            data.status === 'aguardando_troca'
+                        );
+
+                        // Verifica se a data de retirada está dentro do prazo de 2 dias ou já passou
+                        let prazoVencendo = false;
+                        if (data.data_retirada) {
+                            const dataRet = new Date(data.data_retirada + 'T00:00:00');
+                            const diff = dataRet.getTime() - hoje.getTime();
+                            if (diff <= limiteMs) {
+                                prazoVencendo = true;
+                            }
+                        }
+
+                        if (statusOperacionalPendente || prazoVencendo) {
+                            vencendo++;
+                        }
+                    }
+                    if (data.pagamento_status === 'Pendente') {
+                        const valorNum = parseFloat((data.valor || '0').toString().replace(/[^\d,.-]/g, '').replace(',', '.'));
+                        if (!isNaN(valorNum)) {
+                            totalAReceber += valorNum;
+                        }
+                    }
+                });
+
+                const cardsH2 = document.querySelectorAll('.card h2');
+                if (cardsH2.length >= 3) {
+                    cardsH2[0].textContent = ativas;
+                    cardsH2[1].textContent = vencendo;
+                    cardsH2[2].textContent = `R$ ${totalAReceber.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                }
+            });
+
+            // Carrega as coleções auxiliares (clientes, caçambas, motoristas) nos selects do formulário
+            async function carregarListasSelects(selectedClientId) {
+                try {
+                    // Clientes
+                    const qClientes = await db.collection('clientes').where('admin_id', '==', user.uid).get();
+                    selectCliente.innerHTML = '<option value="">Selecionar Cliente</option>';
+                    qClientes.forEach((docSnap) => {
+                        const isSelected = docSnap.id === selectedClientId ? 'selected' : '';
+                        selectCliente.innerHTML += `<option value="${docSnap.id}" ${isSelected}>${docSnap.data().nome}</option>`;
+                    });
+
+                    // Caçambas Disponíveis
+                    const qCacambas = await db.collection('cacambas').where('admin_id', '==', user.uid).get();
+                    selectCacamba.innerHTML = '<option value="">Selecionar Caçamba Disponível</option>';
+                    qCacambas.forEach((docSnap) => {
+                        const data = docSnap.data();
+                        if (data.status === 'disponivel') {
+                            selectCacamba.innerHTML += `<option value="${docSnap.id}" data-numero="${data.numero}">Nº ${data.numero} (${data.tamanho || 'm³'})</option>`;
+                        }
+                    });
+
+                    // Motoristas
+                    const qMotoristas = await db.collection('motoristas').where('admin_id', '==', user.uid).get();
+                    selectMotorista.innerHTML = '<option value="">Selecionar Motorista</option>';
+                    qMotoristas.forEach((docSnap) => {
+                        selectMotorista.innerHTML += `<option value="${docSnap.id}">${docSnap.data().nome}</option>`;
+                    });
+                } catch (error) {
+                    console.error("Erro ao carregar listas do modal: ", error);
+                }
             }
-        });
 
-        // Cliques do Modal 2
-        btnAbrirMini.addEventListener('click', (e) => {
-            e.preventDefault();
-            miniModal.classList.add('active');
-        });
-        btnFecharMini.addEventListener('click', () => miniModal.classList.remove('active'));
-        btnCancelarMini.addEventListener('click', (e) => {
-            e.preventDefault();
-            miniModal.classList.remove('active');
-        });
+            // Cadastro Rápido de Cliente
+            btnSalvarMini.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const form = miniModal.querySelector('form');
+                const inputs = form.querySelectorAll('input');
+                const nome = inputs[0].value.trim();
+                const whatsapp = inputs[1].value.trim();
+                const cpfCnpj = inputs[2].value.trim();
 
-        // Fechar clicando no fundo escuro
-        modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.remove('active'); });
-        miniModal.addEventListener('click', (e) => { if(e.target === miniModal) miniModal.classList.remove('active'); });
+                if (!nome || !whatsapp) {
+                    Alerta.aviso('Nome e WhatsApp são obrigatórios!');
+                    return;
+                }
 
-        const selectCliente = document.getElementById('selectCliente');
-        const selectCacamba = document.getElementById('selectCacamba');
-        const selectMotorista = document.getElementById('selectMotorista');
+                try {
+                    const docRef = await db.collection('clientes').add({
+                        admin_id: user.uid,
+                        nome,
+                        telefone: whatsapp,
+                        cpf_cnpj: cpfCnpj,
+                        data_cadastro: new Date().toISOString()
+                    });
+                    Alerta.sucesso('Cliente cadastrado com sucesso!');
+                    inputs.forEach(input => input.value = '');
+                    miniModal.classList.remove('active');
+                    carregarListasSelects(docRef.id);
+                } catch (error) {
+                    Alerta.erro('Erro ao cadastrar cliente: ' + error.message);
+                }
+            });
 
-        // Escuta real-time para preenchimento de Cards do Topo
-        db.collection('locacoes').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
-            let ativas = 0;
-            let vencendo = 0;
-            let totalAReceber = 0;
+            // Lançar Nova Locação
+            const formLocacao = modal.querySelector('form');
+            formLocacao.addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-            const hoje = new Date();
-            hoje.setHours(0, 0, 0, 0);
-            const limiteMs = 2 * 24 * 60 * 60 * 1000; // 2 dias em milissegundos
+                const clienteId = selectCliente.value;
+                const clienteNome = selectCliente.options[selectCliente.selectedIndex]?.text;
+                const cacambaId = selectCacamba.value;
+                const cacambaNum = selectCacamba.options[selectCacamba.selectedIndex]?.getAttribute('data-numero');
+                const motoristaId = selectMotorista.value;
+                const motoristaNome = selectMotorista.options[selectMotorista.selectedIndex]?.text;
 
-            snapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                if (data.status !== 'concluida') {
-                    ativas++;
-                    
-                    // Verifica se já está em status de retirada ou troca pendente
-                    const statusOperacionalPendente = (
-                        data.status === 'aguardando_retirada' || 
-                        data.status === 'retirada_pendente' || 
-                        data.status === 'troca_pendente' ||
-                        data.status === 'aguardando_troca'
-                    );
+                const rua = formLocacao.querySelector('input[placeholder*="Av. Brasil"]').value.trim();
+                const numero = formLocacao.querySelector('input[placeholder="456"]').value.trim();
+                const bairro = formLocacao.querySelector('input[placeholder="Centro"]').value.trim();
+                const cidade = formLocacao.querySelector('input[placeholder="São Paulo"]').value.trim();
 
-                    // Verifica se a data de retirada está dentro do prazo de 2 dias ou já passou
-                    let prazoVencendo = false;
-                    if (data.data_retirada) {
-                        const dataRet = new Date(data.data_retirada + 'T00:00:00');
-                        const diff = dataRet.getTime() - hoje.getTime();
-                        if (diff <= limiteMs) {
-                            prazoVencendo = true;
+                const dataEntrega = document.getElementById('dataEntregaLocacao').value;
+                const dataRetirada = document.getElementById('dataRetiradaLocacao').value;
+                const horaEntrega = document.getElementById('horaEntregaLocacao').value;
+                const valor = formLocacao.querySelector('input[value*="R$"]').value.trim();
+                const formaPagamento = formLocacao.querySelectorAll('select')[3].value;
+                const statusPagamento = formLocacao.querySelectorAll('select')[4].value;
+
+                const hojeLocal = obterDataLocalFormatada();
+                if (dataEntrega < hojeLocal) {
+                    Alerta.aviso("Não é possível criar uma ordem de serviço para uma data retroativa (que já passou).");
+                    return;
+                }
+
+                if (!clienteId || !cacambaId || !motoristaId || !rua || !numero || !bairro) {
+                    Alerta.aviso('Por favor, preencha todos os campos obrigatórios de endereço e logística.');
+                    return;
+                }
+
+                try {
+                    // Valida o limite de caçambas do plano antes de criar nova locação
+                    const empDoc = await db.collection('empresas').doc(user.uid).get();
+                    if (empDoc.exists) {
+                        const empData = empDoc.data();
+                        const limite = empData.plano_limite || 10;
+
+                        // Conta o total de caçambas cadastradas no inventário
+                        const cacambasSnapshot = await db.collection('cacambas')
+                            .where('admin_id', '==', user.uid)
+                            .get();
+
+                        if (cacambasSnapshot.size > limite) {
+                            Alerta.aviso(`Você possui mais caçambas cadastradas (${cacambasSnapshot.size}) do que o permitido pelo seu plano atual (${limite}). Remova as caçambas excedentes ou faça um upgrade de plano.`, 'Limite do Plano Atingido');
+                            return;
                         }
                     }
 
-                    if (statusOperacionalPendente || prazoVencendo) {
-                        vencendo++;
-                    }
-                }
-                if (data.pagamento_status === 'Pendente') {
-                    const valorNum = parseFloat((data.valor || '0').toString().replace(/[^\d,.-]/g, '').replace(',', '.'));
-                    if (!isNaN(valorNum)) {
-                        totalAReceber += valorNum;
-                    }
-                }
-            });
+                    const osNum = '#' + Math.floor(100 + Math.random() * 900);
 
-            const cardsH2 = document.querySelectorAll('.card h2');
-            if (cardsH2.length >= 3) {
-                cardsH2[0].textContent = ativas;
-                cardsH2[1].textContent = vencendo;
-                cardsH2[2].textContent = `R$ ${totalAReceber.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            }
-        });
+                    await db.collection('locacoes').add({
+                        admin_id: user.uid,
+                        criado_em: firebase.firestore.FieldValue.serverTimestamp(),
+                        os_numero: osNum,
+                        cliente_id: clienteId,
+                        cliente_nome: clienteNome,
+                        cacamba_id: cacambaId,
+                        cacamba_numero: cacambaNum,
+                        endereco: { rua, numero, bairro, cidade },
+                        status: 'entrega_pendente',
+                        tipo_servico: 'entrega',
+                        motorista_id: motoristaId,
+                        motorista_nome: motoristaNome,
+                        data_entrega: dataEntrega,
+                        hora_entrega: horaEntrega,
+                        data_retirada: dataRetirada,
+                        valor,
+                        pagamento_forma: formaPagamento,
+                        pagamento_status: statusPagamento,
+                        foto_confirmacao_url: ''
+                    });
 
-        // Carrega as coleções auxiliares (clientes, caçambas, motoristas) nos selects do formulário
-        async function carregarListasSelects(selectedClientId) {
-            try {
-                // Clientes
-                const qClientes = await db.collection('clientes').where('admin_id', '==', user.uid).get();
-                selectCliente.innerHTML = '<option value="">Selecionar Cliente</option>';
-                qClientes.forEach((docSnap) => {
-                    const isSelected = docSnap.id === selectedClientId ? 'selected' : '';
-                    selectCliente.innerHTML += `<option value="${docSnap.id}" ${isSelected}>${docSnap.data().nome}</option>`;
-                });
+                    await db.collection('cacambas').doc(cacambaId).update({
+                        status: 'em_uso'
+                    });
 
-                // Caçambas Disponíveis
-                const qCacambas = await db.collection('cacambas').where('admin_id', '==', user.uid).get();
-                selectCacamba.innerHTML = '<option value="">Selecionar Caçamba Disponível</option>';
-                qCacambas.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    if (data.status === 'disponivel') {
-                        selectCacamba.innerHTML += `<option value="${docSnap.id}" data-numero="${data.numero}">Nº ${data.numero} (${data.tamanho || 'm³'})</option>`;
-                    }
-                });
-
-                // Motoristas
-                const qMotoristas = await db.collection('motoristas').where('admin_id', '==', user.uid).get();
-                selectMotorista.innerHTML = '<option value="">Selecionar Motorista</option>';
-                qMotoristas.forEach((docSnap) => {
-                    selectMotorista.innerHTML += `<option value="${docSnap.id}">${docSnap.data().nome}</option>`;
-                });
-            } catch (error) {
-                console.error("Erro ao carregar listas do modal: ", error);
-            }
-        }
-
-        // Cadastro Rápido de Cliente
-        btnSalvarMini.addEventListener('click', async (e) => {
-            e.preventDefault();
-            const form = miniModal.querySelector('form');
-            const inputs = form.querySelectorAll('input');
-            const nome = inputs[0].value.trim();
-            const whatsapp = inputs[1].value.trim();
-            const cpfCnpj = inputs[2].value.trim();
-
-            if (!nome || !whatsapp) {
-                alert('Nome e WhatsApp são obrigatórios!');
-                return;
-            }
-
-            try {
-                const docRef = await db.collection('clientes').add({
-                    admin_id: user.uid,
-                    nome,
-                    telefone: whatsapp,
-                    cpf_cnpj: cpfCnpj,
-                    data_cadastro: new Date().toISOString()
-                });
-                alert('Cliente cadastrado com sucesso!');
-                inputs.forEach(input => input.value = '');
-                miniModal.classList.remove('active');
-                carregarListasSelects(docRef.id);
-            } catch (error) {
-                alert('Erro ao cadastrar cliente: ' + error.message);
-            }
-        });
-
-        // Lançar Nova Locação
-        const formLocacao = modal.querySelector('form');
-        formLocacao.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const clienteId = selectCliente.value;
-            const clienteNome = selectCliente.options[selectCliente.selectedIndex]?.text;
-            const cacambaId = selectCacamba.value;
-            const cacambaNum = selectCacamba.options[selectCacamba.selectedIndex]?.getAttribute('data-numero');
-            const motoristaId = selectMotorista.value;
-            const motoristaNome = selectMotorista.options[selectMotorista.selectedIndex]?.text;
-
-            const rua = formLocacao.querySelector('input[placeholder*="Av. Brasil"]').value.trim();
-            const numero = formLocacao.querySelector('input[placeholder="456"]').value.trim();
-            const bairro = formLocacao.querySelector('input[placeholder="Centro"]').value.trim();
-            const cidade = formLocacao.querySelector('input[placeholder="São Paulo"]').value.trim();
-
-            const dataEntrega = document.getElementById('dataEntregaLocacao').value;
-            const dataRetirada = document.getElementById('dataRetiradaLocacao').value;
-            const horaEntrega = document.getElementById('horaEntregaLocacao').value;
-            const valor = formLocacao.querySelector('input[value*="R$"]').value.trim();
-            const formaPagamento = formLocacao.querySelectorAll('select')[3].value;
-            const statusPagamento = formLocacao.querySelectorAll('select')[4].value;
-
-            const hojeLocal = obterDataLocalFormatada();
-            if (dataEntrega < hojeLocal) {
-                alert("Erro: Não é possível criar uma ordem de serviço para uma data retroativa (que já passou).");
-                return;
-            }
-
-            if (!clienteId || !cacambaId || !motoristaId || !rua || !numero || !bairro) {
-                alert('Por favor, preencha todos os campos obrigatórios de endereço e logística.');
-                return;
-            }
-
-            try {
-                // Valida o limite de caçambas do plano antes de criar nova locação
-                const empDoc = await db.collection('empresas').doc(user.uid).get();
-                if (empDoc.exists) {
-                    const empData = empDoc.data();
-                    const limite = empData.plano_limite || 10;
-                    
-                    // Conta o total de caçambas cadastradas no inventário
-                    const cacambasSnapshot = await db.collection('cacambas')
-                        .where('admin_id', '==', user.uid)
-                        .get();
-                    
-                    if (cacambasSnapshot.size > limite) {
-                        alert(`Acesso bloqueado! Você possui mais caçambas cadastradas (${cacambasSnapshot.size}) do que o permitido pelo seu plano atual (${limite}). Por favor, remova as caçambas excedentes na aba 'Caçambas' ou faça um upgrade do seu plano para poder realizar novas locações.`);
-                        return;
-                    }
-                }
-
-                const osNum = '#' + Math.floor(100 + Math.random() * 900);
-
-                await db.collection('locacoes').add({
-                    admin_id: user.uid,
-                    criado_em: firebase.firestore.FieldValue.serverTimestamp(),
-                    os_numero: osNum,
-                    cliente_id: clienteId,
-                    cliente_nome: clienteNome,
-                    cacamba_id: cacambaId,
-                    cacamba_numero: cacambaNum,
-                    endereco: { rua, numero, bairro, cidade },
-                    status: 'entrega_pendente',
-                    tipo_servico: 'entrega',
-                    motorista_id: motoristaId,
-                    motorista_nome: motoristaNome,
-                    data_entrega: dataEntrega,
-                    hora_entrega: horaEntrega,
-                    data_retirada: dataRetirada,
-                    valor,
-                    pagamento_forma: formaPagamento,
-                    pagamento_status: statusPagamento,
-                    foto_confirmacao_url: ''
-                });
-
-                await db.collection('cacambas').doc(cacambaId).update({
-                    status: 'em_uso'
-                });
-
-                formLocacao.reset();
-                modal.classList.remove('active');
-            } catch (error) {
-                alert('Erro ao lançar locação: ' + error.message);
-            }
-        });
-
-        // Escuta real-time para a Tabela de Locações
-        const tbody = document.querySelector('table tbody');
-        let todasLocacoes = [];
-
-        db.collection('locacoes').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
-            todasLocacoes = [];
-            snapshot.forEach(doc => todasLocacoes.push({ id: doc.id, data: doc.data() }));
-
-            todasLocacoes.sort((a, b) => {
-                const aData = a.data;
-                const bData = b.data;
-                const getSortTime = (data) => {
-                    if (data.status === 'concluida' && data.concluido_em) {
-                        return data.concluido_em.seconds ? (data.concluido_em.seconds * 1000) : new Date(data.concluido_em).getTime();
-                    }
-                    if (data.criado_em) {
-                        return data.criado_em.seconds ? (data.criado_em.seconds * 1000) : new Date(data.criado_em).getTime();
-                    }
-                    if (data.data_entrega) {
-                        return new Date(data.data_entrega + 'T00:00:00').getTime();
-                    }
-                    return 0;
-                };
-                return getSortTime(bData) - getSortTime(aData);
-            });
-
-            // Atualiza os contadores no topo baseados em todas as locações
-            atualizarCardsLocacoes();
-
-            // Renderiza na tabela com os filtros aplicados
-            renderizarLocacoesComFiltro();
-        });
-
-        let paginaAtual = 1;
-        const itensPorPagina = 10;
-
-        // Configurar escuta nos inputs de filtros
-        document.getElementById('filtroPesquisa').addEventListener('input', () => {
-            paginaAtual = 1;
-            renderizarLocacoesComFiltro();
-        });
-        document.getElementById('filtroStatus').addEventListener('change', () => {
-            paginaAtual = 1;
-            renderizarLocacoesComFiltro();
-        });
-        document.getElementById('filtroDataInicio').addEventListener('change', () => {
-            paginaAtual = 1;
-            renderizarLocacoesComFiltro();
-        });
-        document.getElementById('filtroDataFim').addEventListener('change', () => {
-            paginaAtual = 1;
-            renderizarLocacoesComFiltro();
-        });
-
-        function atualizarCardsLocacoes() {
-            let ativas = 0;
-            let vencendo = 0;
-            let totalAReceber = 0;
-
-            todasLocacoes.forEach((item) => {
-                const data = item.data;
-                if (data.status !== 'concluida') {
-                    ativas++;
-                    if (data.status === 'aguardando_retirada' || data.status === 'retirada_pendente' || data.status === 'troca_pendente') {
-                        vencendo++;
-                    }
-                }
-                if (data.pagamento_status === 'Pendente') {
-                    const valorNum = parseFloat((data.valor || '0').toString().replace(/[^\d,.-]/g, '').replace(',', '.'));
-                    if (!isNaN(valorNum)) {
-                        totalAReceber += valorNum;
-                    }
+                    Alerta.sucesso(`Locação ${osNum} lançada com sucesso!`);
+                    formLocacao.reset();
+                    modal.classList.remove('active');
+                } catch (error) {
+                    Alerta.erro('Erro ao lançar locação: ' + error.message);
                 }
             });
 
-            const cardsH2 = document.querySelectorAll('.card h2');
-            if (cardsH2.length >= 3) {
-                cardsH2[0].textContent = ativas;
-                cardsH2[1].textContent = vencendo;
-                cardsH2[2].textContent = `R$ ${totalAReceber.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            }
-        }
+            // Escuta real-time para a Tabela de Locações
+            const tbody = document.querySelector('table tbody');
+            let todasLocacoes = [];
 
-        function renderizarLocacoesComFiltro() {
-            const queryText = document.getElementById('filtroPesquisa').value.toLowerCase().trim();
-            const statusSel = document.getElementById('filtroStatus').value;
-            const startVal = document.getElementById('filtroDataInicio').value;
-            const endVal = document.getElementById('filtroDataFim').value;
+            db.collection('locacoes').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
+                todasLocacoes = [];
+                snapshot.forEach(doc => todasLocacoes.push({ id: doc.id, data: doc.data() }));
 
-            tbody.innerHTML = '';
+                todasLocacoes.sort((a, b) => {
+                    const aData = a.data;
+                    const bData = b.data;
+                    const getSortTime = (data) => {
+                        if (data.status === 'concluida' && data.concluido_em) {
+                            return data.concluido_em.seconds ? (data.concluido_em.seconds * 1000) : new Date(data.concluido_em).getTime();
+                        }
+                        if (data.criado_em) {
+                            return data.criado_em.seconds ? (data.criado_em.seconds * 1000) : new Date(data.criado_em).getTime();
+                        }
+                        if (data.data_entrega) {
+                            return new Date(data.data_entrega + 'T00:00:00').getTime();
+                        }
+                        return 0;
+                    };
+                    return getSortTime(bData) - getSortTime(aData);
+                });
 
-            const filtradas = todasLocacoes.filter(item => {
-                const data = item.data;
+                // Atualiza os contadores no topo baseados em todas as locações
+                atualizarCardsLocacoes();
 
-                // Filtro Status
-                if (statusSel !== 'Todos') {
-                    if (statusSel === 'na_obra' && data.status !== 'na_obra' && data.status !== 'em_uso') return false;
-                    if (statusSel === 'entrega_pendente' && data.status !== 'entrega_pendente') return false;
-                    if (statusSel === 'retirada_pendente' && data.status !== 'retirada_pendente' && data.status !== 'aguardando_retirada') return false;
-                    if (statusSel === 'troca_pendente' && data.status !== 'troca_pendente' && data.status !== 'aguardando_troca') return false;
-                    if (statusSel === 'concluida' && data.status !== 'concluida') return false;
-                }
-
-                // Filtro de Data
-                if (startVal && endVal) {
-                    if (!data.data_entrega) return false;
-                    const dataLoc = data.data_entrega.substring(0, 10);
-                    if (dataLoc < startVal || dataLoc > endVal) return false;
-                }
-
-                // Filtro de Texto (OS, Cliente, Endereço)
-                if (queryText) {
-                    const os = (data.os_numero || '').toLowerCase();
-                    const cliente = (data.cliente_nome || '').toLowerCase();
-                    const rua = (data.endereco?.rua || '').toLowerCase();
-                    const bairro = (data.endereco?.bairro || '').toLowerCase();
-                    
-                    if (!os.includes(queryText) && !cliente.includes(queryText) && !rua.includes(queryText) && !bairro.includes(queryText)) {
-                        return false;
-                    }
-                }
-
-                return true;
+                // Renderiza na tabela com os filtros aplicados
+                renderizarLocacoesComFiltro();
             });
 
-            const totalPaginas = Math.ceil(filtradas.length / itensPorPagina);
+            let paginaAtual = 1;
+            const itensPorPagina = 10;
 
-            if (filtradas.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #64748b;">Nenhuma locação encontrada.</td></tr>';
-                const paginacaoDiv = document.getElementById('paginacaoContainer');
-                if (paginacaoDiv) paginacaoDiv.style.display = 'none';
-                return;
+            // Configurar escuta nos inputs de filtros
+            document.getElementById('filtroPesquisa').addEventListener('input', () => {
+                paginaAtual = 1;
+                renderizarLocacoesComFiltro();
+            });
+            document.getElementById('filtroStatus').addEventListener('change', () => {
+                paginaAtual = 1;
+                renderizarLocacoesComFiltro();
+            });
+            document.getElementById('filtroDataInicio').addEventListener('change', () => {
+                paginaAtual = 1;
+                renderizarLocacoesComFiltro();
+            });
+            document.getElementById('filtroDataFim').addEventListener('change', () => {
+                paginaAtual = 1;
+                renderizarLocacoesComFiltro();
+            });
+
+            function atualizarCardsLocacoes() {
+                let ativas = 0;
+                let vencendo = 0;
+                let totalAReceber = 0;
+
+                todasLocacoes.forEach((item) => {
+                    const data = item.data;
+                    if (data.status !== 'concluida') {
+                        ativas++;
+                        if (data.status === 'aguardando_retirada' || data.status === 'retirada_pendente' || data.status === 'troca_pendente') {
+                            vencendo++;
+                        }
+                    }
+                    if (data.pagamento_status === 'Pendente') {
+                        const valorNum = parseFloat((data.valor || '0').toString().replace(/[^\d,.-]/g, '').replace(',', '.'));
+                        if (!isNaN(valorNum)) {
+                            totalAReceber += valorNum;
+                        }
+                    }
+                });
+
+                const cardsH2 = document.querySelectorAll('.card h2');
+                if (cardsH2.length >= 3) {
+                    cardsH2[0].textContent = ativas;
+                    cardsH2[1].textContent = vencendo;
+                    cardsH2[2].textContent = `R$ ${totalAReceber.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                }
             }
 
-            // Fatiamento dos itens para a página atual
-            const inicio = (paginaAtual - 1) * itensPorPagina;
-            const fim = inicio + itensPorPagina;
-            const listaPaginada = filtradas.slice(inicio, fim);
+            function renderizarLocacoesComFiltro() {
+                const queryText = document.getElementById('filtroPesquisa').value.toLowerCase().trim();
+                const statusSel = document.getElementById('filtroStatus').value;
+                const startVal = document.getElementById('filtroDataInicio').value;
+                const endVal = document.getElementById('filtroDataFim').value;
 
-            listaPaginada.forEach((item) => {
-                const id = item.id;
-                const data = item.data;
-                const tr = document.createElement('tr');
+                tbody.innerHTML = '';
 
-                let statusBadge = '';
-                if (data.status === 'em_uso' || data.status === 'na_obra') {
-                    statusBadge = '<span class="status disponivel">🟢 Na Obra</span>';
-                } else if (data.status === 'entrega_pendente') {
-                    statusBadge = '<span class="status troca">🟡 Entregar</span>';
-                } else if (data.status === 'retirada_pendente' || data.status === 'aguardando_retirada') {
-                    statusBadge = '<span class="status retirada">🔴 Retirar</span>';
-                } else if (data.status === 'troca_pendente' || data.status === 'aguardando_troca') {
-                    statusBadge = '<span class="status troca" style="background-color: #ffedd5; color: #c2410c; border: 1px solid #fed7aa;">🔄 Trocar</span>';
-                } else if (data.status === 'concluida') {
-                    if (data.pagamento_status !== 'Pago') {
-                        statusBadge = '<span class="status" style="background-color: #fef2f2; color: #ef4444; border: 1px solid #fee2e2; font-weight: bold;">⚠️ Cobrar (Concluída)</span>';
+                const filtradas = todasLocacoes.filter(item => {
+                    const data = item.data;
+
+                    // Filtro Status
+                    if (statusSel !== 'Todos') {
+                        if (statusSel === 'na_obra' && data.status !== 'na_obra' && data.status !== 'em_uso') return false;
+                        if (statusSel === 'entrega_pendente' && data.status !== 'entrega_pendente') return false;
+                        if (statusSel === 'retirada_pendente' && data.status !== 'retirada_pendente' && data.status !== 'aguardando_retirada') return false;
+                        if (statusSel === 'troca_pendente' && data.status !== 'troca_pendente' && data.status !== 'aguardando_troca') return false;
+                        if (statusSel === 'concluida' && data.status !== 'concluida') return false;
+                    }
+
+                    // Filtro de Data
+                    if (startVal && endVal) {
+                        if (!data.data_entrega) return false;
+                        const dataLoc = data.data_entrega.substring(0, 10);
+                        if (dataLoc < startVal || dataLoc > endVal) return false;
+                    }
+
+                    // Filtro de Texto (OS, Cliente, Endereço)
+                    if (queryText) {
+                        const os = (data.os_numero || '').toLowerCase();
+                        const cliente = (data.cliente_nome || '').toLowerCase();
+                        const rua = (data.endereco?.rua || '').toLowerCase();
+                        const bairro = (data.endereco?.bairro || '').toLowerCase();
+
+                        if (!os.includes(queryText) && !cliente.includes(queryText) && !rua.includes(queryText) && !bairro.includes(queryText)) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
+
+                const totalPaginas = Math.ceil(filtradas.length / itensPorPagina);
+
+                if (filtradas.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #64748b;">Nenhuma locação encontrada.</td></tr>';
+                    const paginacaoDiv = document.getElementById('paginacaoContainer');
+                    if (paginacaoDiv) paginacaoDiv.style.display = 'none';
+                    return;
+                }
+
+                // Fatiamento dos itens para a página atual
+                const inicio = (paginaAtual - 1) * itensPorPagina;
+                const fim = inicio + itensPorPagina;
+                const listaPaginada = filtradas.slice(inicio, fim);
+
+                listaPaginada.forEach((item) => {
+                    const id = item.id;
+                    const data = item.data;
+                    const tr = document.createElement('tr');
+
+                    let statusBadge = '';
+                    if (data.status === 'em_uso' || data.status === 'na_obra') {
+                        statusBadge = '<span class="status disponivel">🟢 Na Obra</span>';
+                    } else if (data.status === 'entrega_pendente') {
+                        statusBadge = '<span class="status troca">🟡 Entregar</span>';
+                    } else if (data.status === 'retirada_pendente' || data.status === 'aguardando_retirada') {
+                        statusBadge = '<span class="status retirada">🔴 Retirar</span>';
+                    } else if (data.status === 'troca_pendente' || data.status === 'aguardando_troca') {
+                        statusBadge = '<span class="status troca" style="background-color: #ffedd5; color: #c2410c; border: 1px solid #fed7aa;">🔄 Trocar</span>';
+                    } else if (data.status === 'concluida') {
+                        if (data.pagamento_status !== 'Pago') {
+                            statusBadge = '<span class="status" style="background-color: #fef2f2; color: #ef4444; border: 1px solid #fee2e2; font-weight: bold;">⚠️ Cobrar (Concluída)</span>';
+                        } else {
+                            statusBadge = '<span class="status" style="background-color: #cbd5e1; color: #475569;">✔️ Concluída</span>';
+                        }
                     } else {
-                        statusBadge = '<span class="status" style="background-color: #cbd5e1; color: #475569;">✔️ Concluída</span>';
+                        statusBadge = `<span class="status troca">${data.status}</span>`;
                     }
-                } else {
-                    statusBadge = `<span class="status troca">${data.status}</span>`;
-                }
 
-                const rua = data.endereco?.rua || '';
-                const numero = data.endereco?.numero || '';
+                    const rua = data.endereco?.rua || '';
+                    const numero = data.endereco?.numero || '';
 
-                let cacambaCell = '';
-                if (data.tipo_servico === 'troca') {
-                    cacambaCell = `
+                    let cacambaCell = '';
+                    if (data.tipo_servico === 'troca') {
+                        cacambaCell = `
                         <div style="line-height: 1.3; font-size: 11px;">
                             <strong>Nº ${data.cacamba_numero || '-'}</strong> <span style="font-size: 9px; color: #16a34a; font-weight: bold;">(Entregue)</span><br>
                             <strong>Nº ${data.cacamba_velha_numero || '-'}</strong> <span style="font-size: 9px; color: #dc2626; font-weight: bold;">(Retirada)</span>
                         </div>
                     `;
-                } else {
-                    cacambaCell = `<strong>Nº ${data.cacamba_numero || '-'}</strong>`;
-                }
+                    } else {
+                        cacambaCell = `<strong>Nº ${data.cacamba_numero || '-'}</strong>`;
+                    }
 
-                const formatarDataBr = (dStr) => {
-                    if (!dStr) return '-';
-                    return dStr.split('-').reverse().join('/');
-                };
+                    const formatarDataBr = (dStr) => {
+                        if (!dStr) return '-';
+                        return dStr.split('-').reverse().join('/');
+                    };
 
 
 
-                const progData = formatarDataBr(data.data_entrega);
-                const progHora = data.hora_entrega || '';
-                const realDataHora = formatarTimestamp(data.concluido_em);
+                    const progData = formatarDataBr(data.data_entrega);
+                    const progHora = data.hora_entrega || '';
+                    const realDataHora = formatarTimestamp(data.concluido_em);
 
-                cacambaCell += `
+                    cacambaCell += `
                     <div style="font-size: 10px; margin-top: 4px; line-height: 1.2; color: #475569;">
                         <span style="color: #64748b;">Prog: ${progData} ${progHora}</span><br>
                         <span style="color: #10b981; font-weight: 500;">Realizado: ${realDataHora}</span>
                     </div>
                 `;
 
-                tr.innerHTML = `
+                    tr.innerHTML = `
                     <td>${data.os_numero || '-'}</td>
                     <td>${data.cliente_nome || '-'}</td>
                     <td>${cacambaCell}</td>
@@ -890,147 +987,155 @@
                     </td>
                 `;
 
-                // Evento excluir
-                tr.querySelector('.btn-excluir').addEventListener('click', async (e) => {
-                    if (confirm('Deseja realmente remover esta locação?')) {
-                        try {
-                            const locId = e.currentTarget.getAttribute('data-id');
-                            const cacId = e.currentTarget.getAttribute('data-cacamba-id');
-                            
-                            await db.collection('locacoes').doc(locId).delete();
-                            if (cacId) {
-                                await db.collection('cacambas').doc(cacId).update({
-                                    status: 'disponivel'
-                                });
+                    // Evento excluir
+                    tr.querySelector('.btn-excluir').addEventListener('click', async (e) => {
+                        const locId = id;
+                        const cacId = data.cacamba_id;
+                        const osNumero = data.os_numero || '';
+                        const confirmou = await Alerta.confirmar({
+                            titulo: 'Excluir Locação',
+                            texto: `Deseja realmente remover a locação ${osNumero}? A caçamba voltará ao status Disponível.`,
+                            confirmText: 'Sim, excluir',
+                            icone: 'warning',
+                            perigo: true
+                        });
+                        if (confirmou) {
+                            try {
+                                await db.collection('locacoes').doc(locId).delete();
+                                if (cacId) {
+                                    await db.collection('cacambas').doc(cacId).update({
+                                        status: 'disponivel'
+                                    });
+                                }
+                                Alerta.toast('Locação excluída com sucesso!');
+                            } catch (err) {
+                                Alerta.erro('Erro ao excluir: ' + err.message);
                             }
-                        } catch (err) {
-                            alert('Erro ao excluir: ' + err.message);
                         }
-                    }
-                });
-
-                tr.style.cursor = 'pointer';
-                tr.addEventListener('click', (e) => {
-                    if (e.target.closest('.btn-excluir')) return;
-                    abrirDetalhesLocacao(id, data);
-                });
-
-                tbody.appendChild(tr);
-            });
-
-            // Renderiza controles de paginação
-            let paginacaoDiv = document.getElementById('paginacaoContainer');
-            if (!paginacaoDiv) {
-                paginacaoDiv = document.createElement('div');
-                paginacaoDiv.id = 'paginacaoContainer';
-                document.querySelector('.tabela').appendChild(paginacaoDiv);
-            }
-            paginacaoDiv.className = 'paginacao';
-            paginacaoDiv.style.cssText = 'display: flex; justify-content: center; gap: 8px; margin-top: 25px; margin-bottom: 25px; align-items: center;';
-            paginacaoDiv.innerHTML = '';
-
-            if (totalPaginas <= 1) {
-                paginacaoDiv.style.display = 'none';
-            } else {
-                paginacaoDiv.style.display = 'flex';
-
-                // Botão Anterior
-                const btnAnterior = document.createElement('button');
-                btnAnterior.textContent = 'Anterior';
-                if (paginaAtual === 1) {
-                    btnAnterior.disabled = true;
-                    btnAnterior.style.opacity = '0.5';
-                    btnAnterior.style.cursor = 'not-allowed';
-                } else {
-                    btnAnterior.addEventListener('click', () => {
-                        paginaAtual--;
-                        renderizarLocacoesComFiltro();
                     });
-                }
-                paginacaoDiv.appendChild(btnAnterior);
 
-                // Páginas numéricas
-                for (let i = 1; i <= totalPaginas; i++) {
-                    const btnPagina = document.createElement('button');
-                    btnPagina.textContent = i;
-                    if (i === paginaAtual) {
-                        btnPagina.className = 'pag-atual';
+                    tr.style.cursor = 'pointer';
+                    tr.addEventListener('click', (e) => {
+                        if (e.target.closest('.btn-excluir')) return;
+                        abrirDetalhesLocacao(id, data);
+                    });
+
+                    tbody.appendChild(tr);
+                });
+
+                // Renderiza controles de paginação
+                let paginacaoDiv = document.getElementById('paginacaoContainer');
+                if (!paginacaoDiv) {
+                    paginacaoDiv = document.createElement('div');
+                    paginacaoDiv.id = 'paginacaoContainer';
+                    document.querySelector('.tabela').appendChild(paginacaoDiv);
+                }
+                paginacaoDiv.className = 'paginacao';
+                paginacaoDiv.style.cssText = 'display: flex; justify-content: center; gap: 8px; margin-top: 25px; margin-bottom: 25px; align-items: center;';
+                paginacaoDiv.innerHTML = '';
+
+                if (totalPaginas <= 1) {
+                    paginacaoDiv.style.display = 'none';
+                } else {
+                    paginacaoDiv.style.display = 'flex';
+
+                    // Botão Anterior
+                    const btnAnterior = document.createElement('button');
+                    btnAnterior.textContent = 'Anterior';
+                    if (paginaAtual === 1) {
+                        btnAnterior.disabled = true;
+                        btnAnterior.style.opacity = '0.5';
+                        btnAnterior.style.cursor = 'not-allowed';
                     } else {
-                        btnPagina.addEventListener('click', () => {
-                            paginaAtual = i;
+                        btnAnterior.addEventListener('click', () => {
+                            paginaAtual--;
                             renderizarLocacoesComFiltro();
                         });
                     }
-                    paginacaoDiv.appendChild(btnPagina);
-                }
+                    paginacaoDiv.appendChild(btnAnterior);
 
-                // Botão Próximo
-                const btnProximo = document.createElement('button');
-                btnProximo.textContent = 'Próxima';
-                if (paginaAtual === totalPaginas) {
-                    btnProximo.disabled = true;
-                    btnProximo.style.opacity = '0.5';
-                    btnProximo.style.cursor = 'not-allowed';
+                    // Páginas numéricas
+                    for (let i = 1; i <= totalPaginas; i++) {
+                        const btnPagina = document.createElement('button');
+                        btnPagina.textContent = i;
+                        if (i === paginaAtual) {
+                            btnPagina.className = 'pag-atual';
+                        } else {
+                            btnPagina.addEventListener('click', () => {
+                                paginaAtual = i;
+                                renderizarLocacoesComFiltro();
+                            });
+                        }
+                        paginacaoDiv.appendChild(btnPagina);
+                    }
+
+                    // Botão Próximo
+                    const btnProximo = document.createElement('button');
+                    btnProximo.textContent = 'Próxima';
+                    if (paginaAtual === totalPaginas) {
+                        btnProximo.disabled = true;
+                        btnProximo.style.opacity = '0.5';
+                        btnProximo.style.cursor = 'not-allowed';
+                    } else {
+                        btnProximo.addEventListener('click', () => {
+                            paginaAtual++;
+                            renderizarLocacoesComFiltro();
+                        });
+                    }
+                    paginacaoDiv.appendChild(btnProximo);
+                }
+            }
+
+            // Função para abrir modal de detalhes com informações ricas
+            function abrirDetalhesLocacao(id, data) {
+                const modalDet = document.getElementById('modalDetalhesLocacao');
+
+                // Se a caçamba já está na obra/em uso, tratamos como locação normal de entrega/ativa
+                const isFinalizadoNaObra = (data.status === 'na_obra' || data.status === 'em_uso');
+                const tipoServico = isFinalizadoNaObra ? 'entrega' : (data.tipo_servico || (data.pagamento_forma === 'Sem Custo (Retirada)' ? 'retirada' : 'entrega'));
+
+                if (tipoServico === 'retirada') {
+                    document.getElementById('detalheOS').textContent = `Ordem de Retirada OS ${data.os_numero || '-'}`;
+                } else if (tipoServico === 'troca') {
+                    document.getElementById('detalheOS').textContent = `Ordem de Troca OS ${data.os_numero || '-'}`;
                 } else {
-                    btnProximo.addEventListener('click', () => {
-                        paginaAtual++;
-                        renderizarLocacoesComFiltro();
-                    });
+                    document.getElementById('detalheOS').textContent = `Locação OS ${data.os_numero || '-'}`;
                 }
-                paginacaoDiv.appendChild(btnProximo);
-            }
-        }
 
-        // Função para abrir modal de detalhes com informações ricas
-        function abrirDetalhesLocacao(id, data) {
-            const modalDet = document.getElementById('modalDetalhesLocacao');
-            
-            // Se a caçamba já está na obra/em uso, tratamos como locação normal de entrega/ativa
-            const isFinalizadoNaObra = (data.status === 'na_obra' || data.status === 'em_uso');
-            const tipoServico = isFinalizadoNaObra ? 'entrega' : (data.tipo_servico || (data.pagamento_forma === 'Sem Custo (Retirada)' ? 'retirada' : 'entrega'));
-            
-            if (tipoServico === 'retirada') {
-                document.getElementById('detalheOS').textContent = `Ordem de Retirada OS ${data.os_numero || '-'}`;
-            } else if (tipoServico === 'troca') {
-                document.getElementById('detalheOS').textContent = `Ordem de Troca OS ${data.os_numero || '-'}`;
-            } else {
-                document.getElementById('detalheOS').textContent = `Locação OS ${data.os_numero || '-'}`;
-            }
-            
-            const statusLabels = {
-                'em_uso': '🟢 Na Obra (Em Uso)',
-                'na_obra': '🟢 Na Obra (Em Uso)',
-                'entrega_pendente': '🟡 Entregar Caçamba',
-                'retirada_pendente': '🔴 Retirar Caçamba',
-                'aguardando_retirada': '🔴 Retirar Caçamba',
-                'troca_pendente': '🟡 Trocar Caçamba',
-                'aguardando_troca': '🟡 Trocar Caçamba',
-                'concluida': '✔️ Concluída'
-            };
-            
-            let statusCompData = '';
-            if (data.status === 'concluida' && data.concluido_em) {
-                const dataHoraConcl = formatarTimestamp(data.concluido_em);
-                if (dataHoraConcl !== '-') {
-                    statusCompData = ` em ${dataHoraConcl}`;
+                const statusLabels = {
+                    'em_uso': '🟢 Na Obra (Em Uso)',
+                    'na_obra': '🟢 Na Obra (Em Uso)',
+                    'entrega_pendente': '🟡 Entregar Caçamba',
+                    'retirada_pendente': '🔴 Retirar Caçamba',
+                    'aguardando_retirada': '🔴 Retirar Caçamba',
+                    'troca_pendente': '🟡 Trocar Caçamba',
+                    'aguardando_troca': '🟡 Trocar Caçamba',
+                    'concluida': '✔️ Concluída'
+                };
+
+                let statusCompData = '';
+                if (data.status === 'concluida' && data.concluido_em) {
+                    const dataHoraConcl = formatarTimestamp(data.concluido_em);
+                    if (dataHoraConcl !== '-') {
+                        statusCompData = ` em ${dataHoraConcl}`;
+                    }
                 }
-            }
-            if (data.concluida_pelo_painel_web) {
-                statusCompData += ' <span style="color:#10b981; font-weight:bold; font-size:11px;">(Concluída via Painel Web 💻)</span>';
-            }
-            const statusTexto = (statusLabels[data.status] || data.status) + statusCompData;
+                if (data.concluida_pelo_painel_web) {
+                    statusCompData += ' <span style="color:#10b981; font-weight:bold; font-size:11px;">(Concluída via Painel Web 💻)</span>';
+                }
+                const statusTexto = (statusLabels[data.status] || data.status) + statusCompData;
 
-            const rua = data.endereco?.rua || '';
-            const num = data.endereco?.numero || '';
-            const bairro = data.endereco?.bairro || '';
-            const cidade = data.endereco?.cidade || '';
+                const rua = data.endereco?.rua || '';
+                const num = data.endereco?.numero || '';
+                const bairro = data.endereco?.bairro || '';
+                const cidade = data.endereco?.cidade || '';
 
-            let pagamentoTexto = '';
-            const statusPg = (data.pagamento_status || '').toLowerCase();
-            if (statusPg === 'pago') {
-                pagamentoTexto = `<span style="color: #16a34a; font-weight: bold;">✔️ Pago (${data.pagamento_forma || '-'})</span>`;
-            } else {
-                pagamentoTexto = `
+                let pagamentoTexto = '';
+                const statusPg = (data.pagamento_status || '').toLowerCase();
+                if (statusPg === 'pago') {
+                    pagamentoTexto = `<span style="color: #16a34a; font-weight: bold;">✔️ Pago (${data.pagamento_forma || '-'})</span>`;
+                } else {
+                    pagamentoTexto = `
                     <span style="color: #ef4444; font-weight: bold;">❌ Pendente</span>
                     <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; width: fit-content;">
                         <label style="font-size: 12px; font-weight: bold; color: #475569;">Confirmar Pagamento:</label>
@@ -1043,38 +1148,38 @@
                         <button type="button" id="btnConfirmarPagamentoRapido" style="padding: 4px 8px; background: #16a34a; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;">Salvar</button>
                     </div>
                 `;
-            }
+                }
 
-            const dataAgendada = data.data_entrega ? new Date(data.data_entrega + 'T12:00:00').toLocaleDateString('pt-BR') : '-';
-            
-            let dataLinhas = '';
-            if (tipoServico === 'retirada') {
-                dataLinhas = `
+                const dataAgendada = data.data_entrega ? new Date(data.data_entrega + 'T12:00:00').toLocaleDateString('pt-BR') : '-';
+
+                let dataLinhas = '';
+                if (tipoServico === 'retirada') {
+                    dataLinhas = `
                     <p><strong>Tipo de Serviço:</strong> 🔴 Retirada de Caçamba</p>
                     <p><strong>Data Agendada para Retirada:</strong> ${dataAgendada}</p>
                 `;
-            } else if (tipoServico === 'troca') {
-                dataLinhas = `
+                } else if (tipoServico === 'troca') {
+                    dataLinhas = `
                     <p><strong>Tipo de Serviço:</strong> 🔄 Troca de Caçamba</p>
                     <p><strong>Data Agendada para Troca:</strong> ${dataAgendada}</p>
                 `;
-            } else {
-                const previsaoRet = data.data_retirada ? new Date(data.data_retirada + 'T12:00:00').toLocaleDateString('pt-BR') : '-';
-                const linhaPrevisao = data.status !== 'concluida'
-                    ? `<p><strong>Previsão de Retirada (15 dias):</strong> ${previsaoRet}</p>`
-                    : '';
-                dataLinhas = `
+                } else {
+                    const previsaoRet = data.data_retirada ? new Date(data.data_retirada + 'T12:00:00').toLocaleDateString('pt-BR') : '-';
+                    const linhaPrevisao = data.status !== 'concluida'
+                        ? `<p><strong>Previsão de Retirada (15 dias):</strong> ${previsaoRet}</p>`
+                        : '';
+                    dataLinhas = `
                     <p><strong>Tipo de Serviço:</strong> 🟢 Entrega de Caçamba</p>
                     <p><strong>Data de Entrega:</strong> ${dataAgendada}</p>
                     ${linhaPrevisao}
                 `;
-            }
+                }
 
-            const cacambaInfo = (tipoServico === 'troca' && (data.status === 'troca_pendente' || data.status === 'aguardando_troca'))
-                ? `Nº ${data.cacamba_numero || '-'} <span style="color: #2563eb; font-weight: bold;">(Indo)</span> | Nº ${data.cacamba_velha_numero || '-'} <span style="color: #ea580c; font-weight: bold;">(Voltando)</span>`
-                : `Nº ${data.cacamba_numero || '-'}`;
+                const cacambaInfo = (tipoServico === 'troca' && (data.status === 'troca_pendente' || data.status === 'aguardando_troca'))
+                    ? `Nº ${data.cacamba_numero || '-'} <span style="color: #2563eb; font-weight: bold;">(Indo)</span> | Nº ${data.cacamba_velha_numero || '-'} <span style="color: #ea580c; font-weight: bold;">(Voltando)</span>`
+                    : `Nº ${data.cacamba_numero || '-'}`;
 
-            document.getElementById('detalhesCorpo').innerHTML = `
+                document.getElementById('detalhesCorpo').innerHTML = `
                 <p><strong>Cliente:</strong> ${data.cliente_nome || '-'}</p>
                 <p><strong>Caçamba:</strong> ${cacambaInfo}</p>
                 <p><strong>Endereço:</strong> ${rua}, ${num} - ${bairro}, ${cidade}</p>
@@ -1085,474 +1190,478 @@
                 <p><strong>Pagamento:</strong> ${pagamentoTexto}</p>
             `;
 
-            // Configurar clique no Salvar Pagamento Rápido
-            setTimeout(() => {
-                const btnConfirmarPag = document.getElementById('btnConfirmarPagamentoRapido');
-                if (btnConfirmarPag) {
-                    btnConfirmarPag.addEventListener('click', async () => {
-                        const forma = document.getElementById('selectFormaPagamentoRapido').value;
-                        try {
-                            await db.collection('locacoes').doc(id).update({
-                                pagamento_status: 'Pago',
-                                pagamento_forma: forma
-                            });
-                            alert("Pagamento registrado com sucesso!");
-                            modalDet.style.display = 'none';
-                        } catch (err) {
-                            alert("Erro ao registrar pagamento: " + err.message);
-                        }
-                    });
-                }
-            }, 50);
-
-            // Foto comprovante
-            const compFoto = document.getElementById('comprovanteFoto');
-            if (!data.foto_confirmacao_url) {
-                compFoto.innerHTML = `<span style="color: #64748b; font-style: italic;">Nenhuma foto enviada pelo motorista ainda.</span>`;
-            } else if (data.foto_confirmacao_url.startsWith('http')) {
-                compFoto.innerHTML = `<img src="${data.foto_confirmacao_url}" alt="Comprovante" style="max-width: 100%; max-height: 200px; border-radius: 8px;">`;
-            } else if (data.foto_confirmacao_url === 'uploading') {
-                compFoto.innerHTML = `<span style="color: #2563eb; font-weight: bold; font-style: italic;">Enviando comprovante...</span>`;
-            } else if (data.foto_confirmacao_url === 'erro_upload_comprovante') {
-                compFoto.innerHTML = `<span style="color: #dc2626; font-weight: bold; font-style: italic;">Erro no envio do comprovante pelo motorista.</span>`;
-            } else {
-                compFoto.innerHTML = `<span style="color: #475569; font-weight: bold;">${data.foto_confirmacao_url}</span>`;
-            }
-
-            // Esconde as áreas de agendamento inicialmente
-            const areaRetirada = document.getElementById('areaSolicitarRetirada');
-            const areaTroca = document.getElementById('areaSolicitarTroca');
-            const areaConcluirPainel = document.getElementById('areaConcluirPainel');
-            areaRetirada.style.display = 'none';
-            areaTroca.style.display = 'none';
-            areaConcluirPainel.style.display = 'none';
-
-            // Botão de Alterar Ordem para Retirada e Troca
-            const btnRetirar = document.getElementById('btnAlterarOrdemRetirada');
-            const btnTrocar = document.getElementById('btnAlterarOrdemTroca');
-            const btnFechar = document.getElementById('btnFecharDetalhesConfig');
-            const btnConcluirPainel = document.getElementById('btnConcluirPeloPainel');
-
-            const isAtivo = (data.status === 'em_uso' || data.status === 'na_obra');
-            const isPendente = (data.status === 'entrega_pendente' || data.status === 'retirada_pendente' || data.status === 'troca_pendente' || data.status === 'aguardando_retirada' || data.status === 'aguardando_troca');
-
-            btnRetirar.style.display = isAtivo ? 'block' : 'none';
-            btnTrocar.style.display = isAtivo ? 'block' : 'none';
-            btnConcluirPainel.style.display = isPendente ? 'block' : 'none';
-            btnFechar.style.display = 'block';
-
-            // Configurar clique no Solicitar Retirada
-            const novoBtnRetirar = btnRetirar.cloneNode(true);
-            btnRetirar.parentNode.replaceChild(novoBtnRetirar, btnRetirar);
-
-            novoBtnRetirar.addEventListener('click', async () => {
-                areaRetirada.style.display = 'block';
-                areaTroca.style.display = 'none';
-                novoBtnRetirar.style.display = 'none';
-                novoBtnTrocar.style.display = 'none';
-                btnFechar.style.display = 'none';
-                document.getElementById('dataRetiradaAgendamento').value = obterDataLocalFormatada();
-                const agoraTime = new Date();
-                const horaFormatada = `${String(agoraTime.getHours()).padStart(2, '0')}:${String(agoraTime.getMinutes()).padStart(2, '0')}`;
-                document.getElementById('horaRetirada').value = horaFormatada;
-
-                // Carrega motoristas dinamicamente
-                const selectMot = document.getElementById('selectMotoristaRetirada');
-                selectMot.innerHTML = '<option value="">Carregando motoristas...</option>';
-                try {
-                    const snap = await db.collection('motoristas').where('admin_id', '==', user.uid).get();
-                    selectMot.innerHTML = '';
-                    snap.forEach(docSnap => {
-                        const mot = docSnap.data();
-                        const opt = document.createElement('option');
-                        opt.value = docSnap.id;
-                        opt.textContent = mot.nome;
-                        selectMot.appendChild(opt);
-                    });
-                } catch (err) {
-                    selectMot.innerHTML = '<option value="">Erro ao carregar motoristas</option>';
-                }
-            });
-
-            // Configurar clique no Solicitar Troca
-            const novoBtnTrocar = btnTrocar.cloneNode(true);
-            btnTrocar.parentNode.replaceChild(novoBtnTrocar, btnTrocar);
-
-            novoBtnTrocar.addEventListener('click', async () => {
-                areaTroca.style.display = 'block';
-                areaRetirada.style.display = 'none';
-                novoBtnRetirar.style.display = 'none';
-                novoBtnTrocar.style.display = 'none';
-                btnFechar.style.display = 'none';
-                document.getElementById('dataTrocaAgendamento').value = obterDataLocalFormatada();
-                const agoraTime = new Date();
-                const horaFormatada = `${String(agoraTime.getHours()).padStart(2, '0')}:${String(agoraTime.getMinutes()).padStart(2, '0')}`;
-                document.getElementById('horaTroca').value = horaFormatada;
-
-                // Carrega motoristas dinamicamente
-                const selectMotTroca = document.getElementById('selectMotoristaTroca');
-                selectMotTroca.innerHTML = '<option value="">Carregando motoristas...</option>';
-                try {
-                    const snap = await db.collection('motoristas').where('admin_id', '==', user.uid).get();
-                    selectMotTroca.innerHTML = '';
-                    snap.forEach(docSnap => {
-                        const mot = docSnap.data();
-                        const opt = document.createElement('option');
-                        opt.value = docSnap.id;
-                        opt.textContent = mot.nome;
-                        selectMotTroca.appendChild(opt);
-                    });
-                } catch (err) {
-                    selectMotTroca.innerHTML = '<option value="">Erro ao carregar motoristas</option>';
-                }
-
-                // Carrega caçambas disponíveis dinamicamente
-                const selectCacambaTr = document.getElementById('selectCacambaTroca');
-                selectCacambaTr.innerHTML = '<option value="">Carregando caçambas...</option>';
-                try {
-                    const snap = await db.collection('cacambas').where('admin_id', '==', user.uid).where('status', '==', 'disponivel').get();
-                    selectCacambaTr.innerHTML = '';
-                    if (snap.empty) {
-                        selectCacambaTr.innerHTML = '<option value="">Nenhuma caçamba disponível</option>';
-                    } else {
-                        snap.forEach(docSnap => {
-                            const cac = docSnap.data();
-                            const opt = document.createElement('option');
-                            opt.value = docSnap.id;
-                            opt.textContent = `Nº ${cac.numero} (${cac.tamanho} m³)`;
-                            selectCacambaTr.appendChild(opt);
+                // Configurar clique no Salvar Pagamento Rápido
+                setTimeout(() => {
+                    const btnConfirmarPag = document.getElementById('btnConfirmarPagamentoRapido');
+                    if (btnConfirmarPag) {
+                        btnConfirmarPag.addEventListener('click', async () => {
+                            const forma = document.getElementById('selectFormaPagamentoRapido').value;
+                            try {
+                                await db.collection('locacoes').doc(id).update({
+                                    pagamento_status: 'Pago',
+                                    pagamento_forma: forma
+                                });
+                                Alerta.sucesso("Pagamento registrado com sucesso!");
+                                modalDet.style.display = 'none';
+                            } catch (err) {
+                                Alerta.erro("Erro ao registrar pagamento: " + err.message);
+                            }
                         });
                     }
-                } catch (err) {
-                    selectCacambaTr.innerHTML = '<option value="">Erro ao carregar caçambas</option>';
-                }
-            });
+                }, 50);
 
-            // Configurar botões internos da área de agendamento de retirada
-            const btnCancelarAgendamento = document.getElementById('btnCancelarAgendamentoRetirada');
-            const btnConfirmarAgendamento = document.getElementById('btnConfirmarAgendamentoRetirada');
-
-            const novoBtnCancelar = btnCancelarAgendamento.cloneNode(true);
-            btnCancelarAgendamento.parentNode.replaceChild(novoBtnCancelar, btnCancelarAgendamento);
-            novoBtnCancelar.addEventListener('click', () => {
-                areaRetirada.style.display = 'none';
-                novoBtnRetirar.style.display = 'block';
-                novoBtnTrocar.style.display = 'block';
-                btnFechar.style.display = 'block';
-            });
-
-            const novoBtnConfirmar = btnConfirmarAgendamento.cloneNode(true);
-            btnConfirmarAgendamento.parentNode.replaceChild(novoBtnConfirmar, btnConfirmarAgendamento);
-            novoBtnConfirmar.addEventListener('click', async () => {
-                const selectMot = document.getElementById('selectMotoristaRetirada');
-                const motId = selectMot.value;
-                const motNome = selectMot.options[selectMot.selectedIndex]?.text;
-                const hora = document.getElementById('horaRetirada').value;
-                const dataRet = document.getElementById('dataRetiradaAgendamento').value;
-
-                if (!motId) {
-                    alert("Por favor, selecione um motorista!");
-                    return;
+                // Foto comprovante
+                const compFoto = document.getElementById('comprovanteFoto');
+                if (!data.foto_confirmacao_url) {
+                    compFoto.innerHTML = `<span style="color: #64748b; font-style: italic;">Nenhuma foto enviada pelo motorista ainda.</span>`;
+                } else if (data.foto_confirmacao_url.startsWith('http')) {
+                    compFoto.innerHTML = `<img src="${data.foto_confirmacao_url}" alt="Comprovante" style="max-width: 100%; max-height: 200px; border-radius: 8px;">`;
+                } else if (data.foto_confirmacao_url === 'uploading') {
+                    compFoto.innerHTML = `<span style="color: #2563eb; font-weight: bold; font-style: italic;">Enviando comprovante...</span>`;
+                } else if (data.foto_confirmacao_url === 'erro_upload_comprovante') {
+                    compFoto.innerHTML = `<span style="color: #dc2626; font-weight: bold; font-style: italic;">Erro no envio do comprovante pelo motorista.</span>`;
+                } else {
+                    compFoto.innerHTML = `<span style="color: #475569; font-weight: bold;">${data.foto_confirmacao_url}</span>`;
                 }
 
-                const hojeLocal = obterDataLocalFormatada();
-                if (dataRet < hojeLocal) {
-                    alert("Erro: Não é possível solicitar uma retirada para uma data retroativa (que já passou).");
-                    return;
-                }
-                const agora = new Date();
-                const horaAtual = String(agora.getHours()).padStart(2, '0');
-                const minAtual = String(agora.getMinutes()).padStart(2, '0');
-                const horarioAtual = `${horaAtual}:${minAtual}`;
-                if (dataRet === hojeLocal && hora < horarioAtual) {
-                    alert(`Erro: O horário selecionado (${hora}) não pode ser anterior ao horário atual (${horarioAtual}).`);
-                    return;
-                }
-
-                try {
-                    const promessas = [];
-                    promessas.push(db.collection('locacoes').doc(id).update({
-                        status: 'concluida',
-                        data_retirada: dataRet,
-                        concluido_em: firebase.firestore.FieldValue.serverTimestamp()
-                    }));
-
-                    const newOS = '#' + Math.floor(100 + Math.random() * 900);
-                    promessas.push(db.collection('locacoes').add({
-                        admin_id: user.uid,
-                        criado_em: firebase.firestore.FieldValue.serverTimestamp(),
-                        os_numero: newOS,
-                        cliente_id: data.cliente_id || '',
-                        cliente_nome: data.cliente_nome || '',
-                        cacamba_id: data.cacamba_id || '',
-                        cacamba_numero: data.cacamba_numero || '',
-                        endereco: data.endereco || {},
-                        status: 'retirada_pendente',
-                        tipo_servico: 'retirada',
-                        motorista_id: motId,
-                        motorista_nome: motNome,
-                        data_entrega: dataRet,
-                        hora_entrega: hora,
-                        data_retirada: '',
-                        valor: '',
-                        pagamento_forma: 'Sem Custo (Retirada)',
-                        pagamento_status: 'Pago',
-                        foto_confirmacao_url: ''
-                    }));
-
-                    if (data.cacamba_id) {
-                        promessas.push(db.collection('cacambas').doc(data.cacamba_id).update({
-                            status: 'retirada_pendente'
-                        }));
-                    }
-
-                    await Promise.all(promessas);
-
-                    modalDet.classList.remove('active');
-                    modalDet.style.display = 'none';
-                } catch (err) {
-                    alert("Erro ao agendar retirada: " + err.message);
-                }
-            });
-
-            // Configurar botões internos da área de agendamento de troca
-            const btnCancelarTroca = document.getElementById('btnCancelarAgendamentoTroca');
-            const btnConfirmarTroca = document.getElementById('btnConfirmarAgendamentoTroca');
-
-            const novoBtnCancelarTroca = btnCancelarTroca.cloneNode(true);
-            btnCancelarTroca.parentNode.replaceChild(novoBtnCancelarTroca, btnCancelarTroca);
-            novoBtnCancelarTroca.addEventListener('click', () => {
-                areaTroca.style.display = 'none';
-                novoBtnRetirar.style.display = 'block';
-                novoBtnTrocar.style.display = 'block';
-                btnFechar.style.display = 'block';
-            });
-
-            const novoBtnConfirmarTroca = btnConfirmarTroca.cloneNode(true);
-            btnConfirmarTroca.parentNode.replaceChild(novoBtnConfirmarTroca, btnConfirmarTroca);
-            novoBtnConfirmarTroca.addEventListener('click', async () => {
-                const selectMotTr = document.getElementById('selectMotoristaTroca');
-                const motId = selectMotTr.value;
-                const motNome = selectMotTr.options[selectMotTr.selectedIndex]?.text;
-                const selectCacTr = document.getElementById('selectCacambaTroca');
-                const cacambaIdSubstituta = selectCacTr.value;
-                const cacambaNumSubstitutaText = selectCacTr.options[selectCacTr.selectedIndex]?.text;
-                const hora = document.getElementById('horaTroca').value;
-                const dataTroca = document.getElementById('dataTrocaAgendamento').value;
-                const valor = document.getElementById('valorTroca').value.trim();
-                const pagamentoForma = document.getElementById('pagamentoFormaTroca').value;
-                const pagamentoStatus = document.getElementById('pagamentoStatusTroca').value;
-
-                if (!motId) {
-                    alert("Por favor, selecione um motorista!");
-                    return;
-                }
-                if (!cacambaIdSubstituta || cacambaIdSubstituta === "Nenhuma caçamba disponível" || cacambaIdSubstituta === "Carregando caçambas...") {
-                    alert("Por favor, selecione uma caçamba substituta disponível!");
-                    return;
-                }
-
-                const hojeLocal = obterDataLocalFormatada();
-                if (dataTroca < hojeLocal) {
-                    alert("Erro: Não é possível solicitar uma troca para uma data retroativa (que já passou).");
-                    return;
-                }
-                const agora = new Date();
-                const horaAtual = String(agora.getHours()).padStart(2, '0');
-                const minAtual = String(agora.getMinutes()).padStart(2, '0');
-                const horarioAtual = `${horaAtual}:${minAtual}`;
-                if (dataTroca === hojeLocal && hora < horarioAtual) {
-                    alert(`Erro: O horário selecionado (${hora}) não pode ser anterior ao horário atual (${horarioAtual}).`);
-                    return;
-                }
-
-                const cacambaNumSubstituta = cacambaNumSubstitutaText.replace("Nº ", "").split(" (")[0];
-
-                try {
-                    const promessas = [];
-                    promessas.push(db.collection('locacoes').doc(id).update({
-                        status: 'concluida',
-                        data_retirada: dataTroca,
-                        concluido_em: firebase.firestore.FieldValue.serverTimestamp()
-                    }));
-
-                    if (data.cacamba_id) {
-                        promessas.push(db.collection('cacambas').doc(data.cacamba_id).update({
-                            status: 'disponivel'
-                        }));
-                    }
-
-                    const newOS = '#' + Math.floor(100 + Math.random() * 900);
-                    promessas.push(db.collection('locacoes').add({
-                        admin_id: user.uid,
-                        criado_em: firebase.firestore.FieldValue.serverTimestamp(),
-                        os_numero: newOS,
-                        cliente_id: data.cliente_id || '',
-                        cliente_nome: data.cliente_nome || '',
-                        cacamba_id: cacambaIdSubstituta,
-                        cacamba_numero: cacambaNumSubstituta,
-                        cacamba_velha_id: data.cacamba_id || '',
-                        cacamba_velha_numero: data.cacamba_numero || '',
-                        endereco: data.endereco || {},
-                        status: 'troca_pendente',
-                        tipo_servico: 'troca',
-                        motorista_id: motId,
-                        motorista_nome: motNome,
-                        data_entrega: dataTroca,
-                        hora_entrega: hora,
-                        data_retirada: '',
-                        valor: valor,
-                        pagamento_forma: pagamentoForma,
-                        pagamento_status: pagamentoStatus,
-                        foto_confirmacao_url: ''
-                    }));
-
-                    promessas.push(db.collection('cacambas').doc(cacambaIdSubstituta).update({
-                        status: 'troca_pendente'
-                    }));
-
-                    await Promise.all(promessas);
-
-                    modalDet.classList.remove('active');
-                    modalDet.style.display = 'none';
-                } catch (err) {
-                    alert("Erro ao agendar troca: " + err.message);
-                }
-            });
-
-            // Configurar clique no Concluir pelo Painel
-            const novoBtnConcluir = btnConcluirPainel.cloneNode(true);
-            btnConcluirPainel.parentNode.replaceChild(novoBtnConcluir, btnConcluirPainel);
-
-            novoBtnConcluir.addEventListener('click', async () => {
-                areaConcluirPainel.style.display = 'block';
+                // Esconde as áreas de agendamento inicialmente
+                const areaRetirada = document.getElementById('areaSolicitarRetirada');
+                const areaTroca = document.getElementById('areaSolicitarTroca');
+                const areaConcluirPainel = document.getElementById('areaConcluirPainel');
                 areaRetirada.style.display = 'none';
                 areaTroca.style.display = 'none';
-                novoBtnRetirar.style.display = 'none';
-                novoBtnTrocar.style.display = 'none';
-                novoBtnConcluir.style.display = 'none';
-                btnFechar.style.display = 'none';
-
-                // Carrega motoristas dinamicamente
-                const selectMotConc = document.getElementById('selectMotoristaConcluir');
-                selectMotConc.innerHTML = '<option value="">Carregando motoristas...</option>';
-                try {
-                    const snap = await db.collection('motoristas').where('admin_id', '==', user.uid).get();
-                    selectMotConc.innerHTML = '<option value="">Selecionar Motorista</option>';
-                    snap.forEach(docSnap => {
-                        const mot = docSnap.data();
-                        const opt = document.createElement('option');
-                        opt.value = docSnap.id;
-                        opt.textContent = mot.nome;
-                        if (docSnap.id === data.motorista_id) {
-                            opt.selected = true;
-                        }
-                        selectMotConc.appendChild(opt);
-                    });
-                } catch (err) {
-                    selectMotConc.innerHTML = '<option value="">Erro ao carregar motoristas</option>';
-                }
-            });
-
-            const btnCancelarConcluir = document.getElementById('btnCancelarConcluirPainel');
-            const btnConfirmarConcluir = document.getElementById('btnConfirmarConcluirPainel');
-
-            const novoBtnCancelarConcluir = btnCancelarConcluir.cloneNode(true);
-            btnCancelarConcluir.parentNode.replaceChild(novoBtnCancelarConcluir, btnCancelarConcluir);
-            novoBtnCancelarConcluir.addEventListener('click', () => {
                 areaConcluirPainel.style.display = 'none';
-                novoBtnRetirar.style.display = isAtivo ? 'block' : 'none';
-                novoBtnTrocar.style.display = isAtivo ? 'block' : 'none';
-                novoBtnConcluir.style.display = isPendente ? 'block' : 'none';
+
+                // Botão de Alterar Ordem para Retirada e Troca
+                const btnRetirar = document.getElementById('btnAlterarOrdemRetirada');
+                const btnTrocar = document.getElementById('btnAlterarOrdemTroca');
+                const btnFechar = document.getElementById('btnFecharDetalhesConfig');
+                const btnConcluirPainel = document.getElementById('btnConcluirPeloPainel');
+
+                const isAtivo = (data.status === 'em_uso' || data.status === 'na_obra');
+                const isPendente = (data.status === 'entrega_pendente' || data.status === 'retirada_pendente' || data.status === 'troca_pendente' || data.status === 'aguardando_retirada' || data.status === 'aguardando_troca');
+
+                btnRetirar.style.display = isAtivo ? 'block' : 'none';
+                btnTrocar.style.display = isAtivo ? 'block' : 'none';
+                btnConcluirPainel.style.display = isPendente ? 'block' : 'none';
                 btnFechar.style.display = 'block';
-            });
 
-            const novoBtnConfirmarConcluir = btnConfirmarConcluir.cloneNode(true);
-            btnConfirmarConcluir.parentNode.replaceChild(novoBtnConfirmarConcluir, btnConfirmarConcluir);
-            novoBtnConfirmarConcluir.addEventListener('click', async () => {
-                const selectMotConc = document.getElementById('selectMotoristaConcluir');
-                const motId = selectMotConc.value;
-                const motNome = selectMotConc.options[selectMotConc.selectedIndex]?.text;
+                // Configurar clique no Solicitar Retirada
+                const novoBtnRetirar = btnRetirar.cloneNode(true);
+                btnRetirar.parentNode.replaceChild(novoBtnRetirar, btnRetirar);
 
-                if (!motId) {
-                    alert("Por favor, selecione o motorista que realizou a atividade!");
-                    return;
-                }
+                novoBtnRetirar.addEventListener('click', async () => {
+                    areaRetirada.style.display = 'block';
+                    areaTroca.style.display = 'none';
+                    novoBtnRetirar.style.display = 'none';
+                    novoBtnTrocar.style.display = 'none';
+                    btnFechar.style.display = 'none';
+                    document.getElementById('dataRetiradaAgendamento').value = obterDataLocalFormatada();
+                    const agoraTime = new Date();
+                    const horaFormatada = `${String(agoraTime.getHours()).padStart(2, '0')}:${String(agoraTime.getMinutes()).padStart(2, '0')}`;
+                    document.getElementById('horaRetirada').value = horaFormatada;
 
-                try {
-                    const promessas = [];
-                    const novoStatusLocacao = (data.tipo_servico === 'retirada') ? 'concluida' : 'na_obra';
-                    const updateData = {
-                        status: novoStatusLocacao,
-                        motorista_id: motId,
-                        motorista_nome: motNome,
-                        concluida_pelo_painel_web: true,
-                        foto_confirmacao_url: 'Concluído pelo Painel Web',
-                        concluido_em: firebase.firestore.FieldValue.serverTimestamp()
-                    };
-
-                    if (data.tipo_servico === 'entrega') {
-                        updateData.data_entrega = obterDataLocalFormatada();
-                        const dateObj = new Date();
-                        dateObj.setDate(dateObj.getDate() + 15);
-                        updateData.data_retirada = obterDataLocalFormatada(dateObj);
-                    } else if (data.tipo_servico === 'troca') {
-                        updateData.data_entrega = obterDataLocalFormatada();
-                        const dateObj = new Date();
-                        dateObj.setDate(dateObj.getDate() + 15);
-                        updateData.data_retirada = obterDataLocalFormatada(dateObj);
-                    } else if (data.tipo_servico === 'retirada') {
-                        updateData.data_retirada = obterDataLocalFormatada();
+                    // Carrega motoristas dinamicamente
+                    const selectMot = document.getElementById('selectMotoristaRetirada');
+                    selectMot.innerHTML = '<option value="">Carregando motoristas...</option>';
+                    try {
+                        const snap = await db.collection('motoristas').where('admin_id', '==', user.uid).get();
+                        selectMot.innerHTML = '';
+                        snap.forEach(docSnap => {
+                            const mot = docSnap.data();
+                            const opt = document.createElement('option');
+                            opt.value = docSnap.id;
+                            opt.textContent = mot.nome;
+                            selectMot.appendChild(opt);
+                        });
+                    } catch (err) {
+                        selectMot.innerHTML = '<option value="">Erro ao carregar motoristas</option>';
                     }
-                    
-                    promessas.push(db.collection('locacoes').doc(id).update(updateData));
+                });
 
-                    const novoStatusCacamba = (data.tipo_servico === 'retirada') ? 'disponivel' : 'em_uso';
-                    if (data.cacamba_id) {
-                        promessas.push(db.collection('cacambas').doc(data.cacamba_id).update({
-                            status: novoStatusCacamba
+                // Configurar clique no Solicitar Troca
+                const novoBtnTrocar = btnTrocar.cloneNode(true);
+                btnTrocar.parentNode.replaceChild(novoBtnTrocar, btnTrocar);
+
+                novoBtnTrocar.addEventListener('click', async () => {
+                    areaTroca.style.display = 'block';
+                    areaRetirada.style.display = 'none';
+                    novoBtnRetirar.style.display = 'none';
+                    novoBtnTrocar.style.display = 'none';
+                    btnFechar.style.display = 'none';
+                    document.getElementById('dataTrocaAgendamento').value = obterDataLocalFormatada();
+                    const agoraTime = new Date();
+                    const horaFormatada = `${String(agoraTime.getHours()).padStart(2, '0')}:${String(agoraTime.getMinutes()).padStart(2, '0')}`;
+                    document.getElementById('horaTroca').value = horaFormatada;
+
+                    // Carrega motoristas dinamicamente
+                    const selectMotTroca = document.getElementById('selectMotoristaTroca');
+                    selectMotTroca.innerHTML = '<option value="">Carregando motoristas...</option>';
+                    try {
+                        const snap = await db.collection('motoristas').where('admin_id', '==', user.uid).get();
+                        selectMotTroca.innerHTML = '';
+                        snap.forEach(docSnap => {
+                            const mot = docSnap.data();
+                            const opt = document.createElement('option');
+                            opt.value = docSnap.id;
+                            opt.textContent = mot.nome;
+                            selectMotTroca.appendChild(opt);
+                        });
+                    } catch (err) {
+                        selectMotTroca.innerHTML = '<option value="">Erro ao carregar motoristas</option>';
+                    }
+
+                    // Carrega caçambas disponíveis dinamicamente
+                    const selectCacambaTr = document.getElementById('selectCacambaTroca');
+                    selectCacambaTr.innerHTML = '<option value="">Carregando caçambas...</option>';
+                    try {
+                        const snap = await db.collection('cacambas').where('admin_id', '==', user.uid).where('status', '==', 'disponivel').get();
+                        selectCacambaTr.innerHTML = '';
+                        if (snap.empty) {
+                            selectCacambaTr.innerHTML = '<option value="">Nenhuma caçamba disponível</option>';
+                        } else {
+                            snap.forEach(docSnap => {
+                                const cac = docSnap.data();
+                                const opt = document.createElement('option');
+                                opt.value = docSnap.id;
+                                opt.textContent = `Nº ${cac.numero} (${cac.tamanho} m³)`;
+                                selectCacambaTr.appendChild(opt);
+                            });
+                        }
+                    } catch (err) {
+                        selectCacambaTr.innerHTML = '<option value="">Erro ao carregar caçambas</option>';
+                    }
+                });
+
+                // Configurar botões internos da área de agendamento de retirada
+                const btnCancelarAgendamento = document.getElementById('btnCancelarAgendamentoRetirada');
+                const btnConfirmarAgendamento = document.getElementById('btnConfirmarAgendamentoRetirada');
+
+                const novoBtnCancelar = btnCancelarAgendamento.cloneNode(true);
+                btnCancelarAgendamento.parentNode.replaceChild(novoBtnCancelar, btnCancelarAgendamento);
+                novoBtnCancelar.addEventListener('click', () => {
+                    areaRetirada.style.display = 'none';
+                    novoBtnRetirar.style.display = 'block';
+                    novoBtnTrocar.style.display = 'block';
+                    btnFechar.style.display = 'block';
+                });
+
+                const novoBtnConfirmar = btnConfirmarAgendamento.cloneNode(true);
+                btnConfirmarAgendamento.parentNode.replaceChild(novoBtnConfirmar, btnConfirmarAgendamento);
+                novoBtnConfirmar.addEventListener('click', async () => {
+                    const selectMot = document.getElementById('selectMotoristaRetirada');
+                    const motId = selectMot.value;
+                    const motNome = selectMot.options[selectMot.selectedIndex]?.text;
+                    const hora = document.getElementById('horaRetirada').value;
+                    const dataRet = document.getElementById('dataRetiradaAgendamento').value;
+
+                    if (!motId) {
+                        Alerta.aviso("Por favor, selecione um motorista!");
+                        return;
+                    }
+
+                    const hojeLocal = obterDataLocalFormatada();
+                    if (dataRet < hojeLocal) {
+                        Alerta.aviso("Não é possível solicitar uma retirada para uma data retroativa (que já passou).");
+                        return;
+                    }
+                    const agora = new Date();
+                    const horaAtual = String(agora.getHours()).padStart(2, '0');
+                    const minAtual = String(agora.getMinutes()).padStart(2, '0');
+                    const horarioAtual = `${horaAtual}:${minAtual}`;
+                    if (dataRet === hojeLocal && hora < horarioAtual) {
+                        Alerta.aviso(`O horário selecionado (${hora}) não pode ser anterior ao horário atual (${horarioAtual}).`);
+                        return;
+                    }
+
+                    try {
+                        const promessas = [];
+                        promessas.push(db.collection('locacoes').doc(id).update({
+                            status: 'concluida',
+                            data_retirada: dataRet,
+                            concluido_em: firebase.firestore.FieldValue.serverTimestamp()
                         }));
-                    }
-                    if (data.tipo_servico === 'troca' && data.cacamba_velha_id) {
-                        promessas.push(db.collection('cacambas').doc(data.cacamba_velha_id).update({
-                            status: 'disponivel'
+
+                        const newOS = '#' + Math.floor(100 + Math.random() * 900);
+                        promessas.push(db.collection('locacoes').add({
+                            admin_id: user.uid,
+                            criado_em: firebase.firestore.FieldValue.serverTimestamp(),
+                            os_numero: newOS,
+                            cliente_id: data.cliente_id || '',
+                            cliente_nome: data.cliente_nome || '',
+                            cacamba_id: data.cacamba_id || '',
+                            cacamba_numero: data.cacamba_numero || '',
+                            endereco: data.endereco || {},
+                            status: 'retirada_pendente',
+                            tipo_servico: 'retirada',
+                            motorista_id: motId,
+                            motorista_nome: motNome,
+                            data_entrega: dataRet,
+                            hora_entrega: hora,
+                            data_retirada: '',
+                            valor: '',
+                            pagamento_forma: 'Sem Custo (Retirada)',
+                            pagamento_status: 'Pago',
+                            foto_confirmacao_url: ''
                         }));
+
+                        if (data.cacamba_id) {
+                            promessas.push(db.collection('cacambas').doc(data.cacamba_id).update({
+                                status: 'retirada_pendente'
+                            }));
+                        }
+
+                        await Promise.all(promessas);
+
+                        Alerta.sucesso(`Retirada agendada com sucesso! OS ${newOS}`);
+                        modalDet.classList.remove('active');
+                        modalDet.style.display = 'none';
+                    } catch (err) {
+                        Alerta.erro("Erro ao agendar retirada: " + err.message);
+                    }
+                });
+
+                // Configurar botões internos da área de agendamento de troca
+                const btnCancelarTroca = document.getElementById('btnCancelarAgendamentoTroca');
+                const btnConfirmarTroca = document.getElementById('btnConfirmarAgendamentoTroca');
+
+                const novoBtnCancelarTroca = btnCancelarTroca.cloneNode(true);
+                btnCancelarTroca.parentNode.replaceChild(novoBtnCancelarTroca, btnCancelarTroca);
+                novoBtnCancelarTroca.addEventListener('click', () => {
+                    areaTroca.style.display = 'none';
+                    novoBtnRetirar.style.display = 'block';
+                    novoBtnTrocar.style.display = 'block';
+                    btnFechar.style.display = 'block';
+                });
+
+                const novoBtnConfirmarTroca = btnConfirmarTroca.cloneNode(true);
+                btnConfirmarTroca.parentNode.replaceChild(novoBtnConfirmarTroca, btnConfirmarTroca);
+                novoBtnConfirmarTroca.addEventListener('click', async () => {
+                    const selectMotTr = document.getElementById('selectMotoristaTroca');
+                    const motId = selectMotTr.value;
+                    const motNome = selectMotTr.options[selectMotTr.selectedIndex]?.text;
+                    const selectCacTr = document.getElementById('selectCacambaTroca');
+                    const cacambaIdSubstituta = selectCacTr.value;
+                    const cacambaNumSubstitutaText = selectCacTr.options[selectCacTr.selectedIndex]?.text;
+                    const hora = document.getElementById('horaTroca').value;
+                    const dataTroca = document.getElementById('dataTrocaAgendamento').value;
+                    const valor = document.getElementById('valorTroca').value.trim();
+                    const pagamentoForma = document.getElementById('pagamentoFormaTroca').value;
+                    const pagamentoStatus = document.getElementById('pagamentoStatusTroca').value;
+
+                    if (!motId) {
+                        Alerta.aviso("Por favor, selecione um motorista!");
+                        return;
+                    }
+                    if (!cacambaIdSubstituta || cacambaIdSubstituta === "Nenhuma caçamba disponível" || cacambaIdSubstituta === "Carregando caçambas...") {
+                        Alerta.aviso("Por favor, selecione uma caçamba substituta disponível!");
+                        return;
                     }
 
-                    await Promise.all(promessas);
+                    const hojeLocal = obterDataLocalFormatada();
+                    if (dataTroca < hojeLocal) {
+                        Alerta.aviso("Não é possível solicitar uma troca para uma data retroativa (que já passou).");
+                        return;
+                    }
+                    const agora = new Date();
+                    const horaAtual = String(agora.getHours()).padStart(2, '0');
+                    const minAtual = String(agora.getMinutes()).padStart(2, '0');
+                    const horarioAtual = `${horaAtual}:${minAtual}`;
+                    if (dataTroca === hojeLocal && hora < horarioAtual) {
+                        Alerta.aviso(`O horário selecionado (${hora}) não pode ser anterior ao horário atual (${horarioAtual}).`);
+                        return;
+                    }
 
-                    modalDet.classList.remove('active');
-                    modalDet.style.display = 'none';
-                } catch (err) {
-                    alert("Erro ao concluir atividade: " + err.message);
-                }
-            });
+                    const cacambaNumSubstituta = cacambaNumSubstitutaText.replace("Nº ", "").split(" (")[0];
 
-            modalDet.classList.add('active');
-            modalDet.style.display = 'flex';
-        }
+                    try {
+                        const promessas = [];
+                        promessas.push(db.collection('locacoes').doc(id).update({
+                            status: 'concluida',
+                            data_retirada: dataTroca,
+                            concluido_em: firebase.firestore.FieldValue.serverTimestamp()
+                        }));
 
-        // Eventos de fechamento do modal de detalhes
-        document.getElementById('btnFecharModalDetalhes').addEventListener('click', () => {
-            const m = document.getElementById('modalDetalhesLocacao');
-            m.classList.remove('active');
-            m.style.display = 'none';
-        });
-        document.getElementById('btnFecharDetalhesConfig').addEventListener('click', () => {
-            const m = document.getElementById('modalDetalhesLocacao');
-            m.classList.remove('active');
-            m.style.display = 'none';
-        });
-        window.addEventListener('click', (e) => {
-            const m = document.getElementById('modalDetalhesLocacao');
-            if (e.target === m) {
+                        if (data.cacamba_id) {
+                            promessas.push(db.collection('cacambas').doc(data.cacamba_id).update({
+                                status: 'disponivel'
+                            }));
+                        }
+
+                        const newOS = '#' + Math.floor(100 + Math.random() * 900);
+                        promessas.push(db.collection('locacoes').add({
+                            admin_id: user.uid,
+                            criado_em: firebase.firestore.FieldValue.serverTimestamp(),
+                            os_numero: newOS,
+                            cliente_id: data.cliente_id || '',
+                            cliente_nome: data.cliente_nome || '',
+                            cacamba_id: cacambaIdSubstituta,
+                            cacamba_numero: cacambaNumSubstituta,
+                            cacamba_velha_id: data.cacamba_id || '',
+                            cacamba_velha_numero: data.cacamba_numero || '',
+                            endereco: data.endereco || {},
+                            status: 'troca_pendente',
+                            tipo_servico: 'troca',
+                            motorista_id: motId,
+                            motorista_nome: motNome,
+                            data_entrega: dataTroca,
+                            hora_entrega: hora,
+                            data_retirada: '',
+                            valor: valor,
+                            pagamento_forma: pagamentoForma,
+                            pagamento_status: pagamentoStatus,
+                            foto_confirmacao_url: ''
+                        }));
+
+                        promessas.push(db.collection('cacambas').doc(cacambaIdSubstituta).update({
+                            status: 'troca_pendente'
+                        }));
+
+                        await Promise.all(promessas);
+
+                        Alerta.sucesso(`Troca agendada com sucesso! Nova OS ${newOS}`);
+                        modalDet.classList.remove('active');
+                        modalDet.style.display = 'none';
+                    } catch (err) {
+                        Alerta.erro("Erro ao agendar troca: " + err.message);
+                    }
+                });
+
+                // Configurar clique no Concluir pelo Painel
+                const novoBtnConcluir = btnConcluirPainel.cloneNode(true);
+                btnConcluirPainel.parentNode.replaceChild(novoBtnConcluir, btnConcluirPainel);
+
+                novoBtnConcluir.addEventListener('click', async () => {
+                    areaConcluirPainel.style.display = 'block';
+                    areaRetirada.style.display = 'none';
+                    areaTroca.style.display = 'none';
+                    novoBtnRetirar.style.display = 'none';
+                    novoBtnTrocar.style.display = 'none';
+                    novoBtnConcluir.style.display = 'none';
+                    btnFechar.style.display = 'none';
+
+                    // Carrega motoristas dinamicamente
+                    const selectMotConc = document.getElementById('selectMotoristaConcluir');
+                    selectMotConc.innerHTML = '<option value="">Carregando motoristas...</option>';
+                    try {
+                        const snap = await db.collection('motoristas').where('admin_id', '==', user.uid).get();
+                        selectMotConc.innerHTML = '<option value="">Selecionar Motorista</option>';
+                        snap.forEach(docSnap => {
+                            const mot = docSnap.data();
+                            const opt = document.createElement('option');
+                            opt.value = docSnap.id;
+                            opt.textContent = mot.nome;
+                            if (docSnap.id === data.motorista_id) {
+                                opt.selected = true;
+                            }
+                            selectMotConc.appendChild(opt);
+                        });
+                    } catch (err) {
+                        selectMotConc.innerHTML = '<option value="">Erro ao carregar motoristas</option>';
+                    }
+                });
+
+                const btnCancelarConcluir = document.getElementById('btnCancelarConcluirPainel');
+                const btnConfirmarConcluir = document.getElementById('btnConfirmarConcluirPainel');
+
+                const novoBtnCancelarConcluir = btnCancelarConcluir.cloneNode(true);
+                btnCancelarConcluir.parentNode.replaceChild(novoBtnCancelarConcluir, btnCancelarConcluir);
+                novoBtnCancelarConcluir.addEventListener('click', () => {
+                    areaConcluirPainel.style.display = 'none';
+                    novoBtnRetirar.style.display = isAtivo ? 'block' : 'none';
+                    novoBtnTrocar.style.display = isAtivo ? 'block' : 'none';
+                    novoBtnConcluir.style.display = isPendente ? 'block' : 'none';
+                    btnFechar.style.display = 'block';
+                });
+
+                const novoBtnConfirmarConcluir = btnConfirmarConcluir.cloneNode(true);
+                btnConfirmarConcluir.parentNode.replaceChild(novoBtnConfirmarConcluir, btnConfirmarConcluir);
+                novoBtnConfirmarConcluir.addEventListener('click', async () => {
+                    const selectMotConc = document.getElementById('selectMotoristaConcluir');
+                    const motId = selectMotConc.value;
+                    const motNome = selectMotConc.options[selectMotConc.selectedIndex]?.text;
+
+                    if (!motId) {
+                        Alerta.aviso("Por favor, selecione o motorista que realizou a atividade!");
+                        return;
+                    }
+
+                    try {
+                        const promessas = [];
+                        const novoStatusLocacao = (data.tipo_servico === 'retirada') ? 'concluida' : 'na_obra';
+                        const updateData = {
+                            status: novoStatusLocacao,
+                            motorista_id: motId,
+                            motorista_nome: motNome,
+                            concluida_pelo_painel_web: true,
+                            foto_confirmacao_url: 'Concluído pelo Painel Web',
+                            concluido_em: firebase.firestore.FieldValue.serverTimestamp()
+                        };
+
+                        if (data.tipo_servico === 'entrega') {
+                            updateData.data_entrega = obterDataLocalFormatada();
+                            const dateObj = new Date();
+                            dateObj.setDate(dateObj.getDate() + 15);
+                            updateData.data_retirada = obterDataLocalFormatada(dateObj);
+                        } else if (data.tipo_servico === 'troca') {
+                            updateData.data_entrega = obterDataLocalFormatada();
+                            const dateObj = new Date();
+                            dateObj.setDate(dateObj.getDate() + 15);
+                            updateData.data_retirada = obterDataLocalFormatada(dateObj);
+                        } else if (data.tipo_servico === 'retirada') {
+                            updateData.data_retirada = obterDataLocalFormatada();
+                        }
+
+                        promessas.push(db.collection('locacoes').doc(id).update(updateData));
+
+                        const novoStatusCacamba = (data.tipo_servico === 'retirada') ? 'disponivel' : 'em_uso';
+                        if (data.cacamba_id) {
+                            promessas.push(db.collection('cacambas').doc(data.cacamba_id).update({
+                                status: novoStatusCacamba
+                            }));
+                        }
+                        if (data.tipo_servico === 'troca' && data.cacamba_velha_id) {
+                            promessas.push(db.collection('cacambas').doc(data.cacamba_velha_id).update({
+                                status: 'disponivel'
+                            }));
+                        }
+
+                        await Promise.all(promessas);
+
+                        Alerta.sucesso('Atividade concluída com sucesso!');
+                        modalDet.classList.remove('active');
+                        modalDet.style.display = 'none';
+                    } catch (err) {
+                        Alerta.erro("Erro ao concluir atividade: " + err.message);
+                    }
+                });
+
+                modalDet.classList.add('active');
+                modalDet.style.display = 'flex';
+            }
+
+            // Eventos de fechamento do modal de detalhes
+            document.getElementById('btnFecharModalDetalhes').addEventListener('click', () => {
+                const m = document.getElementById('modalDetalhesLocacao');
                 m.classList.remove('active');
                 m.style.display = 'none';
-            }
-        });
-    }
+            });
+            document.getElementById('btnFecharDetalhesConfig').addEventListener('click', () => {
+                const m = document.getElementById('modalDetalhesLocacao');
+                m.classList.remove('active');
+                m.style.display = 'none';
+            });
+            window.addEventListener('click', (e) => {
+                const m = document.getElementById('modalDetalhesLocacao');
+                if (e.target === m) {
+                    m.classList.remove('active');
+                    m.style.display = 'none';
+                }
+            });
+        }
     </script>
 
 
 </body>
+
 </html>

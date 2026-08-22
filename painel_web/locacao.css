@@ -396,6 +396,153 @@ tbody tr:hover {
     background: #1d4ed8;
 }
 
+/* ================= BOTÕES DE FILTRO DE DATA ================= */
+.btn-filtrar-data {
+    background: #0f172a;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.btn-filtrar-data:hover {
+    background: #1e293b;
+}
+
+.btn-limpar-data {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.btn-limpar-data:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+/* ================= MODAL CONFIRMAÇÃO DE EXCLUSÃO ================= */
+.modal-confirmacao-box {
+    background: white;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 14px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    animation: abrirModal 0.25s ease-out;
+}
+
+@keyframes abrirModal {
+    from {
+        opacity: 0;
+        transform: translateY(-16px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-confirmacao-header {
+    padding: 20px 24px 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.modal-confirmacao-icone {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.modal-confirmacao-header h3 {
+    margin: 0;
+    font-size: 17px;
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.modal-confirmacao-corpo {
+    padding: 20px 24px;
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.modal-confirmacao-card-info {
+    margin-top: 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #334155;
+}
+
+.modal-confirmacao-card-info p {
+    margin: 4px 0;
+}
+
+.modal-confirmacao-rodape {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 16px 24px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn-confirmar-excluir {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-confirmar-excluir:hover {
+    background: #dc2626;
+}
+
+.btn-confirmar-excluir:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
 /* Regras de responsividade para telas menores (como Tablets e Celulares) */
 @media(max-width: 1024px){
@@ -403,8 +550,9 @@ tbody tr:hover {
         flex-direction: column; /* Empilha os filtros verticalmente */
         align-items: stretch; /* Estica todos os filtros para ocupar toda a largura */
     }
-    .filtros select, .btn-nova {
+    .filtros select, .btn-nova, .btn-filtrar-data, .btn-limpar-data {
         width: 100%; /* Força tamanho completo em telas pequenas */
+        justify-content: center;
     }
     .linha-dupla, .linha-tripla {
         flex-direction: column; /* Transforma as linhas paralelas em campos empilhados em telas móveis */

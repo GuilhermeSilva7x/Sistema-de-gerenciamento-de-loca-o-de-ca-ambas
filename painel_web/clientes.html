@@ -103,6 +103,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="notificacoes.js"></script>
     
     <script>
         let editClienteId = null;
@@ -117,7 +119,7 @@
                 try {
                     const checkDriver = await db.collection('motoristas').where('email', '==', user.email).get();
                     if (!checkDriver.empty) {
-                        alert("Acesso negado: Motoristas não possuem permissão para acessar o painel administrativo.");
+                        Alerta.erro("Motoristas não possuem permissão para acessar o painel administrativo.", "Acesso Negado");
                         await auth.signOut();
                         window.location.href = 'TeladeLogin.HTML';
                         return;
@@ -211,7 +213,7 @@
             const email = document.getElementById('clienteEmail').value.trim();
 
             if (!nome || !telefone) {
-                alert('Nome e Telefone são obrigatórios!');
+                Alerta.aviso('Nome e Telefone são obrigatórios!');
                 return;
             }
 
@@ -223,10 +225,11 @@
                         telefone,
                         email
                     });
+                    Alerta.sucesso('Cliente atualizado com sucesso!');
                     modal.classList.remove('ativo');
                     formCliente.reset();
                 } catch (error) {
-                    alert('Erro ao atualizar cliente: ' + error.message);
+                    Alerta.erro('Erro ao atualizar cliente: ' + error.message);
                 }
             } else {
                 // Modo Cadastro
@@ -238,10 +241,11 @@
                         email,
                         data_cadastro: new Date().toISOString()
                     });
+                    Alerta.sucesso('Cliente cadastrado com sucesso!');
                     formCliente.reset();
                     modal.classList.remove('ativo');
                 } catch (error) {
-                    alert('Erro ao salvar cliente: ' + error.message);
+                    Alerta.erro('Erro ao salvar cliente: ' + error.message);
                 }
             }
         });
@@ -321,14 +325,12 @@
                 `;
 
                 // Evento clique no nome para histórico
-                tr.querySelector('.click-nome-cliente').addEventListener('click', (e) => {
-                    const cliId = e.currentTarget.getAttribute('data-id');
-                    const cliNome = e.currentTarget.getAttribute('data-nome');
-                    abrirHistoricoCliente(cliId, cliNome);
+                tr.querySelector('.click-nome-cliente').addEventListener('click', () => {
+                    abrirHistoricoCliente(id, data.nome || '');
                 });
 
                 // Evento editar
-                tr.querySelector('.btn-editar').addEventListener('click', (e) => {
+                tr.querySelector('.btn-editar').addEventListener('click', () => {
                     editClienteId = id;
                     modal.querySelector('h3').textContent = 'Editar Cliente';
                     document.getElementById('clienteNome').value = data.nome || '';
@@ -338,13 +340,22 @@
                 });
 
                 // Evento excluir
-                tr.querySelector('.btn-excluir').addEventListener('click', async (e) => {
-                    if (confirm(`Deseja realmente excluir o cliente ${data.nome}?`)) {
+                tr.querySelector('.btn-excluir').addEventListener('click', async () => {
+                    const cliId = id;
+                    const nomeCliente = data.nome || '';
+                    const confirmou = await Alerta.confirmar({
+                        titulo: 'Excluir Cliente',
+                        texto: `Deseja realmente excluir o cliente ${nomeCliente}?`,
+                        confirmText: 'Sim, excluir',
+                        icone: 'warning',
+                        perigo: true
+                    });
+                    if (confirmou) {
                         try {
-                            const cliId = e.currentTarget.getAttribute('data-id');
                             await db.collection('clientes').doc(cliId).delete();
+                            Alerta.toast(`Cliente ${nomeCliente} excluído com sucesso!`);
                         } catch (err) {
-                            alert('Erro ao excluir: ' + err.message);
+                            Alerta.erro('Erro ao excluir: ' + err.message);
                         }
                     }
                 });

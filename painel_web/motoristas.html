@@ -140,6 +140,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="notificacoes.js"></script>
     
     <script>
         // Controle de Sessão (Auth Guard)
@@ -269,26 +271,27 @@
                         vencimento,
                         caminhao
                     });
+                    Alerta.sucesso('Motorista atualizado com sucesso!');
                     formMotorista.reset();
                     modal.classList.remove('ativo');
                 } catch (error) {
-                    alert('Erro ao atualizar motorista: ' + error.message);
+                    Alerta.erro('Erro ao atualizar motorista: ' + error.message);
                 }
                 return;
             }
 
             if (!nome || !telefone || !email || !senha) {
-                alert('Nome, Telefone, E-mail e Senha são obrigatórios!');
+                Alerta.aviso('Nome, Telefone, E-mail e Senha são obrigatórios!');
                 return;
             }
 
             if (currentUser && email === currentUser.email.toLowerCase()) {
-                alert('Erro: Não é permitido cadastrar o e-mail do administrador como e-mail de motorista!');
+                Alerta.erro('Não é permitido cadastrar o e-mail do administrador como e-mail de motorista!');
                 return;
             }
 
             if (senha.length < 6) {
-                alert('A senha do motorista deve ter no mínimo 6 caracteres.');
+                Alerta.aviso('A senha do motorista deve ter no mínimo 6 caracteres.');
                 return;
             }
 
@@ -300,9 +303,9 @@
             } catch (authError) {
                 console.error("Erro no Firebase Auth:", authError);
                 if (authError.code === 'auth/email-already-in-use') {
-                    alert('Atenção: Este e-mail já está cadastrado no Firebase Auth! O motorista foi cadastrado no banco de dados, mas para fazer login no celular ele deve usar a senha antiga. Caso queira usar a nova senha cadastrada agora, redefina a senha deste e-mail diretamente no Console do Firebase Auth.');
+                    Alerta.aviso('Este e-mail já está cadastrado no Firebase Auth! O motorista foi registrado, mas para fazer login no celular ele deve usar a senha antiga. Caso queira usar a nova senha cadastrada agora, redefina a senha deste e-mail diretamente no Console do Firebase Auth.', 'E-mail Já Existente');
                 } else {
-                    alert('Erro ao gerar login de acesso do motorista: ' + authError.message);
+                    Alerta.erro('Erro ao gerar login de acesso do motorista: ' + authError.message);
                     if (secondaryApp) await secondaryApp.delete();
                     return;
                 }
@@ -326,10 +329,11 @@
                     ativo: true,
                     data_cadastro: new Date().toISOString()
                 });
+                Alerta.sucesso('Motorista cadastrado com sucesso!');
                 formMotorista.reset();
                 modal.classList.remove('ativo');
             } catch (error) {
-                alert('Erro ao salvar motorista no banco: ' + error.message);
+                Alerta.erro('Erro ao salvar motorista no banco: ' + error.message);
             }
         });
 
@@ -406,14 +410,12 @@
                 `;
 
                 // Evento clique no nome para histórico
-                tr.querySelector('.click-nome-motorista').addEventListener('click', (e) => {
-                    const motId = e.currentTarget.getAttribute('data-id');
-                    const motNome = e.currentTarget.getAttribute('data-nome');
-                    abrirHistoricoMotorista(motId, motNome);
+                tr.querySelector('.click-nome-motorista').addEventListener('click', () => {
+                    abrirHistoricoMotorista(id, data.nome || '');
                 });
 
                 // Evento editar
-                tr.querySelector('.btn-editar').addEventListener('click', async (e) => {
+                tr.querySelector('.btn-editar').addEventListener('click', async () => {
                     editDriverId = id;
                     modal.querySelector('h3').textContent = 'Editar Motorista';
                     
@@ -434,13 +436,22 @@
                 });
 
                 // Evento excluir
-                tr.querySelector('.btn-excluir').addEventListener('click', async (e) => {
-                    if (confirm(`Deseja realmente excluir o motorista ${data.nome}?`)) {
+                tr.querySelector('.btn-excluir').addEventListener('click', async () => {
+                    const motId = id;
+                    const nomeMotorista = data.nome || '';
+                    const confirmou = await Alerta.confirmar({
+                        titulo: 'Excluir Motorista',
+                        texto: `Deseja realmente excluir o motorista ${nomeMotorista}?`,
+                        confirmText: 'Sim, excluir',
+                        icone: 'warning',
+                        perigo: true
+                    });
+                    if (confirmou) {
                         try {
-                            const motId = e.currentTarget.getAttribute('data-id');
                             await db.collection('motoristas').doc(motId).delete();
+                            Alerta.toast(`Motorista ${nomeMotorista} excluído com sucesso!`);
                         } catch (err) {
-                            alert('Erro ao excluir: ' + err.message);
+                            Alerta.erro('Erro ao excluir: ' + err.message);
                         }
                     }
                 });

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,13 +8,14 @@
     <link rel="stylesheet" href="telaprincipal.css">
     <link rel="stylesheet" href="cacambas.css">
 </head>
+
 <body>
 
     <aside class="barra-lateral">
         <div class="logo">LOCAÇÃO DE CAÇAMBAS</div>
         <nav class="menu-lateral">
             <a href="telaprincipal.html" class="active">Início</a>
-            <a href="cacambas.html">Caçambas</a> 
+            <a href="cacambas.html">Caçambas</a>
             <a href="locacao.html">Locações</a>
             <a href="clientes.html">Clientes</a>
             <a href="motoristas.html">Motoristas</a>
@@ -33,7 +35,7 @@
         </header>
 
         <main class="informacoes-principais" id="informacoes-principais">
-            
+
             <section class="cards">
                 <div class="card manutencao-card">
                     <h2>0</h2>
@@ -80,114 +82,173 @@
     </div>
 
     <!-- MODAL CONFIGURAÇÃO WHATSAPP LOGÍSTICA -->
-    <div id="modalConfigLogistica" class="modal-container" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
-        <div class="modal-conteudo" style="background-color: #fefefe; padding: 24px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
-            <div class="modal-cabecalho" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div id="modalConfigLogistica" class="modal-container"
+        style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+        <div class="modal-conteudo"
+            style="background-color: #fefefe; padding: 24px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+            <div class="modal-cabecalho"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h3 style="margin: 0; color: #1e3a8a; font-family: sans-serif;">WhatsApp da Logística</h3>
-                <span id="btnFecharModalConfig" style="font-size: 24px; font-weight: bold; cursor: pointer; color: #64748b;">&times;</span>
+                <span id="btnFecharModalConfig"
+                    style="font-size: 24px; font-weight: bold; cursor: pointer; color: #64748b;">&times;</span>
             </div>
             <form id="formConfigLogistica">
-                <label style="display: block; margin-bottom: 8px; font-weight: bold; color: #475569; font-size: 14px; font-family: sans-serif;">WhatsApp da Empresa (com DDD - Ex: 11999998888)</label>
-                <input type="text" id="inputTelLogistica" required placeholder="Digite o número" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; margin-bottom: 20px; box-sizing: border-box;">
-                
+                <label
+                    style="display: block; margin-bottom: 8px; font-weight: bold; color: #475569; font-size: 14px; font-family: sans-serif;">WhatsApp
+                    da Empresa (com DDD - Ex: 11999998888)</label>
+                <input type="text" id="inputTelLogistica" required placeholder="Digite o número"
+                    style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; margin-bottom: 20px; box-sizing: border-box;">
+
                 <div class="modal-botoes" style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <button type="button" id="btnCancelarConfig" style="padding: 10px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-family: sans-serif;">Cancelar</button>
-                    <button type="submit" style="padding: 10px 16px; background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-family: sans-serif;">Salvar Número</button>
+                    <button type="button" id="btnCancelarConfig"
+                        style="padding: 10px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-family: sans-serif;">Cancelar</button>
+                    <button type="submit"
+                        style="padding: 10px 16px; background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-family: sans-serif;">Salvar
+                        Número</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- MODAL DETALHES DA LOCAÇÃO COM AGENDAMENTO DE RETIRADA -->
-    <div id="modalDetalhesLocacao" class="modal-overlay" style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
-        <div class="modal-conteudo" style="background-color: #fefefe; padding: 24px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: sans-serif;">
-            <div class="modal-cabecalho" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+    <div id="modalDetalhesLocacao" class="modal-overlay"
+        style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+        <div class="modal-conteudo"
+            style="background-color: #fefefe; padding: 24px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: sans-serif;">
+            <div class="modal-cabecalho"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
                 <h3 id="detalheOS" style="margin: 0; color: #1e3a8a;">Detalhes da Locação</h3>
-                <span id="btnFecharModalDetalhes" style="font-size: 24px; font-weight: bold; cursor: pointer; color: #64748b;">&times;</span>
+                <span id="btnFecharModalDetalhes"
+                    style="font-size: 24px; font-weight: bold; cursor: pointer; color: #64748b;">&times;</span>
             </div>
             <div id="detalhesCorpo" style="font-size: 14px; color: #334155; line-height: 1.6;">
                 <!-- Preenchido via JS -->
             </div>
             <div id="comprovanteArea" style="margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
                 <h4 style="margin: 0 0 10px 0; color: #1e3a8a;">Comprovante de Entrega/Troca/Retirada</h4>
-                <div id="comprovanteFoto" style="text-align: center; background: #f1f5f9; border-radius: 8px; padding: 10px; min-height: 100px; display: flex; align-items: center; justify-content: center;">
+                <div id="comprovanteFoto"
+                    style="text-align: center; background: #f1f5f9; border-radius: 8px; padding: 10px; min-height: 100px; display: flex; align-items: center; justify-content: center;">
                     <!-- Preenchido via JS -->
                 </div>
             </div>
 
             <!-- ÁREA PARA AGENDAR RETIRADA -->
-            <div id="areaSolicitarRetirada" style="display: none; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 15px;">
-                <h4 style="margin: 0 0 10px 0; color: #ef4444; font-family: sans-serif;">Agendar Retirada da Caçamba</h4>
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Selecione o Motorista Responsável:</label>
-                <select id="selectMotoristaRetirada" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;"></select>
-                
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Data da Retirada:</label>
-                <input type="date" id="dataRetiradaAgendamento" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+            <div id="areaSolicitarRetirada"
+                style="display: none; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 15px;">
+                <h4 style="margin: 0 0 10px 0; color: #ef4444; font-family: sans-serif;">Agendar Retirada da Caçamba
+                </h4>
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Selecione o
+                    Motorista Responsável:</label>
+                <select id="selectMotoristaRetirada"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;"></select>
 
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Horário da Retirada:</label>
-                <input type="time" id="horaRetirada" value="08:00" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px; font-size: 13px;">
-                
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Data da
+                    Retirada:</label>
+                <input type="date" id="dataRetiradaAgendamento"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Horário da
+                    Retirada:</label>
+                <input type="time" id="horaRetirada" value="08:00"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px; font-size: 13px;">
+
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <button type="button" id="btnCancelarAgendamentoRetirada" style="padding: 8px 12px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-size: 13px;">Cancelar</button>
-                    <button type="button" id="btnConfirmarAgendamentoRetirada" style="padding: 8px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">Confirmar e Gerar OS de Retirada</button>
+                    <button type="button" id="btnCancelarAgendamentoRetirada"
+                        style="padding: 8px 12px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-size: 13px;">Cancelar</button>
+                    <button type="button" id="btnConfirmarAgendamentoRetirada"
+                        style="padding: 8px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">Confirmar
+                        e Gerar OS de Retirada</button>
                 </div>
             </div>
 
             <!-- ÁREA PARA AGENDAR TROCA -->
-            <div id="areaSolicitarTroca" style="display: none; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 15px;">
+            <div id="areaSolicitarTroca"
+                style="display: none; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 15px;">
                 <h4 style="margin: 0 0 10px 0; color: #f59e0b; font-family: sans-serif;">Agendar Troca da Caçamba</h4>
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Selecione o Motorista Responsável:</label>
-                <select id="selectMotoristaTroca" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;"></select>
-                
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Caçamba para Levar (Substituta disponível):</label>
-                <select id="selectCacambaTroca" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;"></select>
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Selecione o
+                    Motorista Responsável:</label>
+                <select id="selectMotoristaTroca"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;"></select>
 
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Data da Troca:</label>
-                <input type="date" id="dataTrocaAgendamento" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Caçamba para Levar
+                    (Substituta disponível):</label>
+                <select id="selectCacambaTroca"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;"></select>
 
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Horário da Troca:</label>
-                <input type="time" id="horaTroca" value="08:00" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Data da
+                    Troca:</label>
+                <input type="date" id="dataTrocaAgendamento"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
 
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Valor da Troca:</label>
-                <input type="text" id="valorTroca" value="R$ 350,00" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Horário da
+                    Troca:</label>
+                <input type="time" id="horaTroca" value="08:00"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
 
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Forma de Pagamento:</label>
-                <select id="pagamentoFormaTroca" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Valor da
+                    Troca:</label>
+                <input type="text" id="valorTroca" value="R$ 350,00"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
+
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Forma de
+                    Pagamento:</label>
+                <select id="pagamentoFormaTroca"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 12px; font-size: 13px;">
                     <option value="Pix">Pix</option>
                     <option value="Boleto">Boleto</option>
                     <option value="Cartão">Cartão</option>
                     <option value="Dinheiro">Dinheiro</option>
                 </select>
 
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Status do Pagamento:</label>
-                <select id="pagamentoStatusTroca" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px; font-size: 13px;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Status do
+                    Pagamento:</label>
+                <select id="pagamentoStatusTroca"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px; font-size: 13px;">
                     <option value="Pendente">Pendente</option>
                     <option value="Pago">Pago</option>
                 </select>
-                
+
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <button type="button" id="btnCancelarAgendamentoTroca" style="padding: 8px 12px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-size: 13px;">Cancelar</button>
-                    <button type="button" id="btnConfirmarAgendamentoTroca" style="padding: 8px 12px; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">Confirmar e Gerar OS de Troca</button>
+                    <button type="button" id="btnCancelarAgendamentoTroca"
+                        style="padding: 8px 12px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-size: 13px;">Cancelar</button>
+                    <button type="button" id="btnConfirmarAgendamentoTroca"
+                        style="padding: 8px 12px; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">Confirmar
+                        e Gerar OS de Troca</button>
                 </div>
             </div>
 
             <!-- ÁREA PARA CONCLUIR ATIVIDADE PELO PAINEL -->
-            <div id="areaConcluirPainel" style="display: none; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 15px;">
-                <h4 style="margin: 0 0 10px 0; color: #10b981; font-family: sans-serif;">Concluir Atividade pelo Painel</h4>
-                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Selecione o Motorista que realizou:</label>
-                <select id="selectMotoristaConcluir" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px; font-size: 13px;"></select>
-                
+            <div id="areaConcluirPainel"
+                style="display: none; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 15px;">
+                <h4 style="margin: 0 0 10px 0; color: #10b981; font-family: sans-serif;">Concluir Atividade pelo Painel
+                </h4>
+                <label style="display:block; margin-bottom:5px; font-weight:bold; font-size: 13px;">Selecione o
+                    Motorista que realizou:</label>
+                <select id="selectMotoristaConcluir"
+                    style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px; font-size: 13px;"></select>
+
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <button type="button" id="btnCancelarConcluirPainel" style="padding: 8px 12px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-size: 13px;">Cancelar</button>
-                    <button type="button" id="btnConfirmarConcluirPainel" style="padding: 8px 12px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">Confirmar Conclusão</button>
+                    <button type="button" id="btnCancelarConcluirPainel"
+                        style="padding: 8px 12px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-size: 13px;">Cancelar</button>
+                    <button type="button" id="btnConfirmarConcluirPainel"
+                        style="padding: 8px 12px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">Confirmar
+                        Conclusão</button>
                 </div>
             </div>
 
-            <div class="modal-botoes" style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
-                <button type="button" id="btnConcluirPeloPainel" style="padding: 10px 16px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; font-family: sans-serif;">✅ Concluir Atividade</button>
-                <button type="button" id="btnAlterarOrdemRetirada" style="padding: 10px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; font-family: sans-serif;">📦 Solicitar Retirada</button>
-                <button type="button" id="btnAlterarOrdemTroca" style="padding: 10px 16px; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; font-family: sans-serif;">🔄 Solicitar Troca</button>
-                <button type="button" id="btnFecharDetalhesConfig" style="padding: 10px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-family: sans-serif;">Fechar</button>
+            <div class="modal-botoes"
+                style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                <button type="button" id="btnConcluirPeloPainel"
+                    style="padding: 10px 16px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; font-family: sans-serif;">✅
+                    Concluir Atividade</button>
+                <button type="button" id="btnAlterarOrdemRetirada"
+                    style="padding: 10px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; font-family: sans-serif;">📦
+                    Solicitar Retirada</button>
+                <button type="button" id="btnAlterarOrdemTroca"
+                    style="padding: 10px 16px; background: #f59e0b; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; font-family: sans-serif;">🔄
+                    Solicitar Troca</button>
+                <button type="button" id="btnFecharDetalhesConfig"
+                    style="padding: 10px 16px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; cursor: pointer; font-family: sans-serif;">Fechar</button>
             </div>
         </div>
     </div>
@@ -196,7 +257,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="notificacoes.js"></script>
+
     <script>
         let currentUser = null;
 
@@ -232,7 +295,7 @@
                             await auth.signOut();
                             window.location.href = 'TeladeLogin.HTML';
                         } catch (error) {
-                            alert('Erro ao deslogar: ' + error.message);
+                            Alerta.erro('Erro ao deslogar: ' + error.message);
                         }
                     });
                 }
@@ -240,7 +303,7 @@
                 try {
                     const checkDriver = await db.collection('motoristas').where('email', '==', user.email).get();
                     if (!checkDriver.empty) {
-                        alert("Acesso negado: Motoristas não possuem permissão para acessar o painel administrativo.");
+                        Alerta.erro("Motoristas não possuem permissão para acessar o painel administrativo.", "Acesso Negado");
                         await auth.signOut();
                         window.location.href = 'TeladeLogin.HTML';
                         return;
@@ -332,7 +395,7 @@
                 todosDocs.sort((a, b) => {
                     const aData = a.data();
                     const bData = b.data();
-                    
+
                     const statusOrder = {
                         'entrega_pendente': 1,
                         'troca_pendente': 2,
@@ -352,7 +415,7 @@
                     }
 
                     // Se ambos forem concluídos, ordena pelo horário de conclusão (último concluído primeiro)
-                    if ((aData.status === 'concluida' || aData.status === 'na_obra') && 
+                    if ((aData.status === 'concluida' || aData.status === 'na_obra') &&
                         (bData.status === 'concluida' || bData.status === 'na_obra')) {
                         const timeA = aData.concluido_em ? (aData.concluido_em.seconds || new Date(aData.concluido_em).getTime() / 1000) : 0;
                         const timeB = bData.concluido_em ? (bData.concluido_em.seconds || new Date(bData.concluido_em).getTime() / 1000) : 0;
@@ -580,28 +643,28 @@
                 e.preventDefault();
                 const num = inputTelConfig.value.trim().replace(/[^\d]/g, '');
                 if (!num) {
-                    alert("Por favor, digite um número válido!");
+                    Alerta.aviso("Por favor, digite um número de WhatsApp válido!");
                     return;
                 }
                 try {
                     await db.collection('config').doc(user.uid).set({
                         telefone_logistica: num
                     }, { merge: true });
-                    alert("WhatsApp da Logística updated com sucesso!");
+                    Alerta.sucesso("WhatsApp da Logística atualizado com sucesso!");
                     fecharConfigModal();
                 } catch (error) {
-                    alert("Erro ao salvar: " + error.message);
+                    Alerta.erro("Erro ao salvar: " + error.message);
                 }
             });
 
             // Função para abrir modal de detalhes com informações ricas
             function abrirDetalhesLocacao(id, data) {
                 const modalDet = document.getElementById('modalDetalhesLocacao');
-                
+
                 // Se a caçamba já está na obra/em uso, tratamos como locação normal de entrega/ativa
                 const isFinalizadoNaObra = (data.status === 'na_obra' || data.status === 'em_uso');
                 const tipoServico = isFinalizadoNaObra ? 'entrega' : (data.tipo_servico || (data.pagamento_forma === 'Sem Custo (Retirada)' ? 'retirada' : 'entrega'));
-                
+
                 if (tipoServico === 'retirada') {
                     document.getElementById('detalheOS').textContent = `Ordem de Retirada OS ${data.os_numero || '-'}`;
                 } else if (tipoServico === 'troca') {
@@ -609,7 +672,7 @@
                 } else {
                     document.getElementById('detalheOS').textContent = `Locação OS ${data.os_numero || '-'}`;
                 }
-                
+
                 const statusLabels = {
                     'em_uso': '🟢 Na Obra (Em Uso)',
                     'na_obra': '🟢 Na Obra (Em Uso)',
@@ -620,7 +683,7 @@
                     'aguardando_troca': '🟡 Trocar Caçamba',
                     'concluida': '✔️ Concluída'
                 };
-                
+
                 let statusCompData = '';
                 if (data.status === 'concluida' && data.concluido_em) {
                     const dataHoraConcl = formatarTimestamp(data.concluido_em);
@@ -659,7 +722,7 @@
                 }
 
                 const dataAgendada = data.data_entrega ? new Date(data.data_entrega + 'T12:00:00').toLocaleDateString('pt-BR') : '-';
-                
+
                 let dataLinhas = '';
                 if (tipoServico === 'retirada') {
                     dataLinhas = `
@@ -709,10 +772,10 @@
                                     pagamento_status: 'Pago',
                                     pagamento_forma: forma
                                 });
-                                alert("Pagamento registrado com sucesso!");
+                                Alerta.sucesso("Pagamento registrado com sucesso!");
                                 modalDet.style.display = 'none';
                             } catch (err) {
-                                alert("Erro ao registrar pagamento: " + err.message);
+                                Alerta.erro("Erro ao registrar pagamento: " + err.message);
                             }
                         });
                     }
@@ -864,13 +927,13 @@
                     const dataRet = document.getElementById('dataRetiradaAgendamento').value;
 
                     if (!motId) {
-                        alert("Por favor, selecione um motorista!");
+                        Alerta.aviso("Por favor, selecione um motorista!");
                         return;
                     }
 
                     const hojeLocal = obterDataLocalFormatada();
                     if (dataRet < hojeLocal) {
-                        alert("Erro: Não é possível solicitar uma retirada para uma data retroativa (que já passou).");
+                        Alerta.aviso("Não é possível solicitar uma retirada para uma data retroativa (que já passou).");
                         return;
                     }
                     const agora = new Date();
@@ -878,7 +941,7 @@
                     const minAtual = String(agora.getMinutes()).padStart(2, '0');
                     const horarioAtual = `${horaAtual}:${minAtual}`;
                     if (dataRet === hojeLocal && hora < horarioAtual) {
-                        alert(`Erro: O horário selecionado (${hora}) não pode ser anterior ao horário atual (${horarioAtual}).`);
+                        Alerta.aviso(`O horário selecionado (${hora}) não pode ser anterior ao horário atual (${horarioAtual}).`);
                         return;
                     }
 
@@ -921,9 +984,10 @@
 
                         await Promise.all(promessas);
 
+                        Alerta.sucesso(`Retirada agendada com sucesso! OS ${newOS}`);
                         modalDet.style.display = 'none';
                     } catch (err) {
-                        alert("Erro ao agendar retirada: " + err.message);
+                        Alerta.erro("Erro ao agendar retirada: " + err.message);
                     }
                 });
 
@@ -956,17 +1020,17 @@
                     const pagamentoStatus = document.getElementById('pagamentoStatusTroca').value;
 
                     if (!motId) {
-                        alert("Por favor, selecione um motorista!");
+                        Alerta.aviso("Por favor, selecione um motorista!");
                         return;
                     }
                     if (!cacambaIdSubstituta || cacambaIdSubstituta === "Nenhuma caçamba disponível" || cacambaIdSubstituta === "Carregando caçambas...") {
-                        alert("Por favor, selecione uma caçamba substituta disponível!");
+                        Alerta.aviso("Por favor, selecione uma caçamba substituta disponível!");
                         return;
                     }
 
                     const hojeLocal = obterDataLocalFormatada();
                     if (dataTroca < hojeLocal) {
-                        alert("Erro: Não é possível solicitar uma troca para uma data retroativa (que já passou).");
+                        Alerta.aviso("Não é possível solicitar uma troca para uma data retroativa (que já passou).");
                         return;
                     }
                     const agora = new Date();
@@ -974,7 +1038,7 @@
                     const minAtual = String(agora.getMinutes()).padStart(2, '0');
                     const horarioAtual = `${horaAtual}:${minAtual}`;
                     if (dataTroca === hojeLocal && hora < horarioAtual) {
-                        alert(`Erro: O horário selecionado (${hora}) não pode ser anterior ao horário atual (${horarioAtual}).`);
+                        Alerta.aviso(`O horário selecionado (${hora}) não pode ser anterior ao horário atual (${horarioAtual}).`);
                         return;
                     }
 
@@ -1025,9 +1089,10 @@
 
                         await Promise.all(promessas);
 
+                        Alerta.sucesso(`Troca agendada com sucesso! Nova OS ${newOS}`);
                         modalDet.style.display = 'none';
                     } catch (err) {
-                        alert("Erro ao agendar troca: " + err.message);
+                        Alerta.erro("Erro ao agendar troca: " + err.message);
                     }
                 });
 
@@ -1086,7 +1151,7 @@
                     const motNome = selectMotConc.options[selectMotConc.selectedIndex]?.text;
 
                     if (!motId) {
-                        alert("Por favor, selecione o motorista que realizou a atividade!");
+                        Alerta.aviso("Por favor, selecione o motorista que realizou a atividade!");
                         return;
                     }
 
@@ -1115,7 +1180,7 @@
                         } else if (data.tipo_servico === 'retirada') {
                             updateData.data_retirada = obterDataLocalFormatada();
                         }
-                        
+
                         promessas.push(db.collection('locacoes').doc(id).update(updateData));
 
                         const novoStatusCacamba = (data.tipo_servico === 'retirada') ? 'disponivel' : 'em_uso';
@@ -1132,9 +1197,10 @@
 
                         await Promise.all(promessas);
 
+                        Alerta.sucesso('Atividade concluída com sucesso!');
                         modalDet.style.display = 'none';
                     } catch (err) {
-                        alert("Erro ao concluir atividade: " + err.message);
+                        Alerta.erro("Erro ao concluir atividade: " + err.message);
                     }
                 });
 
@@ -1155,4 +1221,5 @@
         }
     </script>
 </body>
+
 </html>
