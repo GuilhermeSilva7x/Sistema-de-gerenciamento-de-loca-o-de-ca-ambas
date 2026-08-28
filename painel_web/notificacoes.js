@@ -231,3 +231,84 @@ window.alert = function (msg) {
         console.warn("[Alert]", msg);
     }
 };
+
+// ==========================================================================
+// CONTROLE GLOBAL DA BARRA LATERAL (ABRIR / FECHAR NAVEGAÇÃO)
+// ==========================================================================
+(function initSidebarManager() {
+    function aplicarEstado() {
+        const recolhido = localStorage.getItem('sidebar_recolhida') === 'true';
+        if (recolhido) {
+            document.body.classList.add('menu-fechado');
+        } else {
+            document.body.classList.remove('menu-fechado');
+        }
+    }
+
+    function alternarMenu() {
+        const fechado = document.body.classList.toggle('menu-fechado');
+        localStorage.setItem('sidebar_recolhida', fechado ? 'true' : 'false');
+    }
+
+    // Aplica o estado salvo assim que possível
+    if (document.body) {
+        aplicarEstado();
+    } else {
+        document.addEventListener('DOMContentLoaded', aplicarEstado);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        aplicarEstado();
+
+        // Garante botão no cabeçalho se houver cabeçalho e não tiver botão
+        const cabecalho = document.getElementById('cabecalho-principal');
+        if (cabecalho && !cabecalho.querySelector('.btn-toggle-menu')) {
+            const h2 = cabecalho.querySelector('h2');
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'btn-toggle-menu';
+            btn.title = 'Recolher / Expandir Menu Lateral (Ctrl+B)';
+            btn.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            `;
+            if (h2) {
+                // Se o h2 já não estiver dentro de .cabecalho-titulo-area
+                let wrapper = cabecalho.querySelector('.cabecalho-titulo-area');
+                if (!wrapper) {
+                    wrapper = document.createElement('div');
+                    wrapper.className = 'cabecalho-titulo-area';
+                    h2.parentNode.insertBefore(wrapper, h2);
+                    wrapper.appendChild(btn);
+                    wrapper.appendChild(h2);
+                } else {
+                    wrapper.insertBefore(btn, wrapper.firstChild);
+                }
+            } else {
+                cabecalho.insertBefore(btn, cabecalho.firstChild);
+            }
+        }
+
+        // Delegação de evento de clique para os botões de alternância
+        document.addEventListener('click', function (e) {
+            const btn = e.target.closest('.btn-toggle-menu, #btnToggleMenu, .btn-toggle-sidebar');
+            if (btn) {
+                e.preventDefault();
+                alternarMenu();
+            }
+        });
+
+        // Atalho de teclado: Ctrl + B
+        document.addEventListener('keydown', function (e) {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+                e.preventDefault();
+                alternarMenu();
+            }
+        });
+    });
+
+    window.alternarMenuLateral = alternarMenu;
+})();

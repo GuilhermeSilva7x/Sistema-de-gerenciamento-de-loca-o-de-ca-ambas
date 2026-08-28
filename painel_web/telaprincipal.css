@@ -12,6 +12,11 @@ body {
     grid-template-columns: 260px 1fr;
     height: 100vh;
     background-color: #f4f6f9;
+    transition: grid-template-columns 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.menu-fechado {
+    grid-template-columns: 0px 1fr;
 }
 
 /* --- MENU LATERAL (SEUS NOMES DE CLASSE) --- */
@@ -20,22 +25,61 @@ body {
     color: #ffffff;
     display: flex;
     flex-direction: column;
-    padding: 10px 0;
+    padding: 10px 0 20px 0;
+    height: 100vh;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+}
+
+body.menu-fechado .barra-lateral {
+    width: 0;
+    min-width: 0;
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
+    border: none;
 }
 
 .logo {
     font-weight: bold;
     font-size: 15px;
     text-align: center;
-    padding: 10px 20px 30px 20px;
+    padding: 15px 20px 25px 20px;
     letter-spacing: 1px;
     border-bottom: 1px solid #1e293b;
+    color: #ffffff;
 }
 
 .menu-lateral {
     display: flex;
     flex-direction: column;
     margin-top: 10px;
+    flex: 1;
+}
+
+.rodape-lateral {
+    margin-top: auto;
+    padding: 20px 20px 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-rodape-img {
+    width: 140px;
+    height: auto;
+    max-height: 65px;
+    object-fit: contain;
+    opacity: 1;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    user-select: none;
+}
+
+.logo-rodape-img:hover {
+    transform: scale(1.04);
 }
 
 .menu-lateral a {
@@ -76,9 +120,49 @@ body {
     border-bottom: 1px solid #e2e8f0;
 }
 
+.cabecalho-titulo-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.btn-toggle-menu {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    cursor: pointer;
+    color: #334155;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.btn-toggle-menu:hover {
+    background-color: #e2e8f0;
+    border-color: #94a3b8;
+    color: #0f172a;
+    transform: scale(1.05);
+}
+
+.btn-toggle-menu:active {
+    transform: scale(0.95);
+}
+
+.btn-toggle-menu svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
 #cabecalho-principal h2 {
     font-size: 24px;
     color: #1e293b;
+    margin: 0;
 }
 
 /* Estiliza o span (Visão geral) que está dentro do seu h2 */
