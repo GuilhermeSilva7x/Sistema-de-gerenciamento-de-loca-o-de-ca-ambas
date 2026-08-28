@@ -10,5 +10,13 @@
         "firestore-debug.log"
       ]
     }
-  ]
+  ],
+  "hosting": {
+    "public": "painel_web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
 }

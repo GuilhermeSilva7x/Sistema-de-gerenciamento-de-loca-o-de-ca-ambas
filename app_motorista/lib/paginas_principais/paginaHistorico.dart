@@ -166,9 +166,14 @@ class Paginahistorico extends StatelessWidget {
                      atividadeTexto = "RETIRADA";
                    }
 
-                  final rua = data['endereco']?['rua'] ?? '';
-                  final num = data['endereco']?['numero'] ?? '';
-                  final bairro = data['endereco']?['bairro'] ?? '';
+                   final rua = data['endereco']?['rua'] ?? '';
+                   final num = data['endereco']?['numero'] ?? '';
+                   final bairro = data['endereco']?['bairro'] ?? '';
+                   final cidade = data['endereco']?['cidade'] ?? '';
+
+                   final String enderecoCompleto = cidade.isNotEmpty 
+                       ? "$rua, $num - $bairro, $cidade" 
+                       : "$rua, $num - $bairro";
 
                   return Column(
                     children: [
@@ -178,7 +183,7 @@ class Paginahistorico extends StatelessWidget {
                         cor: cor,
                         concluido: true,
                         clienteNome: data['cliente_nome'] ?? '-',
-                        endereco: "$rua, $num - $bairro",
+                        endereco: enderecoCompleto,
                         cacambaNumero: data['cacamba_numero'] ?? '-',
                         cacambaId: data['cacamba_id'] ?? '',
                         hora: "Finalizado",

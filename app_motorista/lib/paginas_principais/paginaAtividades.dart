@@ -221,11 +221,16 @@ class Paginaatividades extends StatelessWidget {
                     atividadeTexto = "RETIRADA";
                   }
 
-                  final rua = data['endereco']?['rua'] ?? '';
+                   final rua = data['endereco']?['rua'] ?? '';
                   final num = data['endereco']?['numero'] ?? '';
                   final bairro = data['endereco']?['bairro'] ?? '';
+                  final cidade = data['endereco']?['cidade'] ?? '';
                   final hora = data['hora_entrega'] ?? '08:00';
                   
+                  final String enderecoCompleto = cidade.isNotEmpty 
+                      ? "$rua, $num - $bairro, $cidade" 
+                      : "$rua, $num - $bairro";
+
                   final dataEntregaNorm = normalizeDate(data['data_entrega']);
                   bool isAtrasada = false;
                   if (dataEntregaNorm.isNotEmpty) {
@@ -255,7 +260,7 @@ class Paginaatividades extends StatelessWidget {
                         cor: cor,
                         concluido: status == 'concluida' || status == 'na_obra',
                         clienteNome: data['cliente_nome'] ?? '-',
-                        endereco: "$rua, $num - $bairro",
+                        endereco: enderecoCompleto,
                         cacambaNumero: data['cacamba_numero'] ?? '-',
                         cacambaId: data['cacamba_id'] ?? '',
                         cacambaVelhaNumero: data['cacamba_velha_numero'] ?? '',

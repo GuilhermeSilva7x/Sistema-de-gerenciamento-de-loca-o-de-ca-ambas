@@ -1206,19 +1206,19 @@
 
                 modalDet.style.display = 'flex';
             }
-
-            // Eventos de fechamento do modal de detalhes
-            document.getElementById('btnFecharModalDetalhes').addEventListener('click', () => {
-                document.getElementById('modalDetalhesLocacao').style.display = 'none';
-            });
-            document.getElementById('btnFecharDetalhesConfig').addEventListener('click', () => {
-                document.getElementById('modalDetalhesLocacao').style.display = 'none';
-            });
-            window.addEventListener('click', (e) => {
-                const m = document.getElementById('modalDetalhesLocacao');
-                if (e.target === m) m.style.display = 'none';
-            });
         }
+
+        // Eventos de fechamento do modal de detalhes (Configurados globalmente)
+        document.getElementById('btnFecharModalDetalhes').addEventListener('click', () => {
+            document.getElementById('modalDetalhesLocacao').style.display = 'none';
+        });
+        document.getElementById('btnFecharDetalhesConfig').addEventListener('click', () => {
+            document.getElementById('modalDetalhesLocacao').style.display = 'none';
+        });
+        window.addEventListener('click', (e) => {
+            const m = document.getElementById('modalDetalhesLocacao');
+            if (e.target === m) m.style.display = 'none';
+        });
     </script>
 </body>
 

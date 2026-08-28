@@ -460,6 +460,14 @@
                 tr.querySelector('.btn-excluir').addEventListener('click', async (e) => {
                     const cacId = id;
                     const numeroCacamba = data.numero || '';
+                    
+                    const estaAlugada = locacoesAtivas[id] || (data.status !== 'disponivel' && data.status !== 'manutencao');
+                    if (estaAlugada) {
+                        const osInfo = locacoesAtivas[id] ? ` (OS ${locacoesAtivas[id].os_numero || '-'})` : '';
+                        Alerta.aviso(`Não é possível remover a caçamba Nº ${numeroCacamba} porque ela está em uso ou associada a uma locação ativa${osInfo}.`);
+                        return;
+                    }
+
                     const confirmou = await Alerta.confirmar({
                         titulo: 'Remover Caçamba',
                         texto: `Deseja realmente remover a caçamba Nº ${numeroCacamba}?`,
