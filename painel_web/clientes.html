@@ -1,26 +1,126 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciamento de Locações - Clientes</title>
     <link rel="stylesheet" href="telaprincipal.css">
     <link rel="stylesheet" href="clientes.css">
+    <link rel="icon" href="favicon (1).ico">
+
 </head>
+
 <body>
 
     <aside class="barra-lateral">
-        <div class="logo">LOCAÇÃO DE CAÇAMBAS</div>
+        <div class="logo">
+            <svg class="logo-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 7h18l-1.8 11.2a2 2 0 0 1-2 1.8H6.8a2 2 0 0 1-2-1.8L3 7z" />
+                <path d="M2 7h20" />
+                <path d="M9 11v5" />
+                <path d="M15 11v5" />
+                <path d="M7 4h10l1 3H6l1-3z" />
+            </svg>
+            <span>LOCAÇÃO DE CAÇAMBAS</span>
+        </div>
         <nav class="menu-lateral">
-            <a href="telaprincipal.html">Início</a>
-            <a href="cacambas.html">Caçambas</a>
-            <a href="locacao.html">Locações</a>
-            <a href="clientes.html" class="active">Clientes</a>
-            <a href="motoristas.html">Motoristas</a>
-            <a href="caminhoes.html">Caminhões</a>
-            <a href="despesas.html">Despesas</a>
-            <a href="relatorios.html">Relatórios</a>
-            <a href="assinatura.html">Assinaturas</a>
+            <a href="telaprincipal.html">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                <span>Início</span>
+            </a>
+            <a href="cacambas.html">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 7h18l-1.8 11.2a2 2 0 0 1-2 1.8H6.8a2 2 0 0 1-2-1.8L3 7z" />
+                    <path d="M2 7h20" />
+                    <path d="M9 11v5" />
+                    <path d="M15 11v5" />
+                    <path d="M7 4h10l1 3H6l1-3z" />
+                </svg>
+                <span>Caçambas</span>
+            </a>
+            <a href="locacao.html">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                    <path d="m9 16 2 2 4-4" />
+                </svg>
+                <span>Locações</span>
+            </a>
+            <a href="clientes.html" class="active">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="4" width="20" height="16" rx="2" />
+                    <circle cx="8" cy="10" r="2.2" />
+                    <path d="M13 16c0-1.6-1.8-2.6-5-2.6S3 14.4 3 16" />
+                    <line x1="14" y1="9" x2="19" y2="9" />
+                    <line x1="14" y1="13" x2="17" y2="13" />
+                </svg>
+                <span>Clientes</span>
+            </a>
+            <a href="motoristas.html">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <circle cx="12" cy="12" r="3.2" />
+                    <line x1="12" y1="2" x2="12" y2="8.8" />
+                    <line x1="4.93" y1="19.07" x2="9.5" y2="14.5" />
+                    <line x1="19.07" y1="19.07" x2="14.5" y2="14.5" />
+                </svg>
+                <span>Motoristas</span>
+            </a>
+            <a href="caminhoes.html">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 4h12v9H1z" />
+                    <path d="M13 8h4l3 3v3h-7V8z" />
+                    <circle cx="5.5" cy="18" r="2.2" />
+                    <circle cx="17.5" cy="18" r="2.2" />
+                    <path d="M7.7 18h7.6" />
+                    <path d="M1 13h2" />
+                    <path d="M13 13h2" />
+                </svg>
+                <span>Caminhões</span>
+            </a>
+            <a href="despesas.html">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" />
+                    <path d="M8 7h6" />
+                    <path d="M8 11h8" />
+                    <ellipse cx="17" cy="17" rx="4" ry="2" />
+                    <path d="M13 17v3c0 1.1 1.8 2 4 2s4-.9 4-2v-3" />
+                </svg>
+                <span>Despesas</span>
+            </a>
+            <a href="relatorios.html">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 3v18h18" />
+                    <path d="M18 17V9" />
+                    <path d="M13 17V5" />
+                    <path d="M8 17v-3" />
+                    <path d="m4 11 5-5 4 3 6-6" />
+                </svg>
+                <span>Relatórios</span>
+            </a>
+            <a href="assinatura.html">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m18 2 4 4-10 10H8v-4L18 2z" />
+                    <path d="M3 20c3.5-1.5 6.5 1 10-0.5s6.5-1 8 0.5" />
+                </svg>
+                <span>Assinaturas</span>
+            </a>
         </nav>
         <div class="rodape-lateral">
             <img src="logo-gkdev.png" alt="GK Dev - Software Solutions" class="logo-rodape-img">
@@ -28,11 +128,13 @@
     </aside>
 
     <div class="conteudo-principal" id="titulo-principal">
-        
+
         <header class="cabecalho-principal" id="cabecalho-principal">
             <div class="cabecalho-titulo-area">
-                <button type="button" class="btn-toggle-menu" id="btnToggleMenu" title="Recolher / Expandir Menu Lateral (Ctrl+B)">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <button type="button" class="btn-toggle-menu" id="btnToggleMenu"
+                    title="Recolher / Expandir Menu Lateral (Ctrl+B)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <line x1="3" y1="12" x2="21" y2="12"></line>
                         <line x1="3" y1="6" x2="21" y2="6"></line>
                         <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -47,7 +149,7 @@
             <input type="text" id="filtroPesquisaCliente" placeholder="Buscar clientes">
             <button class="btn-nova" id="btnAbrirModal">+ Novo Cliente</button>
         </section>
-        
+
         <section class="tabela">
             <table>
                 <thead>
@@ -100,7 +202,7 @@
                 <h3 id="tituloHistoricoCliente">Movimentações do Cliente</h3>
                 <span id="btnFecharHistorico" class="modal-fechar">&times;</span>
             </div>
-            
+
             <div id="corpoHistoricoCliente" style="max-height: 400px; overflow-y: auto; margin-top: 15px;">
                 <!-- Preenchido via JS -->
             </div>
@@ -117,7 +219,7 @@
     <script src="firebase-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="notificacoes.js"></script>
-    
+
     <script>
         let editClienteId = null;
 
@@ -176,152 +278,152 @@
 
         function inicializarClientes(user) {
 
-        // Mapeia os elementos do HTML
-        const modal = document.getElementById('modalCliente');
-        const btnAbrir = document.getElementById('btnAbrirModal');
-        const btnFecharX = document.getElementById('btnFecharModal');
-        const btnCancelar = document.getElementById('btnCancelar');
-        const formCliente = document.getElementById('formCliente');
+            // Mapeia os elementos do HTML
+            const modal = document.getElementById('modalCliente');
+            const btnAbrir = document.getElementById('btnAbrirModal');
+            const btnFecharX = document.getElementById('btnFecharModal');
+            const btnCancelar = document.getElementById('btnCancelar');
+            const formCliente = document.getElementById('formCliente');
 
-        // Abre a janela flutuante
-        btnAbrir.addEventListener('click', () => {
-            editClienteId = null;
-            modal.querySelector('h3').textContent = 'Cadastrar Novo Cliente';
-            formCliente.reset();
-            modal.classList.add('ativo');
-        });
-
-        // Fecha a janela
-        btnFecharX.addEventListener('click', () => {
-            modal.classList.remove('ativo');
-        });
-
-        const modalHist = document.getElementById('modalHistoricoCliente');
-        const btnFecharHistX = document.getElementById('btnFecharHistorico');
-        const btnFecharHistBtn = document.getElementById('btnFecharHistoricoConfig');
-
-        btnFecharHistX.addEventListener('click', () => modalHist.classList.remove('ativo'));
-        btnFecharHistBtn.addEventListener('click', () => modalHist.classList.remove('ativo'));
-
-        btnCancelar.addEventListener('click', (e) => {
-            e.preventDefault();
-            modal.classList.remove('ativo');
-        });
-
-        window.addEventListener('click', (evento) => {
-            if (evento.target === modal) {
-                modal.classList.remove('ativo');
-            }
-            if (evento.target === modalHist) {
-                modalHist.classList.remove('ativo');
-            }
-        });
-
-        // Salvar ou Editar Cliente no Firestore
-        formCliente.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const nome = document.getElementById('clienteNome').value.trim();
-            const telefone = document.getElementById('clienteTelefone').value.trim();
-            const email = document.getElementById('clienteEmail').value.trim();
-
-            if (!nome || !telefone) {
-                Alerta.aviso('Nome e Telefone são obrigatórios!');
-                return;
-            }
-
-            if (editClienteId) {
-                // Modo Edição
-                try {
-                    await db.collection('clientes').doc(editClienteId).update({
-                        nome,
-                        telefone,
-                        email
-                    });
-                    Alerta.sucesso('Cliente atualizado com sucesso!');
-                    modal.classList.remove('ativo');
-                    formCliente.reset();
-                } catch (error) {
-                    Alerta.erro('Erro ao atualizar cliente: ' + error.message);
-                }
-            } else {
-                // Modo Cadastro
-                try {
-                    await db.collection('clientes').add({
-                        admin_id: user.uid,
-                        nome,
-                        telefone,
-                        email,
-                        data_cadastro: new Date().toISOString()
-                    });
-                    Alerta.sucesso('Cliente cadastrado com sucesso!');
-                    formCliente.reset();
-                    modal.classList.remove('ativo');
-                } catch (error) {
-                    Alerta.erro('Erro ao salvar cliente: ' + error.message);
-                }
-            }
-        });
-
-        let todosClientes = [];
-        let paginaAtual = 1;
-        const itensPorPagina = 10;
-
-        // Listar Clientes em Tempo Real
-        const tbody = document.querySelector('table tbody');
-        db.collection('clientes').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
-            todosClientes = [];
-            snapshot.forEach(doc => todosClientes.push({ id: doc.id, data: doc.data() }));
-            
-            // Ordenar por nome de A-Z
-            todosClientes.sort((a, b) => (a.data.nome || '').localeCompare(b.data.nome || ''));
-            
-            renderizarTabela();
-        });
-
-        // Ouvinte do filtro de pesquisa
-        document.getElementById('filtroPesquisaCliente').addEventListener('input', () => {
-            paginaAtual = 1;
-            renderizarTabela();
-        });
-
-        function renderizarTabela() {
-            tbody.innerHTML = '';
-
-            const queryText = document.getElementById('filtroPesquisaCliente').value.trim().toLowerCase();
-
-            // Filtrar clientes
-            const filtrados = todosClientes.filter(item => {
-                const data = item.data;
-                const nome = (data.nome || '').toLowerCase();
-                const telefone = (data.telefone || '').toLowerCase();
-                const email = (data.email || '').toLowerCase();
-                return nome.includes(queryText) || telefone.includes(queryText) || email.includes(queryText);
+            // Abre a janela flutuante
+            btnAbrir.addEventListener('click', () => {
+                editClienteId = null;
+                modal.querySelector('h3').textContent = 'Cadastrar Novo Cliente';
+                formCliente.reset();
+                modal.classList.add('ativo');
             });
 
-            // Paginação
-            const totalPaginas = Math.ceil(filtrados.length / itensPorPagina);
-            if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
-            if (paginaAtual < 1) paginaAtual = 1;
+            // Fecha a janela
+            btnFecharX.addEventListener('click', () => {
+                modal.classList.remove('ativo');
+            });
 
-            const inicio = (paginaAtual - 1) * itensPorPagina;
-            const fim = inicio + itensPorPagina;
-            const paginados = filtrados.slice(inicio, fim);
+            const modalHist = document.getElementById('modalHistoricoCliente');
+            const btnFecharHistX = document.getElementById('btnFecharHistorico');
+            const btnFecharHistBtn = document.getElementById('btnFecharHistoricoConfig');
 
-            if (paginados.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #64748b;">Nenhum cliente encontrado.</td></tr>';
-                renderizarPaginacao(0, 0);
-                return;
-            }
+            btnFecharHistX.addEventListener('click', () => modalHist.classList.remove('ativo'));
+            btnFecharHistBtn.addEventListener('click', () => modalHist.classList.remove('ativo'));
 
-            paginados.forEach((item) => {
-                const data = item.data;
-                const id = item.id;
-                const tr = document.createElement('tr');
+            btnCancelar.addEventListener('click', (e) => {
+                e.preventDefault();
+                modal.classList.remove('ativo');
+            });
 
-                const dataCadastro = data.data_cadastro ? new Date(data.data_cadastro).toLocaleDateString('pt-BR') : '-';
-                const foneLimpo = (data.telefone || '').replace(/[^\d]/g, '');
+            window.addEventListener('click', (evento) => {
+                if (evento.target === modal) {
+                    modal.classList.remove('ativo');
+                }
+                if (evento.target === modalHist) {
+                    modalHist.classList.remove('ativo');
+                }
+            });
 
-                tr.innerHTML = `
+            // Salvar ou Editar Cliente no Firestore
+            formCliente.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const nome = document.getElementById('clienteNome').value.trim();
+                const telefone = document.getElementById('clienteTelefone').value.trim();
+                const email = document.getElementById('clienteEmail').value.trim();
+
+                if (!nome || !telefone) {
+                    Alerta.aviso('Nome e Telefone são obrigatórios!');
+                    return;
+                }
+
+                if (editClienteId) {
+                    // Modo Edição
+                    try {
+                        await db.collection('clientes').doc(editClienteId).update({
+                            nome,
+                            telefone,
+                            email
+                        });
+                        Alerta.sucesso('Cliente atualizado com sucesso!');
+                        modal.classList.remove('ativo');
+                        formCliente.reset();
+                    } catch (error) {
+                        Alerta.erro('Erro ao atualizar cliente: ' + error.message);
+                    }
+                } else {
+                    // Modo Cadastro
+                    try {
+                        await db.collection('clientes').add({
+                            admin_id: user.uid,
+                            nome,
+                            telefone,
+                            email,
+                            data_cadastro: new Date().toISOString()
+                        });
+                        Alerta.sucesso('Cliente cadastrado com sucesso!');
+                        formCliente.reset();
+                        modal.classList.remove('ativo');
+                    } catch (error) {
+                        Alerta.erro('Erro ao salvar cliente: ' + error.message);
+                    }
+                }
+            });
+
+            let todosClientes = [];
+            let paginaAtual = 1;
+            const itensPorPagina = 10;
+
+            // Listar Clientes em Tempo Real
+            const tbody = document.querySelector('table tbody');
+            db.collection('clientes').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
+                todosClientes = [];
+                snapshot.forEach(doc => todosClientes.push({ id: doc.id, data: doc.data() }));
+
+                // Ordenar por nome de A-Z
+                todosClientes.sort((a, b) => (a.data.nome || '').localeCompare(b.data.nome || ''));
+
+                renderizarTabela();
+            });
+
+            // Ouvinte do filtro de pesquisa
+            document.getElementById('filtroPesquisaCliente').addEventListener('input', () => {
+                paginaAtual = 1;
+                renderizarTabela();
+            });
+
+            function renderizarTabela() {
+                tbody.innerHTML = '';
+
+                const queryText = document.getElementById('filtroPesquisaCliente').value.trim().toLowerCase();
+
+                // Filtrar clientes
+                const filtrados = todosClientes.filter(item => {
+                    const data = item.data;
+                    const nome = (data.nome || '').toLowerCase();
+                    const telefone = (data.telefone || '').toLowerCase();
+                    const email = (data.email || '').toLowerCase();
+                    return nome.includes(queryText) || telefone.includes(queryText) || email.includes(queryText);
+                });
+
+                // Paginação
+                const totalPaginas = Math.ceil(filtrados.length / itensPorPagina);
+                if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
+                if (paginaAtual < 1) paginaAtual = 1;
+
+                const inicio = (paginaAtual - 1) * itensPorPagina;
+                const fim = inicio + itensPorPagina;
+                const paginados = filtrados.slice(inicio, fim);
+
+                if (paginados.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #64748b;">Nenhum cliente encontrado.</td></tr>';
+                    renderizarPaginacao(0, 0);
+                    return;
+                }
+
+                paginados.forEach((item) => {
+                    const data = item.data;
+                    const id = item.id;
+                    const tr = document.createElement('tr');
+
+                    const dataCadastro = data.data_cadastro ? new Date(data.data_cadastro).toLocaleDateString('pt-BR') : '-';
+                    const foneLimpo = (data.telefone || '').replace(/[^\d]/g, '');
+
+                    tr.innerHTML = `
                     <td class="click-nome-cliente" data-id="${id}" data-nome="${data.nome}" style="cursor: pointer; color: #1e3a8a; text-decoration: underline;">
                         <strong>${data.nome}</strong>
                     </td>
@@ -336,136 +438,136 @@
                     </td>
                 `;
 
-                // Evento clique no nome para histórico
-                tr.querySelector('.click-nome-cliente').addEventListener('click', () => {
-                    abrirHistoricoCliente(id, data.nome || '');
-                });
-
-                // Evento editar
-                tr.querySelector('.btn-editar').addEventListener('click', () => {
-                    editClienteId = id;
-                    modal.querySelector('h3').textContent = 'Editar Cliente';
-                    document.getElementById('clienteNome').value = data.nome || '';
-                    document.getElementById('clienteTelefone').value = data.telefone || '';
-                    document.getElementById('clienteEmail').value = data.email || '';
-                    modal.classList.add('ativo');
-                });
-
-                // Evento excluir
-                tr.querySelector('.btn-excluir').addEventListener('click', async () => {
-                    const cliId = id;
-                    const nomeCliente = data.nome || '';
-                    const confirmou = await Alerta.confirmar({
-                        titulo: 'Excluir Cliente',
-                        texto: `Deseja realmente excluir o cliente ${nomeCliente}?`,
-                        confirmText: 'Sim, excluir',
-                        icone: 'warning',
-                        perigo: true
+                    // Evento clique no nome para histórico
+                    tr.querySelector('.click-nome-cliente').addEventListener('click', () => {
+                        abrirHistoricoCliente(id, data.nome || '');
                     });
-                    if (confirmou) {
-                        try {
-                            await db.collection('clientes').doc(cliId).delete();
-                            Alerta.toast(`Cliente ${nomeCliente} excluído com sucesso!`);
-                        } catch (err) {
-                            Alerta.erro('Erro ao excluir: ' + err.message);
+
+                    // Evento editar
+                    tr.querySelector('.btn-editar').addEventListener('click', () => {
+                        editClienteId = id;
+                        modal.querySelector('h3').textContent = 'Editar Cliente';
+                        document.getElementById('clienteNome').value = data.nome || '';
+                        document.getElementById('clienteTelefone').value = data.telefone || '';
+                        document.getElementById('clienteEmail').value = data.email || '';
+                        modal.classList.add('ativo');
+                    });
+
+                    // Evento excluir
+                    tr.querySelector('.btn-excluir').addEventListener('click', async () => {
+                        const cliId = id;
+                        const nomeCliente = data.nome || '';
+                        const confirmou = await Alerta.confirmar({
+                            titulo: 'Excluir Cliente',
+                            texto: `Deseja realmente excluir o cliente ${nomeCliente}?`,
+                            confirmText: 'Sim, excluir',
+                            icone: 'warning',
+                            perigo: true
+                        });
+                        if (confirmou) {
+                            try {
+                                await db.collection('clientes').doc(cliId).delete();
+                                Alerta.toast(`Cliente ${nomeCliente} excluído com sucesso!`);
+                            } catch (err) {
+                                Alerta.erro('Erro ao excluir: ' + err.message);
+                            }
                         }
-                    }
+                    });
+
+                    tbody.appendChild(tr);
                 });
 
-                tbody.appendChild(tr);
-            });
-
-            renderizarPaginacao(filtrados.length, totalPaginas);
-        }
-
-        function renderizarPaginacao(totalItens, totalPaginas) {
-            let container = document.getElementById('paginacaoContainer');
-            if (!container) {
-                container = document.createElement('div');
-                container.id = 'paginacaoContainer';
-                document.querySelector('.tabela').appendChild(container);
+                renderizarPaginacao(filtrados.length, totalPaginas);
             }
-            container.className = 'paginacao';
-            container.style.cssText = 'display: flex; justify-content: center; gap: 8px; margin-top: 25px; margin-bottom: 25px; align-items: center;';
-            container.innerHTML = '';
 
-            if (totalPaginas <= 1) {
-                container.style.display = 'none';
-                return;
-            }
-            container.style.display = 'flex';
+            function renderizarPaginacao(totalItens, totalPaginas) {
+                let container = document.getElementById('paginacaoContainer');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.id = 'paginacaoContainer';
+                    document.querySelector('.tabela').appendChild(container);
+                }
+                container.className = 'paginacao';
+                container.style.cssText = 'display: flex; justify-content: center; gap: 8px; margin-top: 25px; margin-bottom: 25px; align-items: center;';
+                container.innerHTML = '';
 
-            // Botão Anterior
-            const btnAnterior = document.createElement('button');
-            btnAnterior.textContent = 'Anterior';
-            if (paginaAtual === 1) {
-                btnAnterior.disabled = true;
-            } else {
-                btnAnterior.addEventListener('click', () => {
-                    paginaAtual--;
-                    renderizarTabela();
-                });
-            }
-            container.appendChild(btnAnterior);
+                if (totalPaginas <= 1) {
+                    container.style.display = 'none';
+                    return;
+                }
+                container.style.display = 'flex';
 
-            // Páginas numéricas
-            for (let i = 1; i <= totalPaginas; i++) {
-                const btnPagina = document.createElement('button');
-                btnPagina.textContent = i;
-                if (i === paginaAtual) {
-                    btnPagina.className = 'pag-atual';
+                // Botão Anterior
+                const btnAnterior = document.createElement('button');
+                btnAnterior.textContent = 'Anterior';
+                if (paginaAtual === 1) {
+                    btnAnterior.disabled = true;
                 } else {
-                    btnPagina.addEventListener('click', () => {
-                        paginaAtual = i;
+                    btnAnterior.addEventListener('click', () => {
+                        paginaAtual--;
                         renderizarTabela();
                     });
                 }
-                container.appendChild(btnPagina);
-            }
+                container.appendChild(btnAnterior);
 
-            // Botão Próximo
-            const btnProximo = document.createElement('button');
-            btnProximo.textContent = 'Próxima';
-            if (paginaAtual === totalPaginas) {
-                btnProximo.disabled = true;
-            } else {
-                btnProximo.addEventListener('click', () => {
-                    paginaAtual++;
-                    renderizarTabela();
-                });
-            }
-            container.appendChild(btnProximo);
-        }
-
-        async function abrirHistoricoCliente(clienteId, clienteNome) {
-            const modalHist = document.getElementById('modalHistoricoCliente');
-            document.getElementById('tituloHistoricoCliente').textContent = `Movimentações de ${clienteNome}`;
-            const corpo = document.getElementById('corpoHistoricoCliente');
-            corpo.innerHTML = '<p style="text-align: center; color: #64748b;">Carregando histórico de locações...</p>';
-            
-            modalHist.classList.add('ativo');
-
-            try {
-                // Busca todas as locações desse cliente no Firestore
-                const snapshot = await db.collection('locacoes').where('admin_id', '==', user.uid)
-                    .where('cliente_id', '==', clienteId)
-                    .get();
-
-                if (snapshot.empty) {
-                    corpo.innerHTML = '<p style="text-align: center; color: #64748b; font-style: italic; padding: 20px;">Este cliente não possui nenhuma locação registrada.</p>';
-                    return;
+                // Páginas numéricas
+                for (let i = 1; i <= totalPaginas; i++) {
+                    const btnPagina = document.createElement('button');
+                    btnPagina.textContent = i;
+                    if (i === paginaAtual) {
+                        btnPagina.className = 'pag-atual';
+                    } else {
+                        btnPagina.addEventListener('click', () => {
+                            paginaAtual = i;
+                            renderizarTabela();
+                        });
+                    }
+                    container.appendChild(btnPagina);
                 }
 
-                // Converter e ordenar por data decrescente
-                const locs = [];
-                snapshot.forEach(doc => locs.push({ id: doc.id, data: doc.data() }));
-                locs.sort((a, b) => {
-                    const aTime = a.data.criado_em ? (a.data.criado_em.seconds * 1000) : (a.data.data_entrega ? new Date(a.data.data_entrega + 'T12:00:00').getTime() : 0);
-                    const bTime = b.data.criado_em ? (b.data.criado_em.seconds * 1000) : (b.data.data_entrega ? new Date(b.data.data_entrega + 'T12:00:00').getTime() : 0);
-                    return bTime - aTime;
-                });
+                // Botão Próximo
+                const btnProximo = document.createElement('button');
+                btnProximo.textContent = 'Próxima';
+                if (paginaAtual === totalPaginas) {
+                    btnProximo.disabled = true;
+                } else {
+                    btnProximo.addEventListener('click', () => {
+                        paginaAtual++;
+                        renderizarTabela();
+                    });
+                }
+                container.appendChild(btnProximo);
+            }
 
-                let html = `
+            async function abrirHistoricoCliente(clienteId, clienteNome) {
+                const modalHist = document.getElementById('modalHistoricoCliente');
+                document.getElementById('tituloHistoricoCliente').textContent = `Movimentações de ${clienteNome}`;
+                const corpo = document.getElementById('corpoHistoricoCliente');
+                corpo.innerHTML = '<p style="text-align: center; color: #64748b;">Carregando histórico de locações...</p>';
+
+                modalHist.classList.add('ativo');
+
+                try {
+                    // Busca todas as locações desse cliente no Firestore
+                    const snapshot = await db.collection('locacoes').where('admin_id', '==', user.uid)
+                        .where('cliente_id', '==', clienteId)
+                        .get();
+
+                    if (snapshot.empty) {
+                        corpo.innerHTML = '<p style="text-align: center; color: #64748b; font-style: italic; padding: 20px;">Este cliente não possui nenhuma locação registrada.</p>';
+                        return;
+                    }
+
+                    // Converter e ordenar por data decrescente
+                    const locs = [];
+                    snapshot.forEach(doc => locs.push({ id: doc.id, data: doc.data() }));
+                    locs.sort((a, b) => {
+                        const aTime = a.data.criado_em ? (a.data.criado_em.seconds * 1000) : (a.data.data_entrega ? new Date(a.data.data_entrega + 'T12:00:00').getTime() : 0);
+                        const bTime = b.data.criado_em ? (b.data.criado_em.seconds * 1000) : (b.data.data_entrega ? new Date(b.data.data_entrega + 'T12:00:00').getTime() : 0);
+                        return bTime - aTime;
+                    });
+
+                    let html = `
                     <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
                         <thead>
                             <tr style="border-bottom: 2px solid #e2e8f0; text-align: left; background: #f8fafc;">
@@ -480,56 +582,56 @@
                         <tbody>
                 `;
 
-                locs.forEach((item) => {
-                    const data = item.data;
-                    const dateStr = data.data_entrega ? new Date(data.data_entrega + 'T12:00:00').toLocaleDateString('pt-BR') : '-';
-                    
-                    const tipoServ = data.tipo_servico || (data.pagamento_forma === 'Sem Custo (Retirada)' ? 'retirada' : 'entrega');
-                    let tipoBadge = '';
-                    if (tipoServ === 'retirada') {
-                        tipoBadge = '<span style="background: #fee2e2; color: #ef4444; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">RETIRADA</span>';
-                    } else if (tipoServ === 'troca') {
-                        tipoBadge = '<span style="background: #ffedd5; color: #ea580c; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">TROCA</span>';
-                    } else {
-                        tipoBadge = '<span style="background: #dbeafe; color: #3b82f6; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">ENTREGA</span>';
-                    }
+                    locs.forEach((item) => {
+                        const data = item.data;
+                        const dateStr = data.data_entrega ? new Date(data.data_entrega + 'T12:00:00').toLocaleDateString('pt-BR') : '-';
 
-                    let statusBadge = '';
-                    if (data.status === 'em_uso' || data.status === 'na_obra') {
-                        statusBadge = '<span style="background: #dcfce7; color: #15803d; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">Na Obra</span>';
-                    } else if (data.status === 'entrega_pendente') {
-                        statusBadge = '<span style="background: #fef9c3; color: #854d0e; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">Pendente</span>';
-                    } else if (data.status === 'retirada_pendente' || data.status === 'aguardando_retirada') {
-                        statusBadge = '<span style="background: #fee2e2; color: #ef4444; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">Coleta</span>';
-                    } else if (data.status === 'troca_pendente' || data.status === 'aguardando_troca') {
-                        statusBadge = '<span style="background: #ffedd5; color: #ea580c; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">Troca</span>';
-                    } else if (data.status === 'concluida') {
-                        statusBadge = '<span style="background: #e2e8f0; color: #475569; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">Concluída</span>';
-                    } else {
-                        statusBadge = `<span style="background: #e2e8f0; color: #475569; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">${data.status}</span>`;
-                    }
-
-                    let valorStr = data.valor ? data.valor : 'Sem Custo';
-                    const hasValor = (data.valor && data.valor !== 'Sem Custo' && data.valor !== 'Sem custo' && data.valor !== 'sem custo');
-                    if (hasValor) {
-                        if (data.pagamento_status !== 'Pago') {
-                            valorStr += ' <span style="background: #fee2e2; color: #ef4444; border: 1px solid #fee2e2; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 6px; white-space: nowrap;">❌ Não Pago</span>';
+                        const tipoServ = data.tipo_servico || (data.pagamento_forma === 'Sem Custo (Retirada)' ? 'retirada' : 'entrega');
+                        let tipoBadge = '';
+                        if (tipoServ === 'retirada') {
+                            tipoBadge = '<span style="background: #fee2e2; color: #ef4444; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">RETIRADA</span>';
+                        } else if (tipoServ === 'troca') {
+                            tipoBadge = '<span style="background: #ffedd5; color: #ea580c; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">TROCA</span>';
                         } else {
-                            valorStr += ' <span style="background: #dcfce7; color: #166534; border: 1px solid #dcfce7; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 6px; white-space: nowrap;">✔️ Pago</span>';
+                            tipoBadge = '<span style="background: #dbeafe; color: #3b82f6; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">ENTREGA</span>';
                         }
-                    }
 
-                    let cacambaCell = `Nº ${data.cacamba_numero || '-'}`;
-                    if (tipoServ === 'troca' && (data.status === 'troca_pendente' || data.status === 'aguardando_troca')) {
-                        cacambaCell = `
+                        let statusBadge = '';
+                        if (data.status === 'em_uso' || data.status === 'na_obra') {
+                            statusBadge = '<span style="background: #dcfce7; color: #15803d; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">Na Obra</span>';
+                        } else if (data.status === 'entrega_pendente') {
+                            statusBadge = '<span style="background: #fef9c3; color: #854d0e; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">Pendente</span>';
+                        } else if (data.status === 'retirada_pendente' || data.status === 'aguardando_retirada') {
+                            statusBadge = '<span style="background: #fee2e2; color: #ef4444; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">Coleta</span>';
+                        } else if (data.status === 'troca_pendente' || data.status === 'aguardando_troca') {
+                            statusBadge = '<span style="background: #ffedd5; color: #ea580c; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">Troca</span>';
+                        } else if (data.status === 'concluida') {
+                            statusBadge = '<span style="background: #e2e8f0; color: #475569; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">Concluída</span>';
+                        } else {
+                            statusBadge = `<span style="background: #e2e8f0; color: #475569; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">${data.status}</span>`;
+                        }
+
+                        let valorStr = data.valor ? data.valor : 'Sem Custo';
+                        const hasValor = (data.valor && data.valor !== 'Sem Custo' && data.valor !== 'Sem custo' && data.valor !== 'sem custo');
+                        if (hasValor) {
+                            if (data.pagamento_status !== 'Pago') {
+                                valorStr += ' <span style="background: #fee2e2; color: #ef4444; border: 1px solid #fee2e2; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 6px; white-space: nowrap;">❌ Não Pago</span>';
+                            } else {
+                                valorStr += ' <span style="background: #dcfce7; color: #166534; border: 1px solid #dcfce7; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 6px; white-space: nowrap;">✔️ Pago</span>';
+                            }
+                        }
+
+                        let cacambaCell = `Nº ${data.cacamba_numero || '-'}`;
+                        if (tipoServ === 'troca' && (data.status === 'troca_pendente' || data.status === 'aguardando_troca')) {
+                            cacambaCell = `
                             <div style="line-height: 1.3;">
                                 <span style="color: #2563eb; font-weight: bold; font-size: 12px;">Nº ${data.cacamba_numero || '-'}</span> <span style="font-size: 10px; color: #2563eb; font-weight: bold;">(Indo)</span><br>
                                 <span style="color: #ea580c; font-weight: bold; font-size: 12px;">Nº ${data.cacamba_velha_numero || '-'}</span> <span style="font-size: 10px; color: #ea580c; font-weight: bold;">(Voltando)</span>
                             </div>
                         `;
-                    }
+                        }
 
-                    html += `
+                        html += `
                         <tr style="border-bottom: 1px solid #f1f5f9;">
                             <td style="padding: 10px; font-weight: bold;">${data.os_numero || '-'}</td>
                             <td style="padding: 10px;">${tipoBadge}</td>
@@ -539,19 +641,20 @@
                             <td style="padding: 10px;">${statusBadge}</td>
                         </tr>
                     `;
-                });
+                    });
 
-                html += `
+                    html += `
                         </tbody>
                     </table>
                 `;
 
-                corpo.innerHTML = html;
-            } catch (err) {
-                corpo.innerHTML = `<p style="text-align: center; color: #ef4444; padding: 20px;">Erro ao carregar movimentações: ${err.message}</p>`;
+                    corpo.innerHTML = html;
+                } catch (err) {
+                    corpo.innerHTML = `<p style="text-align: center; color: #ef4444; padding: 20px;">Erro ao carregar movimentações: ${err.message}</p>`;
+                }
             }
         }
-    }
     </script>
 </body>
+
 </html>

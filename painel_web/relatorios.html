@@ -1,20 +1,30 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistema Caçambas - Relatórios</title>
   <link rel="stylesheet" href="relatorios.css">
+  <link rel="icon" href="favicon (1).ico">
+
   <style>
     .atualizando {
-        animation: piscar 0.5s alternate infinite;
+      animation: piscar 0.5s alternate infinite;
     }
+
     @keyframes piscar {
-        from { opacity: 1; }
-        to { opacity: 0.5; }
+      from {
+        opacity: 1;
+      }
+
+      to {
+        opacity: 0.5;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <!-- BARRA LATERAL (TRAVADA VIA GRID) -->
@@ -38,12 +48,14 @@
 
   <!-- PAINEL CONTEÚDO DIREITO -->
   <main id="titulo-principal">
-    
+
     <!-- CABEÇALHO -->
     <header id="cabecalho-principal">
       <div class="cabecalho-titulo-area">
-        <button type="button" class="btn-toggle-menu" id="btnToggleMenu" title="Recolher / Expandir Menu Lateral (Ctrl+B)">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <button type="button" class="btn-toggle-menu" id="btnToggleMenu"
+          title="Recolher / Expandir Menu Lateral (Ctrl+B)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
             <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="3" y1="6" x2="21" y2="6"></line>
             <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -56,7 +68,7 @@
 
     <!-- INFORMAÇÕES INTERNAS -->
     <section id="informacoes-principais">
-      
+
       <!-- CARDS DE RESUMO -->
       <div class="cards-resumo-relatorio">
         <div class="card-relatorio card-faturamento">
@@ -90,7 +102,8 @@
         </div>
 
         <div class="grupo-acoes">
-          <button class="botao-gerar" id="btnGerar" style="background-color: #2563eb; color: white;">Filtrar Período</button>
+          <button class="botao-gerar" id="btnGerar" style="background-color: #2563eb; color: white;">Filtrar
+            Período</button>
         </div>
       </div>
 
@@ -148,136 +161,136 @@
   <script src="notificacoes.js"></script>
 
   <script>
-        let currentUser = null;
+    let currentUser = null;
 
-        auth.onAuthStateChanged(async (user) => {
-            if (!user) {
-                window.location.href = 'TeladeLogin.HTML';
-            } else {
-                // Verifica o status do plano do admin
-                try {
-                    const empDoc = await db.collection('empresas').doc(user.uid).get();
-                    if (!empDoc.exists) {
-                        // Inicializa como pendente por padrão
-                        await db.collection('empresas').doc(user.uid).set({
-                            nome_empresa: 'Locadora de Caçambas',
-                            email_admin: user.email,
-                            plano_status: 'pendente',
-                            plano_limite: 10,
-                            data_cadastro: new Date().toISOString()
-                        });
-                        window.location.href = 'assinatura.html';
-                        return;
-                    } else {
-                        const empData = empDoc.data();
-                        if (empData.plano_status !== 'ativo') {
-                            window.location.href = 'assinatura.html';
-                            return;
-                        }
-                    }
-                } catch (err) {
-                    console.error("Erro ao validar plano:", err);
-                }
-
-                currentUser = user;
-                await migrarDocumentosSemAdminId(user.uid);
-                inicializarRelatorios(user);
-
-                const usuarioDiv = document.getElementById('usuario');
-                if (usuarioDiv) usuarioDiv.textContent = 'Administrador';
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        window.location.href = 'TeladeLogin.HTML';
+      } else {
+        // Verifica o status do plano do admin
+        try {
+          const empDoc = await db.collection('empresas').doc(user.uid).get();
+          if (!empDoc.exists) {
+            // Inicializa como pendente por padrão
+            await db.collection('empresas').doc(user.uid).set({
+              nome_empresa: 'Locadora de Caçambas',
+              email_admin: user.email,
+              plano_status: 'pendente',
+              plano_limite: 10,
+              data_cadastro: new Date().toISOString()
+            });
+            window.location.href = 'assinatura.html';
+            return;
+          } else {
+            const empData = empDoc.data();
+            if (empData.plano_status !== 'ativo') {
+              window.location.href = 'assinatura.html';
+              return;
             }
-        });
+          }
+        } catch (err) {
+          console.error("Erro ao validar plano:", err);
+        }
 
-        function inicializarRelatorios(user) {
+        currentUser = user;
+        await migrarDocumentosSemAdminId(user.uid);
+        inicializarRelatorios(user);
 
-    // Definir datas iniciais padrão (mês corrente)
-    const hoje = new Date();
-    const primeiroDia = new Date(hoje.getFullYear(), hoje.getMonth(), 1).toISOString().split('T')[0];
-    const ultimoDia = hoje.toISOString().split('T')[0];
+        const usuarioDiv = document.getElementById('usuario');
+        if (usuarioDiv) usuarioDiv.textContent = 'Administrador';
+      }
+    });
 
-    document.getElementById('data-inicio').value = primeiroDia;
-    document.getElementById('data-fim').value = ultimoDia;
+    function inicializarRelatorios(user) {
 
-    let locacoesCache = [];
-    let despesasCache = [];
+      // Definir datas iniciais padrão (mês corrente)
+      const hoje = new Date();
+      const primeiroDia = new Date(hoje.getFullYear(), hoje.getMonth(), 1).toISOString().split('T')[0];
+      const ultimoDia = hoje.toISOString().split('T')[0];
 
-    // Ouvintes em tempo real para sincronização automática
-    db.collection('locacoes').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
+      document.getElementById('data-inicio').value = primeiroDia;
+      document.getElementById('data-fim').value = ultimoDia;
+
+      let locacoesCache = [];
+      let despesasCache = [];
+
+      // Ouvintes em tempo real para sincronização automática
+      db.collection('locacoes').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
         locacoesCache = [];
         snapshot.forEach(doc => {
-            locacoesCache.push(doc.data());
+          locacoesCache.push(doc.data());
         });
         gerarRelatorio();
-    });
+      });
 
-    db.collection('despesas').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
+      db.collection('despesas').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
         despesasCache = [];
         snapshot.forEach(doc => {
-            despesasCache.push(doc.data());
+          despesasCache.push(doc.data());
         });
         gerarRelatorio();
-    });
+      });
 
-    function parseValor(valorStr) {
+      function parseValor(valorStr) {
         if (!valorStr) return 0;
         const num = parseFloat(valorStr.toString().replace(/[^\d,.-]/g, '').replace(',', '.'));
         return isNaN(num) ? 0 : num;
-    }
+      }
 
-    function gerarRelatorio() {
+      function gerarRelatorio() {
         const startVal = document.getElementById('data-inicio').value;
         const endVal = document.getElementById('data-fim').value;
 
         if (!startVal || !endVal) {
-            return; // Aguarda preenchimento
+          return; // Aguarda preenchimento
         }
 
         // 1. Filtrar Locações no período usando comparação de strings segura (Timezone-Independent)
         const locacoesFiltradas = locacoesCache.filter(loc => {
-            if (!loc.data_entrega) return false;
-            // Garante formato AAAA-MM-DD
-            const dataLoc = loc.data_entrega.substring(0, 10);
-            return dataLoc >= startVal && dataLoc <= endVal;
+          if (!loc.data_entrega) return false;
+          // Garante formato AAAA-MM-DD
+          const dataLoc = loc.data_entrega.substring(0, 10);
+          return dataLoc >= startVal && dataLoc <= endVal;
         });
 
         // 2. Filtrar Despesas no período usando comparação de strings segura
         const despesasFiltradas = despesasCache.filter(desp => {
-            if (!desp.data) return false;
-            const dataDesp = desp.data.substring(0, 10);
-            return dataDesp >= startVal && dataDesp <= endVal;
+          if (!desp.data) return false;
+          const dataDesp = desp.data.substring(0, 10);
+          return dataDesp >= startVal && dataDesp <= endVal;
         });
 
         // 3. Cálculos dos Cards
         let faturamento = 0;
         locacoesFiltradas.forEach(loc => {
-            faturamento += parseValor(loc.valor);
+          faturamento += parseValor(loc.valor);
         });
 
         let despesas = 0;
         despesasFiltradas.forEach(desp => {
-            despesas += parseValor(desp.valor);
+          despesas += parseValor(desp.valor);
         });
 
         const lucro = faturamento - despesas;
 
         // Renderiza cards
-        document.getElementById('txt-faturamento').textContent = `R$ ${faturamento.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-        document.getElementById('txt-despesa').textContent = `R$ ${despesas.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-        
+        document.getElementById('txt-faturamento').textContent = `R$ ${faturamento.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+        document.getElementById('txt-despesa').textContent = `R$ ${despesas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+
         const txtLucro = document.getElementById('txt-lucro');
-        txtLucro.textContent = `R$ ${lucro.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        txtLucro.textContent = `R$ ${lucro.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
         if (lucro < 0) {
-            txtLucro.style.color = '#ef4444';
+          txtLucro.style.color = '#ef4444';
         } else {
-            txtLucro.style.color = '#22c55e';
+          txtLucro.style.color = '#22c55e';
         }
 
         // 4. Gráfico de Locações por Bairro
         const bairrosMap = {};
         locacoesFiltradas.forEach(loc => {
-            if (loc.tipo_servico === 'retirada') return; // Retiradas não contam como nova locação
-            const bairro = loc.endereco?.bairro || 'Não informado';
-            bairrosMap[bairro] = (bairrosMap[bairro] || 0) + 1;
+          if (loc.tipo_servico === 'retirada') return; // Retiradas não contam como nova locação
+          const bairro = loc.endereco?.bairro || 'Não informado';
+          bairrosMap[bairro] = (bairrosMap[bairro] || 0) + 1;
         });
 
         const containerBairros = document.getElementById('grafico-bairros');
@@ -285,26 +298,26 @@
         const bairrosOrdenados = Object.entries(bairrosMap).sort((a, b) => b[1] - a[1]);
 
         if (bairrosOrdenados.length === 0) {
-            containerBairros.innerHTML = '<p style="color: #64748b; font-size: 14px;">Sem locações no período.</p>';
+          containerBairros.innerHTML = '<p style="color: #64748b; font-size: 14px;">Sem locações no período.</p>';
         } else {
-            const maxOrdens = bairrosOrdenados[0][1];
-            bairrosOrdenados.forEach(([bairro, qtd]) => {
-                const pct = maxOrdens > 0 ? (qtd / maxOrdens) * 100 : 0;
-                containerBairros.innerHTML += `
+          const maxOrdens = bairrosOrdenados[0][1];
+          bairrosOrdenados.forEach(([bairro, qtd]) => {
+            const pct = maxOrdens > 0 ? (qtd / maxOrdens) * 100 : 0;
+            containerBairros.innerHTML += `
                     <div class="linha-grafico">
                       <span class="rotulo-grafico">${bairro}</span>
                       <div class="barra-fundo"><div class="barra-preenchimento azul" style="width: ${pct}%;"></div></div>
                       <span class="valor-grafico">${qtd} Locações</span>
                     </div>
                 `;
-            });
+          });
         }
 
         // 5. Gráfico de Gastos por Categoria
         const categoriasMap = {};
         despesasFiltradas.forEach(desp => {
-            const cat = desp.categoria || 'Outros';
-            categoriasMap[cat] = (categoriasMap[cat] || 0) + parseValor(desp.valor);
+          const cat = desp.categoria || 'Outros';
+          categoriasMap[cat] = (categoriasMap[cat] || 0) + parseValor(desp.valor);
         });
 
         const containerGastos = document.getElementById('grafico-gastos');
@@ -312,88 +325,89 @@
         const gastosOrdenados = Object.entries(categoriasMap).sort((a, b) => b[1] - a[1]);
 
         if (gastosOrdenados.length === 0) {
-            containerGastos.innerHTML = '<p style="color: #64748b; font-size: 14px;">Sem despesas no período.</p>';
+          containerGastos.innerHTML = '<p style="color: #64748b; font-size: 14px;">Sem despesas no período.</p>';
         } else {
-            const maxGasto = gastosOrdenados[0][1];
-            gastosOrdenados.forEach(([cat, valor]) => {
-                const pct = maxGasto > 0 ? (valor / maxGasto) * 100 : 0;
-                containerGastos.innerHTML += `
+          const maxGasto = gastosOrdenados[0][1];
+          gastosOrdenados.forEach(([cat, valor]) => {
+            const pct = maxGasto > 0 ? (valor / maxGasto) * 100 : 0;
+            containerGastos.innerHTML += `
                     <div class="linha-grafico">
                       <span class="rotulo-grafico">${cat}</span>
                       <div class="barra-fundo"><div class="barra-preenchimento vermelho" style="width: ${pct}%;"></div></div>
-                      <span class="valor-grafico">R$ ${valor.toLocaleString('pt-BR', {maximumFractionDigits: 0})}</span>
+                      <span class="valor-grafico">R$ ${valor.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}</span>
                     </div>
                 `;
-            });
+          });
         }
 
         // 6. Tabela de Balanço Mensal
         const corpoTabela = document.getElementById('corpoTabelaRelatorio');
         corpoTabela.innerHTML = '';
-        
+
         const mesesMap = {};
-        
+
         locacoesCache.forEach(loc => {
-            if (!loc.data_entrega) return;
-            // Coleta os primeiros 7 caracteres: AAAA-MM
-            const mesChave = loc.data_entrega.substring(0, 7);
-            if (!mesesMap[mesChave]) mesesMap[mesChave] = { faturamento: 0, despesa: 0 };
-            mesesMap[mesChave].faturamento += parseValor(loc.valor);
+          if (!loc.data_entrega) return;
+          // Coleta os primeiros 7 caracteres: AAAA-MM
+          const mesChave = loc.data_entrega.substring(0, 7);
+          if (!mesesMap[mesChave]) mesesMap[mesChave] = { faturamento: 0, despesa: 0 };
+          mesesMap[mesChave].faturamento += parseValor(loc.valor);
         });
 
         despesasCache.forEach(desp => {
-            if (!desp.data) return;
-            const mesChave = desp.data.substring(0, 7);
-            if (!mesesMap[mesChave]) mesesMap[mesChave] = { faturamento: 0, despesa: 0 };
-            mesesMap[mesChave].despesa += parseValor(desp.valor);
+          if (!desp.data) return;
+          const mesChave = desp.data.substring(0, 7);
+          if (!mesesMap[mesChave]) mesesMap[mesChave] = { faturamento: 0, despesa: 0 };
+          mesesMap[mesChave].despesa += parseValor(desp.valor);
         });
 
         const mesesOrdenados = Object.entries(mesesMap).sort((a, b) => b[0].localeCompare(a[0]));
 
         if (mesesOrdenados.length === 0) {
-            corpoTabela.innerHTML = '<tr><td colspan="4" style="text-align:center; color: #64748b;">Nenhum dado financeiro registrado.</td></tr>';
+          corpoTabela.innerHTML = '<tr><td colspan="4" style="text-align:center; color: #64748b;">Nenhum dado financeiro registrado.</td></tr>';
         } else {
-            mesesOrdenados.forEach(([mes, val]) => {
-                const partes = mes.split('-');
-                if(partes.length < 2) return;
-                const ano = partes[0];
-                const numMes = partes[1];
-                const mesesNomes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-                const nomeFormatado = `${mesesNomes[parseInt(numMes)-1]} / ${ano}`;
-                const saldo = val.faturamento - val.despesa;
+          mesesOrdenados.forEach(([mes, val]) => {
+            const partes = mes.split('-');
+            if (partes.length < 2) return;
+            const ano = partes[0];
+            const numMes = partes[1];
+            const mesesNomes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            const nomeFormatado = `${mesesNomes[parseInt(numMes) - 1]} / ${ano}`;
+            const saldo = val.faturamento - val.despesa;
 
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
                     <td><strong>${nomeFormatado}</strong></td>
-                    <td style="color: #2563eb;">R$ ${val.faturamento.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                    <td style="color: #ef4444;">R$ ${val.despesa.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td style="color: #2563eb;">R$ ${val.faturamento.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+                    <td style="color: #ef4444;">R$ ${val.despesa.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
                     <td>
                         <span class="tag-status ${saldo >= 0 ? 'positivo' : 'negativo'}" style="background-color: ${saldo >= 0 ? '#dcfce7; color: #166534;' : '#fee2e2; color: #991b1b;'} padding: 4px 8px; border-radius: 4px; font-weight: bold;">
-                            ${saldo >= 0 ? 'Positivo' : 'Negativo'} (R$ ${saldo.toLocaleString('pt-BR', {minimumFractionDigits: 2})})
+                            ${saldo >= 0 ? 'Positivo' : 'Negativo'} (R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })})
                         </span>
                     </td>
                 `;
-                corpoTabela.appendChild(tr);
-            });
+            corpoTabela.appendChild(tr);
+          });
         }
 
         const dataInicFormatar = startVal.split('-').reverse().join('/');
         const dataFimFormatar = endVal.split('-').reverse().join('/');
         document.getElementById('subtitulo-periodo').innerText = `Período: ${dataInicFormatar} até ${dataFimFormatar}`;
-    }
+      }
 
-    document.getElementById('btnGerar').addEventListener('click', () => {
+      document.getElementById('btnGerar').addEventListener('click', () => {
         const cards = document.querySelectorAll('.card-relatorio');
         cards.forEach(card => card.classList.add('atualizando'));
         setTimeout(() => {
-            cards.forEach(card => card.classList.remove('atualizando'));
-            gerarRelatorio();
+          cards.forEach(card => card.classList.remove('atualizando'));
+          gerarRelatorio();
         }, 300);
-    });
+      });
 
-    // Iniciar
-        window.addEventListener('load', gerarRelatorio);
+      // Iniciar
+      window.addEventListener('load', gerarRelatorio);
     }
   </script>
 </body>
+
 </html>

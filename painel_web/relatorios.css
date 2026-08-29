@@ -22,20 +22,34 @@ body.menu-fechado {
 }
 
 /* ==========================================================================
-   BARRA LATERAL ESQUERDA
+   BARRA LATERAL ESQUERDA - NOVO DESIGN
    ========================================================================== */
 .barra-lateral {
-    background-color: #0b1426;
+    background: #0e172a;
+    background: linear-gradient(180deg, #0e172a 0%, #090f1d 100%);
     color: #ffffff;
     display: flex;
     flex-direction: column;
-    padding: 20px 0;
+    padding: 6px 0 14px 0;
     height: 100vh;
     position: sticky;
     top: 0;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     white-space: nowrap;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.barra-lateral::-webkit-scrollbar {
+    width: 4px;
+}
+
+.barra-lateral::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
 }
 
 body.menu-fechado .barra-lateral {
@@ -44,68 +58,119 @@ body.menu-fechado .barra-lateral {
     padding: 0;
     opacity: 0;
     pointer-events: none;
+    border: none;
 }
 
 .barra-lateral .logo {
-    font-size: 15px;
-    font-weight: bold;
-    text-align: center;
-    padding-bottom: 25px;
-    border-bottom: 1px solid #1e293b;
-    margin-bottom: 15px;
-    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 18px 22px 18px;
+    font-weight: 700;
+    font-size: 13.5px;
+    letter-spacing: 0.8px;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    user-select: none;
+}
+
+.logo-icone {
+    color: #2dd4bf;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 6px rgba(45, 212, 191, 0.35));
 }
 
 .menu-lateral {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 5px;
+    padding: 14px 12px;
     flex: 1;
 }
 
 .menu-lateral a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 16px;
+    border-radius: 8px;
     color: #94a3b8;
     text-decoration: none;
-    padding: 12px 24px;
     font-size: 14px;
     font-weight: 500;
-    display: block;
-    transition: all 0.2s ease;
+    position: relative;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    user-select: none;
+}
+
+.menu-lateral a .nav-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    stroke-width: 2;
+    color: inherit;
+    transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .menu-lateral a:hover {
-    background-color: #1e293b;
-    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #f8fafc;
+    transform: translateX(2px);
+}
+
+.menu-lateral a:hover .nav-icon {
+    transform: scale(1.06);
+    color: #f8fafc;
 }
 
 .menu-lateral a.active {
-    background-color: #2563eb;
-    color: #ffffff;
+    background-color: rgba(37, 99, 235, 0.16);
+    color: #60a5fa;
     font-weight: 600;
-    border-left: 4px solid #60a5fa;
+}
+
+.menu-lateral a.active .nav-icon {
+    color: #60a5fa;
+}
+
+.menu-lateral a.active::before {
+    content: '';
+    position: absolute;
+    left: -12px;
+    top: 4px;
+    bottom: 4px;
+    width: 4px;
+    background: #3b82f6;
+    border-radius: 0 4px 4px 0;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
 }
 
 .rodape-lateral {
     margin-top: auto;
-    padding: 20px 20px 10px 20px;
+    padding: 16px 14px 10px 14px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .logo-rodape-img {
-    width: 140px;
+    width: 120px;
     height: auto;
-    max-height: 65px;
+    max-height: 55px;
     object-fit: contain;
-    opacity: 1;
-    transition: transform 0.3s ease;
+    opacity: 0.9;
+    transition: transform 0.3s ease, opacity 0.3s ease;
     cursor: pointer;
     user-select: none;
 }
 
 .logo-rodape-img:hover {
     transform: scale(1.04);
+    opacity: 1;
 }
 
 /* ==========================================================================
