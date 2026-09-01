@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tela de login</title>
     <link rel="stylesheet" href="TeladeLogin.CSS">
+    <link rel="icon" href="favicon (1).ico">
+
 </head>
+
 <body>
 
     <div class="card-login" id="card-login">
@@ -22,27 +26,33 @@
         <div class="campo-de-senha" id="campo-de-senha">
             <label class="titulo-senha" for="texto-senha">Senha</label>
             <div style="position: relative; display: flex; align-items: center;">
-                <input type="password" id="texto-senha" class="texto-senha" placeholder="Digite sua senha" style="width: 100%; box-sizing: border-box; padding-right: 40px;">
-                <span id="alternar-senha" style="position: absolute; right: 12px; cursor: pointer; color: #718096; user-select: none; display: flex; align-items: center; justify-content: center;">
-                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                <input type="password" id="texto-senha" class="texto-senha" placeholder="Digite sua senha"
+                    style="width: 100%; box-sizing: border-box; padding-right: 40px;">
+                <span id="alternar-senha"
+                    style="position: absolute; right: 12px; cursor: pointer; color: #718096; user-select: none; display: flex; align-items: center; justify-content: center;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
                 </span>
             </div>
-        </div> 
-        
+        </div>
+
         <div class="campo-lembrar" id="campo-lembrar">
             <input type="checkbox" id="lembrar" class="checkbox-lembrar">
             <label for="lembrar" class="label-lembrar">Lembrar-me</label>
         </div>
 
         <button class="botao-login" id="botao-login">Entrar</button>
-        
-    </div> 
+
+    </div>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="firebase-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="notificacoes.js"></script>
-    
+
     <script>
         const btnLogin = document.getElementById('botao-login');
         const inputEmail = document.getElementById('texto-email');
@@ -94,4 +104,5 @@
         });
     </script>
 </body>
+
 </html>

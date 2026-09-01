@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciamento de Locações - Motoristas</title>
-    
+    <link rel="icon" href="favicon (1).ico">
+
     <link rel="stylesheet" href="telaprincipal.css">
-    
+
     <link rel="stylesheet" href="motoristas.css">
 </head>
+
 <body>
 
     <aside class="barra-lateral">
@@ -110,9 +113,20 @@
     </aside>
 
     <div class="conteudo-principal" id="titulo-principal">
-        
+
         <header class="cabecalho-principal" id="cabecalho-principal">
-            <h2>Gerenciamento de Motoristas <span>Controle de Frota</span></h2>
+            <div class="cabecalho-titulo-area">
+                <button type="button" class="btn-toggle-menu" id="btnToggleMenu"
+                    title="Recolher / Expandir Menu Lateral (Ctrl+B)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <h2>Gerenciamento de Motoristas <span>Controle de Frota</span></h2>
+            </div>
             <div class="usuario" id="usuario">Administrador</div>
         </header>
 
@@ -120,7 +134,7 @@
             <input type="text" id="filtroPesquisaMotorista" placeholder="Buscar motorista por nome ou CNH...">
             <button class="btn-nova" id="btnAbrirModal">+ Novo Motorista</button>
         </section>
-        
+
         <section class="tabela">
             <table>
                 <thead>
@@ -134,7 +148,7 @@
                     </tr>
                 </thead>
                 <tbody id="corpoTabelaMotoristas">
-                    </tbody>
+                </tbody>
             </table>
         </section>
 
@@ -142,14 +156,14 @@
 
     <div id="modalMotorista" class="modal-container">
         <div class="modal-conteudo">
-            
+
             <div class="modal-cabecalho">
                 <h3>Cadastrar Novo Motorista</h3>
                 <span id="btnFecharModal" class="modal-fechar">&times;</span>
             </div>
 
             <form id="formMotorista" class="modal-formulario">
-                
+
                 <label>Nome Completo</label>
                 <input type="text" id="nome" required placeholder="Digite o nome do motorista">
 
@@ -193,22 +207,30 @@
                 <h3 id="tituloHistoricoMotorista">Atividades do Motorista</h3>
                 <span id="btnFecharHistorico" class="modal-fechar">&times;</span>
             </div>
-            
+
             <!-- Filtro por data das atividades -->
-            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 15px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <div
+                style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 15px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;">
                 <div>
-                    <label style="display:block; font-size:12px; font-weight:bold; color:#475569; margin-bottom:4px;">Data Início:</label>
-                    <input type="date" id="histMotoristaDataInicio" style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px;">
+                    <label
+                        style="display:block; font-size:12px; font-weight:bold; color:#475569; margin-bottom:4px;">Data
+                        Início:</label>
+                    <input type="date" id="histMotoristaDataInicio"
+                        style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px;">
                 </div>
                 <div>
-                    <label style="display:block; font-size:12px; font-weight:bold; color:#475569; margin-bottom:4px;">Data Fim:</label>
-                    <input type="date" id="histMotoristaDataFim" style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px;">
+                    <label
+                        style="display:block; font-size:12px; font-weight:bold; color:#475569; margin-bottom:4px;">Data
+                        Fim:</label>
+                    <input type="date" id="histMotoristaDataFim"
+                        style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px;">
                 </div>
                 <div style="align-self:flex-end;">
-                    <button type="button" id="btnFiltrarHistMotorista" style="padding:7px 15px; background:#2563eb; color:white; border:none; border-radius:6px; font-size:13px; font-weight:bold; cursor:pointer;">Filtrar</button>
+                    <button type="button" id="btnFiltrarHistMotorista"
+                        style="padding:7px 15px; background:#2563eb; color:white; border:none; border-radius:6px; font-size:13px; font-weight:bold; cursor:pointer;">Filtrar</button>
                 </div>
             </div>
-            
+
             <div id="corpoHistoricoMotorista" style="max-height: 400px; overflow-y: auto; margin-top: 15px;">
                 <!-- Preenchido via JS -->
             </div>
@@ -225,7 +247,7 @@
     <script src="firebase-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="notificacoes.js"></script>
-    
+
     <script>
         // Controle de Sessão (Auth Guard)
         let currentUser = null;
@@ -270,215 +292,215 @@
 
         function inicializarMotoristas(user) {
 
-        // Mapeando os elementos do HTML
-        const modal = document.getElementById('modalMotorista');
-        const btnAbrir = document.getElementById('btnAbrirModal');
-        const btnFecharX = document.getElementById('btnFecharModal');
-        const btnCancelar = document.getElementById('btnCancelar');
-        const formMotorista = document.getElementById('formMotorista');
-        const selectCaminhao = document.getElementById('selectCaminhao');
-        const corpoTabela = document.getElementById('corpoTabelaMotoristas');
+            // Mapeando os elementos do HTML
+            const modal = document.getElementById('modalMotorista');
+            const btnAbrir = document.getElementById('btnAbrirModal');
+            const btnFecharX = document.getElementById('btnFecharModal');
+            const btnCancelar = document.getElementById('btnCancelar');
+            const formMotorista = document.getElementById('formMotorista');
+            const selectCaminhao = document.getElementById('selectCaminhao');
+            const corpoTabela = document.getElementById('corpoTabelaMotoristas');
 
-        let editDriverId = null;
+            let editDriverId = null;
 
-        async function carregarCaminhoes(caminhaoSelecionado = '') {
-            selectCaminhao.innerHTML = '<option value="">-- Nenhum caminhão vinculado --</option>';
-            try {
-                const qCaminhoes = await db.collection('caminhoes').where('admin_id', '==', user.uid).get();
-                qCaminhoes.forEach(docSnap => {
-                    const data = docSnap.data();
-                    const opt = document.createElement('option');
-                    opt.value = data.placa;
-                    opt.textContent = `Placa: ${data.placa}`;
-                    if (data.placa === caminhaoSelecionado) {
-                        opt.selected = true;
-                    }
-                    selectCaminhao.appendChild(opt);
-                });
-            } catch (error) {
-                console.error("Erro ao obter caminhões: ", error);
-            }
-        }
-
-        // Abre a janela flutuante e carrega os caminhões
-        btnAbrir.addEventListener('click', async () => {
-            editDriverId = null;
-            modal.querySelector('h3').textContent = 'Cadastrar Novo Motorista';
-            document.getElementById('container-senha').style.display = 'block';
-            document.getElementById('senha').required = true;
-            document.getElementById('email').disabled = false;
-            formMotorista.reset();
-            await carregarCaminhoes();
-            modal.classList.add('ativo');
-        });
-
-        const modalHist = document.getElementById('modalHistoricoMotorista');
-        const btnFecharHistX = document.getElementById('btnFecharHistorico');
-        const btnFecharHistBtn = document.getElementById('btnFecharHistoricoConfig');
-
-        btnFecharHistX.addEventListener('click', () => modalHist.classList.remove('ativo'));
-        btnFecharHistBtn.addEventListener('click', () => modalHist.classList.remove('ativo'));
-
-        btnFecharX.addEventListener('click', () => modal.classList.remove('ativo'));
-        btnCancelar.addEventListener('click', (e) => {
-            e.preventDefault();
-            modal.classList.remove('ativo');
-        });
-        
-        window.addEventListener('click', (e) => { 
-            if (e.target === modal) modal.classList.remove('ativo'); 
-            if (e.target === modalHist) modalHist.classList.remove('ativo'); 
-        });
-
-        // Salvar motorista no Firestore e no Firebase Auth
-        formMotorista.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const nome = document.getElementById('nome').value.trim();
-            const cpf = document.getElementById('cpf').value.trim();
-            const telefone = document.getElementById('telefone').value.trim();
-            const email = document.getElementById('email').value.trim().toLowerCase();
-            const senha = document.getElementById('senha').value;
-            const cnh = document.getElementById('cnh').value.trim();
-            const vencimento = document.getElementById('vencimento').value;
-            const caminhao = selectCaminhao.value;
-
-            if (editDriverId) {
-                // Atualiza perfil no Firestore (Modo Edição)
+            async function carregarCaminhoes(caminhaoSelecionado = '') {
+                selectCaminhao.innerHTML = '<option value="">-- Nenhum caminhão vinculado --</option>';
                 try {
-                    await db.collection('motoristas').doc(editDriverId).update({
+                    const qCaminhoes = await db.collection('caminhoes').where('admin_id', '==', user.uid).get();
+                    qCaminhoes.forEach(docSnap => {
+                        const data = docSnap.data();
+                        const opt = document.createElement('option');
+                        opt.value = data.placa;
+                        opt.textContent = `Placa: ${data.placa}`;
+                        if (data.placa === caminhaoSelecionado) {
+                            opt.selected = true;
+                        }
+                        selectCaminhao.appendChild(opt);
+                    });
+                } catch (error) {
+                    console.error("Erro ao obter caminhões: ", error);
+                }
+            }
+
+            // Abre a janela flutuante e carrega os caminhões
+            btnAbrir.addEventListener('click', async () => {
+                editDriverId = null;
+                modal.querySelector('h3').textContent = 'Cadastrar Novo Motorista';
+                document.getElementById('container-senha').style.display = 'block';
+                document.getElementById('senha').required = true;
+                document.getElementById('email').disabled = false;
+                formMotorista.reset();
+                await carregarCaminhoes();
+                modal.classList.add('ativo');
+            });
+
+            const modalHist = document.getElementById('modalHistoricoMotorista');
+            const btnFecharHistX = document.getElementById('btnFecharHistorico');
+            const btnFecharHistBtn = document.getElementById('btnFecharHistoricoConfig');
+
+            btnFecharHistX.addEventListener('click', () => modalHist.classList.remove('ativo'));
+            btnFecharHistBtn.addEventListener('click', () => modalHist.classList.remove('ativo'));
+
+            btnFecharX.addEventListener('click', () => modal.classList.remove('ativo'));
+            btnCancelar.addEventListener('click', (e) => {
+                e.preventDefault();
+                modal.classList.remove('ativo');
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('ativo');
+                if (e.target === modalHist) modalHist.classList.remove('ativo');
+            });
+
+            // Salvar motorista no Firestore e no Firebase Auth
+            formMotorista.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const nome = document.getElementById('nome').value.trim();
+                const cpf = document.getElementById('cpf').value.trim();
+                const telefone = document.getElementById('telefone').value.trim();
+                const email = document.getElementById('email').value.trim().toLowerCase();
+                const senha = document.getElementById('senha').value;
+                const cnh = document.getElementById('cnh').value.trim();
+                const vencimento = document.getElementById('vencimento').value;
+                const caminhao = selectCaminhao.value;
+
+                if (editDriverId) {
+                    // Atualiza perfil no Firestore (Modo Edição)
+                    try {
+                        await db.collection('motoristas').doc(editDriverId).update({
+                            nome,
+                            cpf,
+                            telefone,
+                            cnh,
+                            vencimento,
+                            caminhao
+                        });
+                        Alerta.sucesso('Motorista atualizado com sucesso!');
+                        formMotorista.reset();
+                        modal.classList.remove('ativo');
+                    } catch (error) {
+                        Alerta.erro('Erro ao atualizar motorista: ' + error.message);
+                    }
+                    return;
+                }
+
+                if (!nome || !telefone || !email || !senha) {
+                    Alerta.aviso('Nome, Telefone, E-mail e Senha são obrigatórios!');
+                    return;
+                }
+
+                if (currentUser && email === currentUser.email.toLowerCase()) {
+                    Alerta.erro('Não é permitido cadastrar o e-mail do administrador como e-mail de motorista!');
+                    return;
+                }
+
+                if (senha.length < 6) {
+                    Alerta.aviso('A senha do motorista deve ter no mínimo 6 caracteres.');
+                    return;
+                }
+
+                // 1. Criar credencial de acesso do motorista no Firebase Auth
+                let secondaryApp;
+                try {
+                    secondaryApp = firebase.initializeApp(firebaseConfig, "DriverAuthCreator");
+                    await secondaryApp.auth().createUserWithEmailAndPassword(email, senha);
+                } catch (authError) {
+                    console.error("Erro no Firebase Auth:", authError);
+                    if (authError.code === 'auth/email-already-in-use') {
+                        Alerta.aviso('Este e-mail já está cadastrado no Firebase Auth! O motorista foi registrado, mas para fazer login no celular ele deve usar a senha antiga. Caso queira usar a nova senha cadastrada agora, redefina a senha deste e-mail diretamente no Console do Firebase Auth.', 'E-mail Já Existente');
+                    } else {
+                        Alerta.erro('Erro ao gerar login de acesso do motorista: ' + authError.message);
+                        if (secondaryApp) await secondaryApp.delete();
+                        return;
+                    }
+                } finally {
+                    if (secondaryApp) {
+                        await secondaryApp.delete();
+                    }
+                }
+
+                // 2. Criar perfil do motorista no Firestore
+                try {
+                    await db.collection('motoristas').add({
+                        admin_id: user.uid,
                         nome,
                         cpf,
                         telefone,
+                        email,
                         cnh,
                         vencimento,
-                        caminhao
+                        caminhao,
+                        ativo: true,
+                        data_cadastro: new Date().toISOString()
                     });
-                    Alerta.sucesso('Motorista atualizado com sucesso!');
+                    Alerta.sucesso('Motorista cadastrado com sucesso!');
                     formMotorista.reset();
                     modal.classList.remove('ativo');
                 } catch (error) {
-                    Alerta.erro('Erro ao atualizar motorista: ' + error.message);
+                    Alerta.erro('Erro ao salvar motorista no banco: ' + error.message);
                 }
-                return;
-            }
-
-            if (!nome || !telefone || !email || !senha) {
-                Alerta.aviso('Nome, Telefone, E-mail e Senha são obrigatórios!');
-                return;
-            }
-
-            if (currentUser && email === currentUser.email.toLowerCase()) {
-                Alerta.erro('Não é permitido cadastrar o e-mail do administrador como e-mail de motorista!');
-                return;
-            }
-
-            if (senha.length < 6) {
-                Alerta.aviso('A senha do motorista deve ter no mínimo 6 caracteres.');
-                return;
-            }
-
-            // 1. Criar credencial de acesso do motorista no Firebase Auth
-            let secondaryApp;
-            try {
-                secondaryApp = firebase.initializeApp(firebaseConfig, "DriverAuthCreator");
-                await secondaryApp.auth().createUserWithEmailAndPassword(email, senha);
-            } catch (authError) {
-                console.error("Erro no Firebase Auth:", authError);
-                if (authError.code === 'auth/email-already-in-use') {
-                    Alerta.aviso('Este e-mail já está cadastrado no Firebase Auth! O motorista foi registrado, mas para fazer login no celular ele deve usar a senha antiga. Caso queira usar a nova senha cadastrada agora, redefina a senha deste e-mail diretamente no Console do Firebase Auth.', 'E-mail Já Existente');
-                } else {
-                    Alerta.erro('Erro ao gerar login de acesso do motorista: ' + authError.message);
-                    if (secondaryApp) await secondaryApp.delete();
-                    return;
-                }
-            } finally {
-                if (secondaryApp) {
-                    await secondaryApp.delete();
-                }
-            }
-
-            // 2. Criar perfil do motorista no Firestore
-            try {
-                await db.collection('motoristas').add({
-                    admin_id: user.uid,
-                    nome,
-                    cpf,
-                    telefone,
-                    email,
-                    cnh,
-                    vencimento,
-                    caminhao,
-                    ativo: true,
-                    data_cadastro: new Date().toISOString()
-                });
-                Alerta.sucesso('Motorista cadastrado com sucesso!');
-                formMotorista.reset();
-                modal.classList.remove('ativo');
-            } catch (error) {
-                Alerta.erro('Erro ao salvar motorista no banco: ' + error.message);
-            }
-        });
-
-        let todosMotoristas = [];
-        let paginaAtual = 1;
-        const itensPorPagina = 10;
-
-        // Listar Motoristas em Tempo Real
-        db.collection('motoristas').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
-            todosMotoristas = [];
-            snapshot.forEach(doc => todosMotoristas.push({ id: doc.id, data: doc.data() }));
-            
-            // Ordenar por nome de A-Z
-            todosMotoristas.sort((a, b) => (a.data.nome || '').localeCompare(b.data.nome || ''));
-            
-            renderizarTabela();
-        });
-
-        // Ouvinte do filtro de pesquisa
-        document.getElementById('filtroPesquisaMotorista').addEventListener('input', () => {
-            paginaAtual = 1;
-            renderizarTabela();
-        });
-
-        function renderizarTabela() {
-            corpoTabela.innerHTML = '';
-
-            const queryText = document.getElementById('filtroPesquisaMotorista').value.trim().toLowerCase();
-
-            // Filtrar motoristas
-            const filtrados = todosMotoristas.filter(item => {
-                const data = item.data;
-                const nome = (data.nome || '').toLowerCase();
-                const cnh = (data.cnh || '').toLowerCase();
-                const cpf = (data.cpf || '').toLowerCase();
-                const caminhao = (data.caminhao || '').toLowerCase();
-                return nome.includes(queryText) || cnh.includes(queryText) || cpf.includes(queryText) || caminhao.includes(queryText);
             });
 
-            // Paginação
-            const totalPaginas = Math.ceil(filtrados.length / itensPorPagina);
-            if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
-            if (paginaAtual < 1) paginaAtual = 1;
+            let todosMotoristas = [];
+            let paginaAtual = 1;
+            const itensPorPagina = 10;
 
-            const inicio = (paginaAtual - 1) * itensPorPagina;
-            const fim = inicio + itensPorPagina;
-            const paginados = filtrados.slice(inicio, fim);
+            // Listar Motoristas em Tempo Real
+            db.collection('motoristas').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
+                todosMotoristas = [];
+                snapshot.forEach(doc => todosMotoristas.push({ id: doc.id, data: doc.data() }));
 
-            if (paginados.length === 0) {
-                corpoTabela.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #64748b;">Nenhum motorista encontrado.</td></tr>';
-                renderizarPaginacao(0, 0);
-                return;
-            }
+                // Ordenar por nome de A-Z
+                todosMotoristas.sort((a, b) => (a.data.nome || '').localeCompare(b.data.nome || ''));
 
-            paginados.forEach((item) => {
-                const data = item.data;
-                const id = item.id;
-                const tr = document.createElement('tr');
+                renderizarTabela();
+            });
 
-                const foneLimpo = (data.telefone || '').replace(/[^\d]/g, '');
+            // Ouvinte do filtro de pesquisa
+            document.getElementById('filtroPesquisaMotorista').addEventListener('input', () => {
+                paginaAtual = 1;
+                renderizarTabela();
+            });
 
-                tr.innerHTML = `
+            function renderizarTabela() {
+                corpoTabela.innerHTML = '';
+
+                const queryText = document.getElementById('filtroPesquisaMotorista').value.trim().toLowerCase();
+
+                // Filtrar motoristas
+                const filtrados = todosMotoristas.filter(item => {
+                    const data = item.data;
+                    const nome = (data.nome || '').toLowerCase();
+                    const cnh = (data.cnh || '').toLowerCase();
+                    const cpf = (data.cpf || '').toLowerCase();
+                    const caminhao = (data.caminhao || '').toLowerCase();
+                    return nome.includes(queryText) || cnh.includes(queryText) || cpf.includes(queryText) || caminhao.includes(queryText);
+                });
+
+                // Paginação
+                const totalPaginas = Math.ceil(filtrados.length / itensPorPagina);
+                if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
+                if (paginaAtual < 1) paginaAtual = 1;
+
+                const inicio = (paginaAtual - 1) * itensPorPagina;
+                const fim = inicio + itensPorPagina;
+                const paginados = filtrados.slice(inicio, fim);
+
+                if (paginados.length === 0) {
+                    corpoTabela.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #64748b;">Nenhum motorista encontrado.</td></tr>';
+                    renderizarPaginacao(0, 0);
+                    return;
+                }
+
+                paginados.forEach((item) => {
+                    const data = item.data;
+                    const id = item.id;
+                    const tr = document.createElement('tr');
+
+                    const foneLimpo = (data.telefone || '').replace(/[^\d]/g, '');
+
+                    tr.innerHTML = `
                     <td class="click-nome-motorista" data-id="${id}" data-nome="${data.nome}" style="cursor: pointer; color: #1e3a8a; text-decoration: underline;">
                         <strong>${data.nome}</strong>
                     </td>
@@ -492,199 +514,199 @@
                     </td>
                 `;
 
-                // Evento clique no nome para histórico
-                tr.querySelector('.click-nome-motorista').addEventListener('click', () => {
-                    abrirHistoricoMotorista(id, data.nome || '');
-                });
-
-                // Evento editar
-                tr.querySelector('.btn-editar').addEventListener('click', async () => {
-                    editDriverId = id;
-                    modal.querySelector('h3').textContent = 'Editar Motorista';
-                    
-                    document.getElementById('nome').value = data.nome || '';
-                    document.getElementById('cpf').value = data.cpf || '';
-                    document.getElementById('telefone').value = data.telefone || '';
-                    document.getElementById('email').value = data.email || '';
-                    document.getElementById('email').disabled = true;
-                    document.getElementById('cnh').value = data.cnh || '';
-                    document.getElementById('vencimento').value = data.vencimento || '';
-                    
-                    document.getElementById('container-senha').style.display = 'none';
-                    document.getElementById('senha').required = false;
-                    document.getElementById('senha').value = '';
-
-                    await carregarCaminhoes(data.caminhao || '');
-                    modal.classList.add('ativo');
-                });
-
-                // Evento excluir
-                tr.querySelector('.btn-excluir').addEventListener('click', async () => {
-                    const motId = id;
-                    const nomeMotorista = data.nome || '';
-                    const confirmou = await Alerta.confirmar({
-                        titulo: 'Excluir Motorista',
-                        texto: `Deseja realmente excluir o motorista ${nomeMotorista}?`,
-                        confirmText: 'Sim, excluir',
-                        icone: 'warning',
-                        perigo: true
+                    // Evento clique no nome para histórico
+                    tr.querySelector('.click-nome-motorista').addEventListener('click', () => {
+                        abrirHistoricoMotorista(id, data.nome || '');
                     });
-                    if (confirmou) {
-                        try {
-                            await db.collection('motoristas').doc(motId).delete();
-                            Alerta.toast(`Motorista ${nomeMotorista} excluído com sucesso!`);
-                        } catch (err) {
-                            Alerta.erro('Erro ao excluir: ' + err.message);
+
+                    // Evento editar
+                    tr.querySelector('.btn-editar').addEventListener('click', async () => {
+                        editDriverId = id;
+                        modal.querySelector('h3').textContent = 'Editar Motorista';
+
+                        document.getElementById('nome').value = data.nome || '';
+                        document.getElementById('cpf').value = data.cpf || '';
+                        document.getElementById('telefone').value = data.telefone || '';
+                        document.getElementById('email').value = data.email || '';
+                        document.getElementById('email').disabled = true;
+                        document.getElementById('cnh').value = data.cnh || '';
+                        document.getElementById('vencimento').value = data.vencimento || '';
+
+                        document.getElementById('container-senha').style.display = 'none';
+                        document.getElementById('senha').required = false;
+                        document.getElementById('senha').value = '';
+
+                        await carregarCaminhoes(data.caminhao || '');
+                        modal.classList.add('ativo');
+                    });
+
+                    // Evento excluir
+                    tr.querySelector('.btn-excluir').addEventListener('click', async () => {
+                        const motId = id;
+                        const nomeMotorista = data.nome || '';
+                        const confirmou = await Alerta.confirmar({
+                            titulo: 'Excluir Motorista',
+                            texto: `Deseja realmente excluir o motorista ${nomeMotorista}?`,
+                            confirmText: 'Sim, excluir',
+                            icone: 'warning',
+                            perigo: true
+                        });
+                        if (confirmou) {
+                            try {
+                                await db.collection('motoristas').doc(motId).delete();
+                                Alerta.toast(`Motorista ${nomeMotorista} excluído com sucesso!`);
+                            } catch (err) {
+                                Alerta.erro('Erro ao excluir: ' + err.message);
+                            }
                         }
-                    }
+                    });
+
+                    corpoTabela.appendChild(tr);
                 });
 
-                corpoTabela.appendChild(tr);
-            });
-
-            renderizarPaginacao(filtrados.length, totalPaginas);
-        }
-
-        function renderizarPaginacao(totalItens, totalPaginas) {
-            let container = document.getElementById('paginacaoContainer');
-            if (!container) {
-                container = document.createElement('div');
-                container.id = 'paginacaoContainer';
-                document.querySelector('.tabela').appendChild(container);
+                renderizarPaginacao(filtrados.length, totalPaginas);
             }
-            container.className = 'paginacao';
-            container.style.cssText = 'display: flex; justify-content: center; gap: 8px; margin-top: 25px; margin-bottom: 25px; align-items: center;';
-            container.innerHTML = '';
 
-            if (totalPaginas <= 1) {
-                container.style.display = 'none';
-                return;
-            }
-            container.style.display = 'flex';
+            function renderizarPaginacao(totalItens, totalPaginas) {
+                let container = document.getElementById('paginacaoContainer');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.id = 'paginacaoContainer';
+                    document.querySelector('.tabela').appendChild(container);
+                }
+                container.className = 'paginacao';
+                container.style.cssText = 'display: flex; justify-content: center; gap: 8px; margin-top: 25px; margin-bottom: 25px; align-items: center;';
+                container.innerHTML = '';
 
-            // Botão Anterior
-            const btnAnterior = document.createElement('button');
-            btnAnterior.textContent = 'Anterior';
-            if (paginaAtual === 1) {
-                btnAnterior.disabled = true;
-            } else {
-                btnAnterior.addEventListener('click', () => {
-                    paginaAtual--;
-                    renderizarTabela();
-                });
-            }
-            container.appendChild(btnAnterior);
+                if (totalPaginas <= 1) {
+                    container.style.display = 'none';
+                    return;
+                }
+                container.style.display = 'flex';
 
-            // Páginas numéricas
-            for (let i = 1; i <= totalPaginas; i++) {
-                const btnPagina = document.createElement('button');
-                btnPagina.textContent = i;
-                if (i === paginaAtual) {
-                    btnPagina.className = 'pag-atual';
+                // Botão Anterior
+                const btnAnterior = document.createElement('button');
+                btnAnterior.textContent = 'Anterior';
+                if (paginaAtual === 1) {
+                    btnAnterior.disabled = true;
                 } else {
-                    btnPagina.addEventListener('click', () => {
-                        paginaAtual = i;
+                    btnAnterior.addEventListener('click', () => {
+                        paginaAtual--;
                         renderizarTabela();
                     });
                 }
-                container.appendChild(btnPagina);
-            }
+                container.appendChild(btnAnterior);
 
-            // Botão Próximo
-            const btnProximo = document.createElement('button');
-            btnProximo.textContent = 'Próxima';
-            if (paginaAtual === totalPaginas) {
-                btnProximo.disabled = true;
-            } else {
-                btnProximo.addEventListener('click', () => {
-                    paginaAtual++;
-                    renderizarTabela();
-                });
-            }
-            container.appendChild(btnProximo);
-        }
-
-        async function abrirHistoricoMotorista(motoristaId, motoristaNome) {
-            const modalHist = document.getElementById('modalHistoricoMotorista');
-            document.getElementById('tituloHistoricoMotorista').textContent = `Atividades de ${motoristaNome}`;
-            const corpo = document.getElementById('corpoHistoricoMotorista');
-            corpo.innerHTML = '<p style="text-align: center; color: #64748b;">Carregando histórico de atividades...</p>';
-            
-            modalHist.classList.add('ativo');
-
-            // Set default dates if empty
-            const dataInicioInput = document.getElementById('histMotoristaDataInicio');
-            const dataFimInput = document.getElementById('histMotoristaDataFim');
-            if (!dataInicioInput.value || !dataFimInput.value) {
-                const hoje = new Date();
-                const primeiroDia = new Date(hoje.getFullYear(), hoje.getMonth(), 1).toISOString().split('T')[0];
-                const ultimoDia = hoje.toISOString().split('T')[0];
-                dataInicioInput.value = primeiroDia;
-                dataFimInput.value = ultimoDia;
-            }
-
-            // Guardar ID e Nome no modal para re-filtragem
-            modalHist.setAttribute('data-motorista-id', motoristaId);
-            modalHist.setAttribute('data-motorista-nome', motoristaNome);
-
-            await filtrarHistoricoMotorista(motoristaId);
-        }
-
-        async function filtrarHistoricoMotorista(motoristaId) {
-            const corpo = document.getElementById('corpoHistoricoMotorista');
-            const startVal = document.getElementById('histMotoristaDataInicio').value;
-            const endVal = document.getElementById('histMotoristaDataFim').value;
-
-            try {
-                const snapshot = await db.collection('locacoes')
-                    .where('admin_id', '==', user.uid)
-                    .where('motorista_id', '==', motoristaId)
-                    .get();
-
-                if (snapshot.empty) {
-                    corpo.innerHTML = '<p style="text-align: center; color: #64748b; padding: 20px;">Nenhuma atividade vinculada a este motorista.</p>';
-                    return;
+                // Páginas numéricas
+                for (let i = 1; i <= totalPaginas; i++) {
+                    const btnPagina = document.createElement('button');
+                    btnPagina.textContent = i;
+                    if (i === paginaAtual) {
+                        btnPagina.className = 'pag-atual';
+                    } else {
+                        btnPagina.addEventListener('click', () => {
+                            paginaAtual = i;
+                            renderizarTabela();
+                        });
+                    }
+                    container.appendChild(btnPagina);
                 }
 
-                let atividades = [];
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const id = doc.id;
-                    atividades.push({ id, data });
-                });
+                // Botão Próximo
+                const btnProximo = document.createElement('button');
+                btnProximo.textContent = 'Próxima';
+                if (paginaAtual === totalPaginas) {
+                    btnProximo.disabled = true;
+                } else {
+                    btnProximo.addEventListener('click', () => {
+                        paginaAtual++;
+                        renderizarTabela();
+                    });
+                }
+                container.appendChild(btnProximo);
+            }
 
-                // Ordenar por concluído_em desc (a última concluída primeiro). Se não tiver, ordena por criado_em ou data_entrega desc.
-                atividades.sort((a, b) => {
-                    const getSortTime = (doc) => {
-                        if (doc.data.concluido_em) {
-                            const ts = doc.data.concluido_em;
-                            return ts.seconds ? ts.seconds : new Date(ts).getTime() / 1000;
-                        }
-                        if (doc.data.criado_em) {
-                            const ts = doc.data.criado_em;
-                            return ts.seconds ? ts.seconds : new Date(ts).getTime() / 1000;
-                        }
-                        if (doc.data.data_entrega) {
-                            return new Date(doc.data.data_entrega + 'T00:00:00').getTime() / 1000;
-                        }
-                        return 0;
-                    };
-                    return getSortTime(b) - getSortTime(a);
-                });
+            async function abrirHistoricoMotorista(motoristaId, motoristaNome) {
+                const modalHist = document.getElementById('modalHistoricoMotorista');
+                document.getElementById('tituloHistoricoMotorista').textContent = `Atividades de ${motoristaNome}`;
+                const corpo = document.getElementById('corpoHistoricoMotorista');
+                corpo.innerHTML = '<p style="text-align: center; color: #64748b;">Carregando histórico de atividades...</p>';
 
-                // Filtrar em memória pelas datas
-                const filtradas = atividades.filter(item => {
-                    if (!item.data.data_entrega) return false;
-                    const dataLoc = item.data.data_entrega.substring(0, 10);
-                    return dataLoc >= startVal && dataLoc <= endVal;
-                });
+                modalHist.classList.add('ativo');
 
-                if (filtradas.length === 0) {
-                    corpo.innerHTML = `<p style="text-align: center; color: #64748b; padding: 20px;">Nenhuma atividade no período de ${startVal.split('-').reverse().join('/')} até ${endVal.split('-').reverse().join('/')}.</p>`;
-                    return;
+                // Set default dates if empty
+                const dataInicioInput = document.getElementById('histMotoristaDataInicio');
+                const dataFimInput = document.getElementById('histMotoristaDataFim');
+                if (!dataInicioInput.value || !dataFimInput.value) {
+                    const hoje = new Date();
+                    const primeiroDia = new Date(hoje.getFullYear(), hoje.getMonth(), 1).toISOString().split('T')[0];
+                    const ultimoDia = hoje.toISOString().split('T')[0];
+                    dataInicioInput.value = primeiroDia;
+                    dataFimInput.value = ultimoDia;
                 }
 
-                let html = `
+                // Guardar ID e Nome no modal para re-filtragem
+                modalHist.setAttribute('data-motorista-id', motoristaId);
+                modalHist.setAttribute('data-motorista-nome', motoristaNome);
+
+                await filtrarHistoricoMotorista(motoristaId);
+            }
+
+            async function filtrarHistoricoMotorista(motoristaId) {
+                const corpo = document.getElementById('corpoHistoricoMotorista');
+                const startVal = document.getElementById('histMotoristaDataInicio').value;
+                const endVal = document.getElementById('histMotoristaDataFim').value;
+
+                try {
+                    const snapshot = await db.collection('locacoes')
+                        .where('admin_id', '==', user.uid)
+                        .where('motorista_id', '==', motoristaId)
+                        .get();
+
+                    if (snapshot.empty) {
+                        corpo.innerHTML = '<p style="text-align: center; color: #64748b; padding: 20px;">Nenhuma atividade vinculada a este motorista.</p>';
+                        return;
+                    }
+
+                    let atividades = [];
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        const id = doc.id;
+                        atividades.push({ id, data });
+                    });
+
+                    // Ordenar por concluído_em desc (a última concluída primeiro). Se não tiver, ordena por criado_em ou data_entrega desc.
+                    atividades.sort((a, b) => {
+                        const getSortTime = (doc) => {
+                            if (doc.data.concluido_em) {
+                                const ts = doc.data.concluido_em;
+                                return ts.seconds ? ts.seconds : new Date(ts).getTime() / 1000;
+                            }
+                            if (doc.data.criado_em) {
+                                const ts = doc.data.criado_em;
+                                return ts.seconds ? ts.seconds : new Date(ts).getTime() / 1000;
+                            }
+                            if (doc.data.data_entrega) {
+                                return new Date(doc.data.data_entrega + 'T00:00:00').getTime() / 1000;
+                            }
+                            return 0;
+                        };
+                        return getSortTime(b) - getSortTime(a);
+                    });
+
+                    // Filtrar em memória pelas datas
+                    const filtradas = atividades.filter(item => {
+                        if (!item.data.data_entrega) return false;
+                        const dataLoc = item.data.data_entrega.substring(0, 10);
+                        return dataLoc >= startVal && dataLoc <= endVal;
+                    });
+
+                    if (filtradas.length === 0) {
+                        corpo.innerHTML = `<p style="text-align: center; color: #64748b; padding: 20px;">Nenhuma atividade no período de ${startVal.split('-').reverse().join('/')} até ${endVal.split('-').reverse().join('/')}.</p>`;
+                        return;
+                    }
+
+                    let html = `
                     <div style="margin-bottom: 10px; font-weight: bold; color: #1e3a8a;">
                         Total de atividades no período: ${filtradas.length}
                     </div>
@@ -702,87 +724,87 @@
                         <tbody>
                 `;
 
-                filtradas.forEach(item => {
-                    const data = item.data;
-                    
-                    // Tipo de serviço badge
-                    let tipoBadge = '';
-                    if (data.tipo_servico === 'entrega') {
-                        tipoBadge = '<span style="background: #dcfce7; color: #15803d; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">🟢 Entrega</span>';
-                    } else if (data.tipo_servico === 'retirada') {
-                        tipoBadge = '<span style="background: #fee2e2; color: #b91c1c; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">🔴 Retirada</span>';
-                    } else if (data.tipo_servico === 'troca') {
-                        tipoBadge = '<span style="background: #ffedd5; color: #c2410c; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">🔄 Troca</span>';
-                    } else {
-                        tipoBadge = `<span style="background: #f1f5f9; color: #475569; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">${data.tipo_servico || '-'}</span>`;
-                    }
+                    filtradas.forEach(item => {
+                        const data = item.data;
 
-                    // Caçamba cell
-                    let cacambaCell = '';
-                    if (data.tipo_servico === 'troca') {
-                        cacambaCell = `
+                        // Tipo de serviço badge
+                        let tipoBadge = '';
+                        if (data.tipo_servico === 'entrega') {
+                            tipoBadge = '<span style="background: #dcfce7; color: #15803d; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">🟢 Entrega</span>';
+                        } else if (data.tipo_servico === 'retirada') {
+                            tipoBadge = '<span style="background: #fee2e2; color: #b91c1c; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">🔴 Retirada</span>';
+                        } else if (data.tipo_servico === 'troca') {
+                            tipoBadge = '<span style="background: #ffedd5; color: #c2410c; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">🔄 Troca</span>';
+                        } else {
+                            tipoBadge = `<span style="background: #f1f5f9; color: #475569; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">${data.tipo_servico || '-'}</span>`;
+                        }
+
+                        // Caçamba cell
+                        let cacambaCell = '';
+                        if (data.tipo_servico === 'troca') {
+                            cacambaCell = `
                             <div style="line-height: 1.3;">
                                 <strong>Nº ${data.cacamba_numero || '-'}</strong> <span style="font-size: 10px; color: #16a34a; font-weight: bold;">(Entregue)</span><br>
                                 <strong>Nº ${data.cacamba_velha_numero || '-'}</strong> <span style="font-size: 10px; color: #dc2626; font-weight: bold;">(Retirada)</span>
                             </div>
                         `;
-                    } else {
-                        cacambaCell = `<strong>Nº ${data.cacamba_numero || '-'}</strong>`;
-                    }
+                        } else {
+                            cacambaCell = `<strong>Nº ${data.cacamba_numero || '-'}</strong>`;
+                        }
 
-                    const formatarDataBr = (dStr) => {
-                        if (!dStr) return '-';
-                        return dStr.split('-').reverse().join('/');
-                    };
+                        const formatarDataBr = (dStr) => {
+                            if (!dStr) return '-';
+                            return dStr.split('-').reverse().join('/');
+                        };
 
-                    const formatarTimestamp = (ts) => {
-                        if (!ts) return '-';
-                        const date = ts.toDate ? ts.toDate() : new Date(ts);
-                        if (isNaN(date.getTime())) return '-';
-                        // Converte para UTC-3 (Horário de Brasília)
-                        const utc = date.getTime() + (date.getTimezoneOffset() * 60000);
-                        const dataSp = new Date(utc + (3600000 * -3));
-                        const dia = String(dataSp.getDate()).padStart(2, '0');
-                        const mes = String(dataSp.getMonth() + 1).padStart(2, '0');
-                        const ano = dataSp.getFullYear();
-                        const hora = String(dataSp.getHours()).padStart(2, '0');
-                        const min = String(dataSp.getMinutes()).padStart(2, '0');
-                        return `${dia}/${mes}/${ano} ${hora}:${min}`;
-                    };
+                        const formatarTimestamp = (ts) => {
+                            if (!ts) return '-';
+                            const date = ts.toDate ? ts.toDate() : new Date(ts);
+                            if (isNaN(date.getTime())) return '-';
+                            // Converte para UTC-3 (Horário de Brasília)
+                            const utc = date.getTime() + (date.getTimezoneOffset() * 60000);
+                            const dataSp = new Date(utc + (3600000 * -3));
+                            const dia = String(dataSp.getDate()).padStart(2, '0');
+                            const mes = String(dataSp.getMonth() + 1).padStart(2, '0');
+                            const ano = dataSp.getFullYear();
+                            const hora = String(dataSp.getHours()).padStart(2, '0');
+                            const min = String(dataSp.getMinutes()).padStart(2, '0');
+                            return `${dia}/${mes}/${ano} ${hora}:${min}`;
+                        };
 
-                    const progData = formatarDataBr(data.data_entrega);
-                    const progHora = data.hora_entrega || '';
-                    const realDataHora = formatarTimestamp(data.concluido_em);
+                        const progData = formatarDataBr(data.data_entrega);
+                        const progHora = data.hora_entrega || '';
+                        const realDataHora = formatarTimestamp(data.concluido_em);
 
-                    cacambaCell += `
+                        cacambaCell += `
                         <div style="font-size: 11px; margin-top: 4px; line-height: 1.2; color: #475569;">
                             <span style="color: #64748b;">Prog: ${progData} ${progHora}</span><br>
                             <span style="color: #10b981; font-weight: 500;">Realizado: ${realDataHora}</span>
                         </div>
                     `;
 
-                    // Status badge
-                    let statusBadge = '';
-                    const statusVal = (data.status || '').toLowerCase();
-                    if (statusVal === 'concluida') {
-                        statusBadge = '<span style="background: #dcfce7; color: #16a34a; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">✔️ Concluída</span>';
-                    } else if (statusVal === 'na_obra' || statusVal === 'em_uso') {
-                        statusBadge = '<span style="background: #dbeafe; color: #2563eb; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">🟢 Na Obra</span>';
-                    } else {
-                        statusBadge = '<span style="background: #fef9c3; color: #ca8a04; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">🟡 Pendente</span>';
-                    }
+                        // Status badge
+                        let statusBadge = '';
+                        const statusVal = (data.status || '').toLowerCase();
+                        if (statusVal === 'concluida') {
+                            statusBadge = '<span style="background: #dcfce7; color: #16a34a; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">✔️ Concluída</span>';
+                        } else if (statusVal === 'na_obra' || statusVal === 'em_uso') {
+                            statusBadge = '<span style="background: #dbeafe; color: #2563eb; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">🟢 Na Obra</span>';
+                        } else {
+                            statusBadge = '<span style="background: #fef9c3; color: #ca8a04; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">🟡 Pendente</span>';
+                        }
 
-                    // Formatar data
-                    let dateStr = '-';
-                    if (data.data_entrega) {
-                        dateStr = data.data_entrega.split('-').reverse().join('/');
-                    }
+                        // Formatar data
+                        let dateStr = '-';
+                        if (data.data_entrega) {
+                            dateStr = data.data_entrega.split('-').reverse().join('/');
+                        }
 
-                    // Endereço formatado curto
-                    const end = data.endereco;
-                    const endStr = end ? `${end.rua || ''}, ${end.numero || ''} - ${end.bairro || ''}` : '-';
+                        // Endereço formatado curto
+                        const end = data.endereco;
+                        const endStr = end ? `${end.rua || ''}, ${end.numero || ''} - ${end.bairro || ''}` : '-';
 
-                    html += `
+                        html += `
                         <tr style="border-bottom: 1px solid #f1f5f9;">
                             <td style="padding: 10px; font-weight: bold;">${data.os_numero || '-'}</td>
                             <td style="padding: 10px;">${tipoBadge}</td>
@@ -792,27 +814,28 @@
                             <td style="padding: 10px;">${statusBadge}</td>
                         </tr>
                     `;
-                });
+                    });
 
-                html += `
+                    html += `
                         </tbody>
                     </table>
                 `;
 
-                corpo.innerHTML = html;
-            } catch (err) {
-                corpo.innerHTML = `<p style="text-align: center; color: #ef4444; padding: 20px;">Erro ao carregar movimentações: ${err.message}</p>`;
+                    corpo.innerHTML = html;
+                } catch (err) {
+                    corpo.innerHTML = `<p style="text-align: center; color: #ef4444; padding: 20px;">Erro ao carregar movimentações: ${err.message}</p>`;
+                }
             }
-        }
 
-        document.getElementById('btnFiltrarHistMotorista').addEventListener('click', () => {
-            const modalHist = document.getElementById('modalHistoricoMotorista');
-            const motId = modalHist.getAttribute('data-motorista-id');
-            if (motId) {
-                filtrarHistoricoMotorista(motId);
-            }
-        });
-    }
+            document.getElementById('btnFiltrarHistMotorista').addEventListener('click', () => {
+                const modalHist = document.getElementById('modalHistoricoMotorista');
+                const motId = modalHist.getAttribute('data-motorista-id');
+                if (motId) {
+                    filtrarHistoricoMotorista(motId);
+                }
+            });
+        }
     </script>
 </body>
+
 </html>

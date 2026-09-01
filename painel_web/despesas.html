@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciamento de Locações - Despesas</title>
-    
+
     <link rel="stylesheet" href="telaprincipal.css">
     <link rel="stylesheet" href="despesas.css">
     <link rel="stylesheet" href="clientes.css">
+    <link rel="icon" href="favicon (1).ico">
+
 </head>
+
 <body>
 
     <aside class="barra-lateral">
@@ -110,10 +114,22 @@
     </aside>
 
     <div class="conteudo-principal" id="titulo-principal">
-        
+
         <header class="cabecalho-principal" id="cabecalho-principal">
-            <h2>Gerenciamento de Despesas <span>Painel Administrativo</span></h2>
-            <div class="usuario" id="usuario">Administrador <small style="display:block; font-size:10px; color:#94a3b8; text-align:right;">ADMIN</small></div>
+            <div class="cabecalho-titulo-area">
+                <button type="button" class="btn-toggle-menu" id="btnToggleMenu"
+                    title="Recolher / Expandir Menu Lateral (Ctrl+B)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <h2>Gerenciamento de Despesas <span>Painel Administrativo</span></h2>
+            </div>
+            <div class="usuario" id="usuario">Administrador <small
+                    style="display:block; font-size:10px; color:#94a3b8; text-align:right;">ADMIN</small></div>
         </header>
 
         <span class="subtitulo-pagina">Despesas</span>
@@ -147,7 +163,7 @@
         <section class="filtros">
             <div class="filtros-esquerda">
                 <input type="text" id="buscaDescricao" placeholder="Buscar despesa por descrição...">
-                
+
                 <select id="filtroCategoria">
                     <option value="">Categoria (Todas)</option>
                     <option value="Manutenção">Manutenção</option>
@@ -157,19 +173,22 @@
                 </select>
 
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 13px; font-weight: bold; color: #475569; white-space: nowrap;">Início:</span>
-                    <input type="date" id="filtroDataInicio" style="padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; background: white; color: #334155; outline: none; height: 39px; box-sizing: border-box;">
+                    <span
+                        style="font-size: 13px; font-weight: bold; color: #475569; white-space: nowrap;">Início:</span>
+                    <input type="date" id="filtroDataInicio"
+                        style="padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; background: white; color: #334155; outline: none; height: 39px; box-sizing: border-box;">
                 </div>
 
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <span style="font-size: 13px; font-weight: bold; color: #475569; white-space: nowrap;">Fim:</span>
-                    <input type="date" id="filtroDataFim" style="padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; background: white; color: #334155; outline: none; height: 39px; box-sizing: border-box;">
+                    <input type="date" id="filtroDataFim"
+                        style="padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; background: white; color: #334155; outline: none; height: 39px; box-sizing: border-box;">
                 </div>
             </div>
-            
+
             <button class="btn-nova" id="btnAbrirModal">+ Nova Despesa</button>
         </section>
-        
+
         <section class="tabela">
             <table>
                 <thead>
@@ -183,7 +202,7 @@
                     </tr>
                 </thead>
                 <tbody id="corpoTabelaDespesas">
-                    </tbody>
+                </tbody>
             </table>
         </section>
 
@@ -195,7 +214,7 @@
                 <h3 id="modalTituloDespesa">Cadastrar Nova Despesa</h3>
                 <span id="btnFecharModal" class="modal-fechar">&times;</span>
             </div>
-            
+
             <form id="formDespesa" class="modal-formulario">
                 <label>Descrição do Gasto</label>
                 <input type="text" id="descricao" required placeholder="Ex: Troca de Óleo - Mercedes ABC-1234">
@@ -237,7 +256,7 @@
     <script src="firebase-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="notificacoes.js"></script>
-    
+
     <script>
         let currentUser = null;
 
@@ -281,247 +300,247 @@
 
         function inicializarDespesas(user) {
 
-        const modal = document.getElementById('modalDespesa');
-        const btnAbrir = document.getElementById('btnAbrirModal');
-        const btnFecharX = document.getElementById('btnFecharModal');
-        const btnCancelar = document.getElementById('btnCancelar');
-        const formDespesa = document.getElementById('formDespesa');
-        const corpoTabela = document.getElementById('corpoTabelaDespesas');
+            const modal = document.getElementById('modalDespesa');
+            const btnAbrir = document.getElementById('btnAbrirModal');
+            const btnFecharX = document.getElementById('btnFecharModal');
+            const btnCancelar = document.getElementById('btnCancelar');
+            const formDespesa = document.getElementById('formDespesa');
+            const corpoTabela = document.getElementById('corpoTabelaDespesas');
 
-        // Converte a data do formato AAAA-MM-DD para DD/MM/AAAA
-        function formatarData(dataString) {
-            if (!dataString) return '-';
-            const partes = dataString.split('-');
-            if (partes.length < 3) return dataString;
-            return `${partes[2]}/${partes[1]}/${partes[0]}`;
-        }
+            // Converte a data do formato AAAA-MM-DD para DD/MM/AAAA
+            function formatarData(dataString) {
+                if (!dataString) return '-';
+                const partes = dataString.split('-');
+                if (partes.length < 3) return dataString;
+                return `${partes[2]}/${partes[1]}/${partes[0]}`;
+            }
 
-        let editandoDespesaId = null;
+            let editandoDespesaId = null;
 
-        // Controles de abertura e fechamento do Modal
-        btnAbrir.addEventListener('click', () => {
-            editandoDespesaId = null;
-            document.getElementById('modalTituloDespesa').textContent = "Cadastrar Nova Despesa";
-            formDespesa.reset();
-            modal.classList.add('ativo');
-        });
-        btnFecharX.addEventListener('click', () => modal.classList.remove('ativo'));
-        btnCancelar.addEventListener('click', (e) => {
-            e.preventDefault();
-            modal.classList.remove('ativo');
-        });
-
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) modal.classList.remove('ativo');
-        });
-
-        // Salvar / Alterar Despesa
-        formDespesa.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const descricao = document.getElementById('descricao').value.trim();
-            const categoria = document.getElementById('categoria').value;
-            const valor = parseFloat(document.getElementById('valor').value);
-            const data = document.getElementById('dataPagamento').value;
-            const status = document.getElementById('status').value;
-
-            try {
-                if (editandoDespesaId) {
-                    await db.collection('despesas').doc(editandoDespesaId).update({
-                        descricao,
-                        categoria,
-                        valor,
-                        data,
-                        status
-                    });
-                    Alerta.sucesso('Despesa atualizada com sucesso!');
-                } else {
-                    await db.collection('despesas').add({
-                        admin_id: user.uid,
-                        descricao,
-                        categoria,
-                        valor,
-                        data,
-                        status
-                    });
-                    Alerta.sucesso('Despesa cadastrada com sucesso!');
-                }
-                modal.classList.remove('ativo');
-                formDespesa.reset();
+            // Controles de abertura e fechamento do Modal
+            btnAbrir.addEventListener('click', () => {
                 editandoDespesaId = null;
                 document.getElementById('modalTituloDespesa').textContent = "Cadastrar Nova Despesa";
-            } catch (error) {
-                Alerta.erro('Erro ao salvar despesa: ' + error.message);
-            }
-        });
+                formDespesa.reset();
+                modal.classList.add('ativo');
+            });
+            btnFecharX.addEventListener('click', () => modal.classList.remove('ativo'));
+            btnCancelar.addEventListener('click', (e) => {
+                e.preventDefault();
+                modal.classList.remove('ativo');
+            });
 
-        let despesasCache = [];
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('ativo');
+            });
 
-        // Elementos de filtros
-        const buscaInput = document.getElementById('buscaDescricao');
-        const categoriaSelect = document.getElementById('filtroCategoria');
-        const dataInicioInput = document.getElementById('filtroDataInicio');
-        const dataFimInput = document.getElementById('filtroDataFim');
-        let paginaAtual = 1;
-        const itensPorPagina = 10;
+            // Salvar / Alterar Despesa
+            formDespesa.addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-        // Configura datas iniciais (Início e Fim do mês atual)
-        const dateNow = new Date();
-        const y = dateNow.getFullYear();
-        const m = dateNow.getMonth();
-        const primeiroDia = new Date(y, m, 1);
-        const primeiroDiaStr = `${primeiroDia.getFullYear()}-${String(primeiroDia.getMonth() + 1).padStart(2, '0')}-01`;
-        const ultimoDia = new Date(y, m + 1, 0);
-        const ultimoDiaStr = `${ultimoDia.getFullYear()}-${String(ultimoDia.getMonth() + 1).padStart(2, '0')}-${String(ultimoDia.getDate()).padStart(2, '0')}`;
+                const descricao = document.getElementById('descricao').value.trim();
+                const categoria = document.getElementById('categoria').value;
+                const valor = parseFloat(document.getElementById('valor').value);
+                const data = document.getElementById('dataPagamento').value;
+                const status = document.getElementById('status').value;
 
-        dataInicioInput.value = primeiroDiaStr;
-        dataFimInput.value = ultimoDiaStr;
-
-        function normalizarDataParaComparacao(dataInput) {
-            if (!dataInput) return '';
-            if (dataInput.seconds) {
-                const d = new Date(dataInput.seconds * 1000);
-                return d.toISOString().split('T')[0];
-            }
-            if (dataInput instanceof Date) {
-                return dataInput.toISOString().split('T')[0];
-            }
-            if (typeof dataInput === 'string') {
-                const str = dataInput.trim();
-                if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
-                    return str;
-                }
-                if (/^\d{2}\/\d{2}\/\d{4}$/.test(str)) {
-                    const partes = str.split('/');
-                    return `${partes[2]}-${partes[1]}-${partes[0]}`;
-                }
-                if (str.includes('-')) {
-                    const partes = str.split('-');
-                    if (partes[0].length === 4) return str;
-                    if (partes[2].length === 4) return `${partes[2]}-${partes[1]}-${partes[0]}`;
-                }
-                if (str.includes('/')) {
-                    const partes = str.split('/');
-                    if (partes[2].length === 4) return `${partes[2]}-${partes[1]}-${partes[0]}`;
-                }
-            }
-            return '';
-        }
-
-        function aplicarFiltros() {
-            try {
-                const busca = buscaInput.value.toLowerCase().trim();
-                const cat = categoriaSelect.value;
-                const startVal = dataInicioInput.value;
-                const endVal = dataFimInput.value;
-
-                const despesasFiltradas = despesasCache.filter(desp => {
-                    const matchBusca = !busca || (desp.descricao || '').toLowerCase().includes(busca);
-                    const matchCat = !cat || desp.categoria === cat;
-                    
-                    let matchData = true;
-                    const dataNormalizada = normalizarDataParaComparacao(desp.data);
-                    
-                    if (dataNormalizada) {
-                        if (startVal && dataNormalizada < startVal) matchData = false;
-                        if (endVal && dataNormalizada > endVal) matchData = false;
+                try {
+                    if (editandoDespesaId) {
+                        await db.collection('despesas').doc(editandoDespesaId).update({
+                            descricao,
+                            categoria,
+                            valor,
+                            data,
+                            status
+                        });
+                        Alerta.sucesso('Despesa atualizada com sucesso!');
                     } else {
-                        if (startVal || endVal) matchData = false;
+                        await db.collection('despesas').add({
+                            admin_id: user.uid,
+                            descricao,
+                            categoria,
+                            valor,
+                            data,
+                            status
+                        });
+                        Alerta.sucesso('Despesa cadastrada com sucesso!');
                     }
-                    
-                    return matchBusca && matchCat && matchData;
-                });
-
-                // Ordenar por data desc
-                despesasFiltradas.sort((a, b) => {
-                    const da = normalizarDataParaComparacao(a.data);
-                    const dbDate = normalizarDataParaComparacao(b.data);
-                    return dbDate.localeCompare(da);
-                });
-
-                renderizarTabela(despesasFiltradas);
-            } catch (err) {
-                console.error("Erro ao aplicar filtros:", err);
-            }
-        }
-
-        buscaInput.addEventListener('input', aplicarFiltros);
-        categoriaSelect.addEventListener('change', aplicarFiltros);
-        
-        dataInicioInput.addEventListener('input', aplicarFiltros);
-        dataInicioInput.addEventListener('change', aplicarFiltros);
-        dataFimInput.addEventListener('input', aplicarFiltros);
-        dataFimInput.addEventListener('change', aplicarFiltros);
-
-        // Ouvir despesas em tempo real
-        db.collection('despesas').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
-            despesasCache = [];
-            snapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                data.id = docSnap.id;
-                despesasCache.push(data);
-            });
-            aplicarFiltros();
-        });
-
-        // Renderiza a tabela de despesas e calcula totais
-        function renderizarTabela(lista) {
-            corpoTabela.innerHTML = '';
-            
-            let totalMes = 0;
-            let totalPendentes = 0;
-            let gastosPorCategoria = {};
-
-            // Totais calculados na lista filtrada completa
-            lista.forEach((desp) => {
-                const valorNum = parseFloat(desp.valor || 0);
-                totalMes += valorNum;
-                if (desp.status === 'Pendente' || desp.status === 'Atrasado') {
-                    totalPendentes += valorNum;
+                    modal.classList.remove('ativo');
+                    formDespesa.reset();
+                    editandoDespesaId = null;
+                    document.getElementById('modalTituloDespesa').textContent = "Cadastrar Nova Despesa";
+                } catch (error) {
+                    Alerta.erro('Erro ao salvar despesa: ' + error.message);
                 }
-                if (!gastosPorCategoria[desp.categoria]) gastosPorCategoria[desp.categoria] = 0;
-                gastosPorCategoria[desp.categoria] += valorNum;
             });
 
-            // Paginação
-            const totalPaginas = Math.ceil(lista.length / itensPorPagina);
-            if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
-            if (paginaAtual < 1) paginaAtual = 1;
+            let despesasCache = [];
 
-            const inicio = (paginaAtual - 1) * itensPorPagina;
-            const fim = inicio + itensPorPagina;
-            const paginados = lista.slice(inicio, fim);
+            // Elementos de filtros
+            const buscaInput = document.getElementById('buscaDescricao');
+            const categoriaSelect = document.getElementById('filtroCategoria');
+            const dataInicioInput = document.getElementById('filtroDataInicio');
+            const dataFimInput = document.getElementById('filtroDataFim');
+            let paginaAtual = 1;
+            const itensPorPagina = 10;
 
-            if (paginados.length === 0) {
-                corpoTabela.innerHTML = '<tr><td colspan="6" style="text-align:center; color: #64748b;">Nenhuma despesa encontrada.</td></tr>';
-                document.getElementById('cardTotalMes').textContent = `R$ ${totalMes.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-                
-                let maiorCat = "Nenhuma";
-                let maiorValorCat = 0;
-                for (let cat in gastosPorCategoria) {
-                    if (gastosPorCategoria[cat] > maiorValorCat) {
-                        maiorValorCat = gastosPorCategoria[cat];
-                        maiorCat = cat;
+            // Configura datas iniciais (Início e Fim do mês atual)
+            const dateNow = new Date();
+            const y = dateNow.getFullYear();
+            const m = dateNow.getMonth();
+            const primeiroDia = new Date(y, m, 1);
+            const primeiroDiaStr = `${primeiroDia.getFullYear()}-${String(primeiroDia.getMonth() + 1).padStart(2, '0')}-01`;
+            const ultimoDia = new Date(y, m + 1, 0);
+            const ultimoDiaStr = `${ultimoDia.getFullYear()}-${String(ultimoDia.getMonth() + 1).padStart(2, '0')}-${String(ultimoDia.getDate()).padStart(2, '0')}`;
+
+            dataInicioInput.value = primeiroDiaStr;
+            dataFimInput.value = ultimoDiaStr;
+
+            function normalizarDataParaComparacao(dataInput) {
+                if (!dataInput) return '';
+                if (dataInput.seconds) {
+                    const d = new Date(dataInput.seconds * 1000);
+                    return d.toISOString().split('T')[0];
+                }
+                if (dataInput instanceof Date) {
+                    return dataInput.toISOString().split('T')[0];
+                }
+                if (typeof dataInput === 'string') {
+                    const str = dataInput.trim();
+                    if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+                        return str;
+                    }
+                    if (/^\d{2}\/\d{2}\/\d{4}$/.test(str)) {
+                        const partes = str.split('/');
+                        return `${partes[2]}-${partes[1]}-${partes[0]}`;
+                    }
+                    if (str.includes('-')) {
+                        const partes = str.split('-');
+                        if (partes[0].length === 4) return str;
+                        if (partes[2].length === 4) return `${partes[2]}-${partes[1]}-${partes[0]}`;
+                    }
+                    if (str.includes('/')) {
+                        const partes = str.split('/');
+                        if (partes[2].length === 4) return `${partes[2]}-${partes[1]}-${partes[0]}`;
                     }
                 }
-                document.getElementById('cardMaiorGasto').textContent = `${maiorCat}: R$ ${maiorValorCat.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-                document.getElementById('cardPendentes').textContent = `R$ ${totalPendentes.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-                
-                renderizarPaginacao(0, 0);
-                return;
+                return '';
             }
 
-            let index = inicio;
-            paginados.forEach((desp) => {
-                index++;
-                const valorNum = parseFloat(desp.valor || 0);
-                let statusClass = (desp.status || 'pendente').toLowerCase();
+            function aplicarFiltros() {
+                try {
+                    const busca = buscaInput.value.toLowerCase().trim();
+                    const cat = categoriaSelect.value;
+                    const startVal = dataInicioInput.value;
+                    const endVal = dataFimInput.value;
 
-                let tr = document.createElement('tr');
-                tr.innerHTML = `
+                    const despesasFiltradas = despesasCache.filter(desp => {
+                        const matchBusca = !busca || (desp.descricao || '').toLowerCase().includes(busca);
+                        const matchCat = !cat || desp.categoria === cat;
+
+                        let matchData = true;
+                        const dataNormalizada = normalizarDataParaComparacao(desp.data);
+
+                        if (dataNormalizada) {
+                            if (startVal && dataNormalizada < startVal) matchData = false;
+                            if (endVal && dataNormalizada > endVal) matchData = false;
+                        } else {
+                            if (startVal || endVal) matchData = false;
+                        }
+
+                        return matchBusca && matchCat && matchData;
+                    });
+
+                    // Ordenar por data desc
+                    despesasFiltradas.sort((a, b) => {
+                        const da = normalizarDataParaComparacao(a.data);
+                        const dbDate = normalizarDataParaComparacao(b.data);
+                        return dbDate.localeCompare(da);
+                    });
+
+                    renderizarTabela(despesasFiltradas);
+                } catch (err) {
+                    console.error("Erro ao aplicar filtros:", err);
+                }
+            }
+
+            buscaInput.addEventListener('input', aplicarFiltros);
+            categoriaSelect.addEventListener('change', aplicarFiltros);
+
+            dataInicioInput.addEventListener('input', aplicarFiltros);
+            dataInicioInput.addEventListener('change', aplicarFiltros);
+            dataFimInput.addEventListener('input', aplicarFiltros);
+            dataFimInput.addEventListener('change', aplicarFiltros);
+
+            // Ouvir despesas em tempo real
+            db.collection('despesas').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
+                despesasCache = [];
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    data.id = docSnap.id;
+                    despesasCache.push(data);
+                });
+                aplicarFiltros();
+            });
+
+            // Renderiza a tabela de despesas e calcula totais
+            function renderizarTabela(lista) {
+                corpoTabela.innerHTML = '';
+
+                let totalMes = 0;
+                let totalPendentes = 0;
+                let gastosPorCategoria = {};
+
+                // Totais calculados na lista filtrada completa
+                lista.forEach((desp) => {
+                    const valorNum = parseFloat(desp.valor || 0);
+                    totalMes += valorNum;
+                    if (desp.status === 'Pendente' || desp.status === 'Atrasado') {
+                        totalPendentes += valorNum;
+                    }
+                    if (!gastosPorCategoria[desp.categoria]) gastosPorCategoria[desp.categoria] = 0;
+                    gastosPorCategoria[desp.categoria] += valorNum;
+                });
+
+                // Paginação
+                const totalPaginas = Math.ceil(lista.length / itensPorPagina);
+                if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
+                if (paginaAtual < 1) paginaAtual = 1;
+
+                const inicio = (paginaAtual - 1) * itensPorPagina;
+                const fim = inicio + itensPorPagina;
+                const paginados = lista.slice(inicio, fim);
+
+                if (paginados.length === 0) {
+                    corpoTabela.innerHTML = '<tr><td colspan="6" style="text-align:center; color: #64748b;">Nenhuma despesa encontrada.</td></tr>';
+                    document.getElementById('cardTotalMes').textContent = `R$ ${totalMes.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+
+                    let maiorCat = "Nenhuma";
+                    let maiorValorCat = 0;
+                    for (let cat in gastosPorCategoria) {
+                        if (gastosPorCategoria[cat] > maiorValorCat) {
+                            maiorValorCat = gastosPorCategoria[cat];
+                            maiorCat = cat;
+                        }
+                    }
+                    document.getElementById('cardMaiorGasto').textContent = `${maiorCat}: R$ ${maiorValorCat.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+                    document.getElementById('cardPendentes').textContent = `R$ ${totalPendentes.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+
+                    renderizarPaginacao(0, 0);
+                    return;
+                }
+
+                let index = inicio;
+                paginados.forEach((desp) => {
+                    index++;
+                    const valorNum = parseFloat(desp.valor || 0);
+                    let statusClass = (desp.status || 'pendente').toLowerCase();
+
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `
                     <td><strong>${index}. ${desp.descricao}</strong></td>
                     <td><span class="tag-categoria">⚙️ ${desp.categoria}</span></td>
-                    <td><strong>R$ ${valorNum.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong></td>
+                    <td><strong>R$ ${valorNum.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong></td>
                     <td>${formatarData(desp.data)}</td>
                     <td><span class="status-badge ${statusClass}">${desp.status}</span></td>
                     <td>
@@ -530,117 +549,118 @@
                     </td>
                 `;
 
-                // Evento editar
-                tr.querySelector('.btn-editar').addEventListener('click', () => {
-                    editandoDespesaId = desp.id;
-                    document.getElementById('modalTituloDespesa').textContent = "Editar Despesa";
-                    document.getElementById('descricao').value = desp.descricao || '';
-                    document.getElementById('categoria').value = desp.categoria || '';
-                    document.getElementById('valor').value = desp.valor || 0;
-                    document.getElementById('dataPagamento').value = desp.data || '';
-                    document.getElementById('status').value = desp.status || 'Pago';
-                    modal.classList.add('ativo');
-                });
-
-                // Evento excluir
-                tr.querySelector('.btn-excluir').addEventListener('click', async () => {
-                    const despId = id;
-                    const descDespesa = desp.descricao || '';
-                    const confirmou = await Alerta.confirmar({
-                        titulo: 'Remover Despesa',
-                        texto: `Deseja realmente remover a despesa "${descDespesa}"?`,
-                        confirmText: 'Sim, remover',
-                        icone: 'warning',
-                        perigo: true
+                    // Evento editar
+                    tr.querySelector('.btn-editar').addEventListener('click', () => {
+                        editandoDespesaId = desp.id;
+                        document.getElementById('modalTituloDespesa').textContent = "Editar Despesa";
+                        document.getElementById('descricao').value = desp.descricao || '';
+                        document.getElementById('categoria').value = desp.categoria || '';
+                        document.getElementById('valor').value = desp.valor || 0;
+                        document.getElementById('dataPagamento').value = desp.data || '';
+                        document.getElementById('status').value = desp.status || 'Pago';
+                        modal.classList.add('ativo');
                     });
-                    if (confirmou) {
-                        try {
-                            await db.collection('despesas').doc(despId).delete();
-                            Alerta.toast(`Despesa "${descDespesa}" removida com sucesso!`);
-                        } catch (err) {
-                            Alerta.erro('Erro ao excluir: ' + err.message);
+
+                    // Evento excluir
+                    tr.querySelector('.btn-excluir').addEventListener('click', async () => {
+                        const despId = id;
+                        const descDespesa = desp.descricao || '';
+                        const confirmou = await Alerta.confirmar({
+                            titulo: 'Remover Despesa',
+                            texto: `Deseja realmente remover a despesa "${descDespesa}"?`,
+                            confirmText: 'Sim, remover',
+                            icone: 'warning',
+                            perigo: true
+                        });
+                        if (confirmou) {
+                            try {
+                                await db.collection('despesas').doc(despId).delete();
+                                Alerta.toast(`Despesa "${descDespesa}" removida com sucesso!`);
+                            } catch (err) {
+                                Alerta.erro('Erro ao excluir: ' + err.message);
+                            }
                         }
+                    });
+
+                    corpoTabela.appendChild(tr);
+                });
+
+                let maiorCat = "Nenhuma";
+                let maiorValorCat = 0;
+                for (let cat in gastosPorCategoria) {
+                    if (gastosPorCategoria[cat] > maiorValorCat) {
+                        maiorValorCat = gastosPorCategoria[cat];
+                        maiorCat = cat;
                     }
-                });
-
-                corpoTabela.appendChild(tr);
-            });
-
-            let maiorCat = "Nenhuma";
-            let maiorValorCat = 0;
-            for (let cat in gastosPorCategoria) {
-                if (gastosPorCategoria[cat] > maiorValorCat) {
-                    maiorValorCat = gastosPorCategoria[cat];
-                    maiorCat = cat;
                 }
+
+                document.getElementById('cardTotalMes').textContent = `R$ ${totalMes.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+                document.getElementById('cardMaiorGasto').textContent = `${maiorCat}: R$ ${maiorValorCat.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+                document.getElementById('cardPendentes').textContent = `R$ ${totalPendentes.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+
+                renderizarPaginacao(lista.length, totalPaginas);
             }
 
-            document.getElementById('cardTotalMes').textContent = `R$ ${totalMes.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('cardMaiorGasto').textContent = `${maiorCat}: R$ ${maiorValorCat.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('cardPendentes').textContent = `R$ ${totalPendentes.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            
-            renderizarPaginacao(lista.length, totalPaginas);
-        }
+            function renderizarPaginacao(totalItens, totalPaginas) {
+                let container = document.getElementById('paginacaoContainer');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.id = 'paginacaoContainer';
+                    document.querySelector('.tabela').appendChild(container);
+                }
+                container.className = 'paginacao';
+                container.style.cssText = 'display: flex; justify-content: center; gap: 8px; margin-top: 25px; margin-bottom: 25px; align-items: center;';
+                container.innerHTML = '';
 
-        function renderizarPaginacao(totalItens, totalPaginas) {
-            let container = document.getElementById('paginacaoContainer');
-            if (!container) {
-                container = document.createElement('div');
-                container.id = 'paginacaoContainer';
-                document.querySelector('.tabela').appendChild(container);
-            }
-            container.className = 'paginacao';
-            container.style.cssText = 'display: flex; justify-content: center; gap: 8px; margin-top: 25px; margin-bottom: 25px; align-items: center;';
-            container.innerHTML = '';
+                if (totalPaginas <= 1) {
+                    container.style.display = 'none';
+                    return;
+                }
+                container.style.display = 'flex';
 
-            if (totalPaginas <= 1) {
-                container.style.display = 'none';
-                return;
-            }
-            container.style.display = 'flex';
-
-            // Botão Anterior
-            const btnAnterior = document.createElement('button');
-            btnAnterior.textContent = 'Anterior';
-            if (paginaAtual === 1) {
-                btnAnterior.disabled = true;
-            } else {
-                btnAnterior.addEventListener('click', () => {
-                    paginaAtual--;
-                    aplicarFiltros();
-                });
-            }
-            container.appendChild(btnAnterior);
-
-            // Páginas numéricas
-            for (let i = 1; i <= totalPaginas; i++) {
-                const btnPagina = document.createElement('button');
-                btnPagina.textContent = i;
-                if (i === paginaAtual) {
-                    btnPagina.className = 'pag-atual';
+                // Botão Anterior
+                const btnAnterior = document.createElement('button');
+                btnAnterior.textContent = 'Anterior';
+                if (paginaAtual === 1) {
+                    btnAnterior.disabled = true;
                 } else {
-                    btnPagina.addEventListener('click', () => {
-                        paginaAtual = i;
+                    btnAnterior.addEventListener('click', () => {
+                        paginaAtual--;
                         aplicarFiltros();
                     });
                 }
-                container.appendChild(btnPagina);
-            }
+                container.appendChild(btnAnterior);
 
-            // Botão Próximo
-            const btnProximo = document.createElement('button');
-            btnProximo.textContent = 'Próxima';
-            if (paginaAtual === totalPaginas) {
-                btnProximo.disabled = true;
-            } else {
-                btnProximo.addEventListener('click', () => {
-                    paginaAtual++;
-                    aplicarFiltros();
-                });
+                // Páginas numéricas
+                for (let i = 1; i <= totalPaginas; i++) {
+                    const btnPagina = document.createElement('button');
+                    btnPagina.textContent = i;
+                    if (i === paginaAtual) {
+                        btnPagina.className = 'pag-atual';
+                    } else {
+                        btnPagina.addEventListener('click', () => {
+                            paginaAtual = i;
+                            aplicarFiltros();
+                        });
+                    }
+                    container.appendChild(btnPagina);
+                }
+
+                // Botão Próximo
+                const btnProximo = document.createElement('button');
+                btnProximo.textContent = 'Próxima';
+                if (paginaAtual === totalPaginas) {
+                    btnProximo.disabled = true;
+                } else {
+                    btnProximo.addEventListener('click', () => {
+                        paginaAtual++;
+                        aplicarFiltros();
+                    });
+                }
+                container.appendChild(btnProximo);
             }
-            container.appendChild(btnProximo);
-        }
         }
     </script>
 </body>
+
 </html>

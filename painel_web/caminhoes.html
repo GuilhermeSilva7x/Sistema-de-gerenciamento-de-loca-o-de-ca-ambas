@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciamento de Locações - Caminhões</title>
-    
+
     <link rel="stylesheet" href="telaprincipal.css">
     <link rel="stylesheet" href="caminhoes.css">
     <link rel="stylesheet" href="clientes.css">
+    <link rel="icon" href="favicon (1).ico">
+
 </head>
+
 <body>
 
     <aside class="barra-lateral">
@@ -110,9 +114,20 @@
     </aside>
 
     <div class="conteudo-principal" id="titulo-principal">
-        
+
         <header class="cabecalho-principal" id="cabecalho-principal">
-            <h2>Gerenciamento de Caminhões <span>Controle de Patrimônio</span></h2>
+            <div class="cabecalho-titulo-area">
+                <button type="button" class="btn-toggle-menu" id="btnToggleMenu"
+                    title="Recolher / Expandir Menu Lateral (Ctrl+B)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <h2>Gerenciamento de Caminhões <span>Controle de Patrimônio</span></h2>
+            </div>
             <div class="usuario" id="usuario">Administrador</div>
         </header>
 
@@ -120,18 +135,19 @@
             <input type="text" id="filtroPesquisaCaminhao" placeholder="Buscar por placa ou chassi...">
             <button class="btn-nova" id="btnAbrirModal">+ Novo Caminhão</button>
         </section>
-        
+
         <section class="tabela">
             <table>
                 <thead>
                     <tr>
                         <th>Placa</th>
                         <th>Chassi</th>
-                        <th>Motorista Atual</th> <th>Ações</th>
+                        <th>Motorista Atual</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody id="corpoTabelaCaminhoes">
-                    </tbody>
+                </tbody>
             </table>
         </section>
     </div>
@@ -164,7 +180,7 @@
     <script src="firebase-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="notificacoes.js"></script>
-    
+
     <script>
         let editCaminhaoId = null;
 
@@ -223,146 +239,146 @@
 
         function inicializarCaminhoes(user) {
 
-        // Mapeamento de elementos
-        const modal = document.getElementById('modalCaminhao');
-        const btnAbrir = document.getElementById('btnAbrirModal');
-        const btnFecharX = document.getElementById('btnFecharModal');
-        const btnCancelar = document.getElementById('btnCancelar');
-        const formCaminhao = document.getElementById('formCaminhao');
-        const corpoTabela = document.getElementById('corpoTabelaCaminhoes');
+            // Mapeamento de elementos
+            const modal = document.getElementById('modalCaminhao');
+            const btnAbrir = document.getElementById('btnAbrirModal');
+            const btnFecharX = document.getElementById('btnFecharModal');
+            const btnCancelar = document.getElementById('btnCancelar');
+            const formCaminhao = document.getElementById('formCaminhao');
+            const corpoTabela = document.getElementById('corpoTabelaCaminhoes');
 
-        // Abrir/Fechar Modal
-        btnAbrir.addEventListener('click', () => {
-            editCaminhaoId = null;
-            modal.querySelector('h3').textContent = 'Cadastrar Novo Veículo';
-            formCaminhao.reset();
-            modal.classList.add('ativo');
-        });
-        btnFecharX.addEventListener('click', () => modal.classList.remove('ativo'));
-        btnCancelar.addEventListener('click', (e) => {
-            e.preventDefault();
-            modal.classList.remove('ativo');
-        });
-
-        window.addEventListener('click', (e) => { 
-            if (e.target === modal) modal.classList.remove('ativo'); 
-        });
-
-        // Salvar ou Editar Caminhão
-        formCaminhao.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const placa = document.getElementById('placa').value.toUpperCase().trim();
-            const chassi = document.getElementById('chassi').value.trim();
-
-            if (!placa || !chassi) {
-                Alerta.aviso('Placa e Chassi são obrigatórios!');
-                return;
-            }
-
-            if (editCaminhaoId) {
-                // Modo Edição
-                try {
-                    await db.collection('caminhoes').doc(editCaminhaoId).update({
-                        placa,
-                        chassi
-                    });
-                    Alerta.sucesso('Caminhão atualizado com sucesso!');
-                    modal.classList.remove('ativo');
-                    formCaminhao.reset();
-                } catch (error) {
-                    Alerta.erro('Erro ao atualizar caminhão: ' + error.message);
-                }
-            } else {
-                // Modo Cadastro
-                try {
-                    await db.collection('caminhoes').add({
-                        admin_id: user.uid,
-                        placa,
-                        chassi,
-                        data_cadastro: new Date().toISOString()
-                    });
-                    Alerta.sucesso('Caminhão cadastrado com sucesso!');
-                    modal.classList.remove('ativo');
-                    formCaminhao.reset();
-                } catch (error) {
-                    Alerta.erro('Erro ao salvar caminhão: ' + error.message);
-                }
-            }
-        });
-
-        // Cruzamento de dados de motoristas vinculados
-        let motoristas = [];
-        let todosCaminhoes = [];
-        let paginaAtual = 1;
-        const itensPorPagina = 10;
-
-        db.collection('motoristas').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
-            motoristas = [];
-            snapshot.forEach((docSnap) => {
-                motoristas.push(docSnap.data());
+            // Abrir/Fechar Modal
+            btnAbrir.addEventListener('click', () => {
+                editCaminhaoId = null;
+                modal.querySelector('h3').textContent = 'Cadastrar Novo Veículo';
+                formCaminhao.reset();
+                modal.classList.add('ativo');
             });
-            renderizarTabela();
-        });
-
-        db.collection('caminhoes').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
-            todosCaminhoes = [];
-            snapshot.forEach(doc => todosCaminhoes.push({ id: doc.id, data: doc.data() }));
-            
-            // Ordenar por placa de A-Z
-            todosCaminhoes.sort((a, b) => (a.data.placa || '').localeCompare(b.data.placa || ''));
-            
-            renderizarTabela();
-        });
-
-        // Ouvinte do filtro de pesquisa
-        document.getElementById('filtroPesquisaCaminhao').addEventListener('input', () => {
-            paginaAtual = 1;
-            renderizarTabela();
-        });
-
-        // Função para desenhar a tabela na tela
-        function renderizarTabela() {
-            corpoTabela.innerHTML = '';
-            
-            const queryText = document.getElementById('filtroPesquisaCaminhao').value.trim().toLowerCase();
-
-            // Filtrar caminhoes
-            const filtrados = todosCaminhoes.filter(item => {
-                const data = item.data;
-                const placa = (data.placa || '').toLowerCase();
-                const chassi = (data.chassi || '').toLowerCase();
-                
-                const motoristaVinculado = motoristas.find(m => m.caminhao === data.placa);
-                const nomeMotorista = motoristaVinculado ? motoristaVinculado.nome.toLowerCase() : '';
-
-                return placa.includes(queryText) || chassi.includes(queryText) || nomeMotorista.includes(queryText);
+            btnFecharX.addEventListener('click', () => modal.classList.remove('ativo'));
+            btnCancelar.addEventListener('click', (e) => {
+                e.preventDefault();
+                modal.classList.remove('ativo');
             });
 
-            // Paginação
-            const totalPaginas = Math.ceil(filtrados.length / itensPorPagina);
-            if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
-            if (paginaAtual < 1) paginaAtual = 1;
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('ativo');
+            });
 
-            const inicio = (paginaAtual - 1) * itensPorPagina;
-            const fim = inicio + itensPorPagina;
-            const paginados = filtrados.slice(inicio, fim);
+            // Salvar ou Editar Caminhão
+            formCaminhao.addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-            if (paginados.length === 0) {
-                corpoTabela.innerHTML = '<tr><td colspan="4" style="text-align:center; color: #64748b;">Nenhum caminhão encontrado.</td></tr>';
-                renderizarPaginacao(0, 0);
-                return;
-            }
+                const placa = document.getElementById('placa').value.toUpperCase().trim();
+                const chassi = document.getElementById('chassi').value.trim();
 
-            paginados.forEach(item => {
-                const cam = item.data;
-                const id = item.id;
+                if (!placa || !chassi) {
+                    Alerta.aviso('Placa e Chassi são obrigatórios!');
+                    return;
+                }
 
-                const motoristaVinculado = motoristas.find(m => m.caminhao === cam.placa);
-                const nomeMotorista = motoristaVinculado ? motoristaVinculado.nome : '<span style="color: #94a3b8;">Nenhum</span>';
+                if (editCaminhaoId) {
+                    // Modo Edição
+                    try {
+                        await db.collection('caminhoes').doc(editCaminhaoId).update({
+                            placa,
+                            chassi
+                        });
+                        Alerta.sucesso('Caminhão atualizado com sucesso!');
+                        modal.classList.remove('ativo');
+                        formCaminhao.reset();
+                    } catch (error) {
+                        Alerta.erro('Erro ao atualizar caminhão: ' + error.message);
+                    }
+                } else {
+                    // Modo Cadastro
+                    try {
+                        await db.collection('caminhoes').add({
+                            admin_id: user.uid,
+                            placa,
+                            chassi,
+                            data_cadastro: new Date().toISOString()
+                        });
+                        Alerta.sucesso('Caminhão cadastrado com sucesso!');
+                        modal.classList.remove('ativo');
+                        formCaminhao.reset();
+                    } catch (error) {
+                        Alerta.erro('Erro ao salvar caminhão: ' + error.message);
+                    }
+                }
+            });
 
-                let tr = document.createElement('tr');
-                tr.innerHTML = `
+            // Cruzamento de dados de motoristas vinculados
+            let motoristas = [];
+            let todosCaminhoes = [];
+            let paginaAtual = 1;
+            const itensPorPagina = 10;
+
+            db.collection('motoristas').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
+                motoristas = [];
+                snapshot.forEach((docSnap) => {
+                    motoristas.push(docSnap.data());
+                });
+                renderizarTabela();
+            });
+
+            db.collection('caminhoes').where('admin_id', '==', user.uid).onSnapshot((snapshot) => {
+                todosCaminhoes = [];
+                snapshot.forEach(doc => todosCaminhoes.push({ id: doc.id, data: doc.data() }));
+
+                // Ordenar por placa de A-Z
+                todosCaminhoes.sort((a, b) => (a.data.placa || '').localeCompare(b.data.placa || ''));
+
+                renderizarTabela();
+            });
+
+            // Ouvinte do filtro de pesquisa
+            document.getElementById('filtroPesquisaCaminhao').addEventListener('input', () => {
+                paginaAtual = 1;
+                renderizarTabela();
+            });
+
+            // Função para desenhar a tabela na tela
+            function renderizarTabela() {
+                corpoTabela.innerHTML = '';
+
+                const queryText = document.getElementById('filtroPesquisaCaminhao').value.trim().toLowerCase();
+
+                // Filtrar caminhoes
+                const filtrados = todosCaminhoes.filter(item => {
+                    const data = item.data;
+                    const placa = (data.placa || '').toLowerCase();
+                    const chassi = (data.chassi || '').toLowerCase();
+
+                    const motoristaVinculado = motoristas.find(m => m.caminhao === data.placa);
+                    const nomeMotorista = motoristaVinculado ? motoristaVinculado.nome.toLowerCase() : '';
+
+                    return placa.includes(queryText) || chassi.includes(queryText) || nomeMotorista.includes(queryText);
+                });
+
+                // Paginação
+                const totalPaginas = Math.ceil(filtrados.length / itensPorPagina);
+                if (paginaAtual > totalPaginas) paginaAtual = totalPaginas;
+                if (paginaAtual < 1) paginaAtual = 1;
+
+                const inicio = (paginaAtual - 1) * itensPorPagina;
+                const fim = inicio + itensPorPagina;
+                const paginados = filtrados.slice(inicio, fim);
+
+                if (paginados.length === 0) {
+                    corpoTabela.innerHTML = '<tr><td colspan="4" style="text-align:center; color: #64748b;">Nenhum caminhão encontrado.</td></tr>';
+                    renderizarPaginacao(0, 0);
+                    return;
+                }
+
+                paginados.forEach(item => {
+                    const cam = item.data;
+                    const id = item.id;
+
+                    const motoristaVinculado = motoristas.find(m => m.caminhao === cam.placa);
+                    const nomeMotorista = motoristaVinculado ? motoristaVinculado.nome : '<span style="color: #94a3b8;">Nenhum</span>';
+
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `
                     <td><strong>${cam.placa}</strong></td>
                     <td>${cam.chassi || '-'}</td>
                     <td>${nomeMotorista}</td>
@@ -372,101 +388,102 @@
                     </td>
                 `;
 
-                // Evento editar
-                tr.querySelector('.btn-editar').addEventListener('click', () => {
-                    editCaminhaoId = id;
-                    modal.querySelector('h3').textContent = 'Editar Veículo';
-                    document.getElementById('placa').value = cam.placa || '';
-                    document.getElementById('chassi').value = cam.chassi || '';
-                    modal.classList.add('ativo');
-                });
-
-                // Evento excluir
-                tr.querySelector('.btn-excluir').addEventListener('click', async () => {
-                    const camId = id;
-                    const placaCaminhao = cam.placa || '';
-                    const confirmou = await Alerta.confirmar({
-                        titulo: 'Remover Caminhão',
-                        texto: `Deseja realmente remover o veículo com placa ${placaCaminhao}?`,
-                        confirmText: 'Sim, remover',
-                        icone: 'warning',
-                        perigo: true
+                    // Evento editar
+                    tr.querySelector('.btn-editar').addEventListener('click', () => {
+                        editCaminhaoId = id;
+                        modal.querySelector('h3').textContent = 'Editar Veículo';
+                        document.getElementById('placa').value = cam.placa || '';
+                        document.getElementById('chassi').value = cam.chassi || '';
+                        modal.classList.add('ativo');
                     });
-                    if (confirmou) {
-                        try {
-                            await db.collection('caminhoes').doc(camId).delete();
-                            Alerta.toast(`Veículo ${placaCaminhao} removido com sucesso!`);
-                        } catch (err) {
-                            Alerta.erro('Erro ao excluir: ' + err.message);
+
+                    // Evento excluir
+                    tr.querySelector('.btn-excluir').addEventListener('click', async () => {
+                        const camId = id;
+                        const placaCaminhao = cam.placa || '';
+                        const confirmou = await Alerta.confirmar({
+                            titulo: 'Remover Caminhão',
+                            texto: `Deseja realmente remover o veículo com placa ${placaCaminhao}?`,
+                            confirmText: 'Sim, remover',
+                            icone: 'warning',
+                            perigo: true
+                        });
+                        if (confirmou) {
+                            try {
+                                await db.collection('caminhoes').doc(camId).delete();
+                                Alerta.toast(`Veículo ${placaCaminhao} removido com sucesso!`);
+                            } catch (err) {
+                                Alerta.erro('Erro ao excluir: ' + err.message);
+                            }
                         }
-                    }
+                    });
+
+                    corpoTabela.appendChild(tr);
                 });
 
-                corpoTabela.appendChild(tr);
-            });
-
-            renderizarPaginacao(filtrados.length, totalPaginas);
-        }
-
-        function renderizarPaginacao(totalItens, totalPaginas) {
-            let container = document.getElementById('paginacaoContainer');
-            if (!container) {
-                container = document.createElement('div');
-                container.id = 'paginacaoContainer';
-                document.querySelector('.tabela').appendChild(container);
+                renderizarPaginacao(filtrados.length, totalPaginas);
             }
-            container.className = 'paginacao';
-            container.style.cssText = 'display: flex; justify-content: center; gap: 8px; margin-top: 25px; margin-bottom: 25px; align-items: center;';
-            container.innerHTML = '';
 
-            if (totalPaginas <= 1) {
-                container.style.display = 'none';
-                return;
-            }
-            container.style.display = 'flex';
+            function renderizarPaginacao(totalItens, totalPaginas) {
+                let container = document.getElementById('paginacaoContainer');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.id = 'paginacaoContainer';
+                    document.querySelector('.tabela').appendChild(container);
+                }
+                container.className = 'paginacao';
+                container.style.cssText = 'display: flex; justify-content: center; gap: 8px; margin-top: 25px; margin-bottom: 25px; align-items: center;';
+                container.innerHTML = '';
 
-            // Botão Anterior
-            const btnAnterior = document.createElement('button');
-            btnAnterior.textContent = 'Anterior';
-            if (paginaAtual === 1) {
-                btnAnterior.disabled = true;
-            } else {
-                btnAnterior.addEventListener('click', () => {
-                    paginaAtual--;
-                    renderizarTabela();
-                });
-            }
-            container.appendChild(btnAnterior);
+                if (totalPaginas <= 1) {
+                    container.style.display = 'none';
+                    return;
+                }
+                container.style.display = 'flex';
 
-            // Páginas numéricas
-            for (let i = 1; i <= totalPaginas; i++) {
-                const btnPagina = document.createElement('button');
-                btnPagina.textContent = i;
-                if (i === paginaAtual) {
-                    btnPagina.className = 'pag-atual';
+                // Botão Anterior
+                const btnAnterior = document.createElement('button');
+                btnAnterior.textContent = 'Anterior';
+                if (paginaAtual === 1) {
+                    btnAnterior.disabled = true;
                 } else {
-                    btnPagina.addEventListener('click', () => {
-                        paginaAtual = i;
+                    btnAnterior.addEventListener('click', () => {
+                        paginaAtual--;
                         renderizarTabela();
                     });
                 }
-                container.appendChild(btnPagina);
-            }
+                container.appendChild(btnAnterior);
 
-            // Botão Próximo
-            const btnProximo = document.createElement('button');
-            btnProximo.textContent = 'Próxima';
-            if (paginaAtual === totalPaginas) {
-                btnProximo.disabled = true;
-            } else {
-                btnProximo.addEventListener('click', () => {
-                    paginaAtual++;
-                    renderizarTabela();
-                });
+                // Páginas numéricas
+                for (let i = 1; i <= totalPaginas; i++) {
+                    const btnPagina = document.createElement('button');
+                    btnPagina.textContent = i;
+                    if (i === paginaAtual) {
+                        btnPagina.className = 'pag-atual';
+                    } else {
+                        btnPagina.addEventListener('click', () => {
+                            paginaAtual = i;
+                            renderizarTabela();
+                        });
+                    }
+                    container.appendChild(btnPagina);
+                }
+
+                // Botão Próximo
+                const btnProximo = document.createElement('button');
+                btnProximo.textContent = 'Próxima';
+                if (paginaAtual === totalPaginas) {
+                    btnProximo.disabled = true;
+                } else {
+                    btnProximo.addEventListener('click', () => {
+                        paginaAtual++;
+                        renderizarTabela();
+                    });
+                }
+                container.appendChild(btnProximo);
             }
-            container.appendChild(btnProximo);
-        }
         }
     </script>
 </body>
+
 </html>
