@@ -231,3 +231,89 @@ window.alert = function (msg) {
         console.warn("[Alert]", msg);
     }
 };
+
+// ==========================================================================
+// INICIALIZAÇÃO AUTOMÁTICA DO MENU MOBILE RESPONSIVO (DRAWER)
+// ==========================================================================
+(function initMenuMobile() {
+    function setupMobileMenu() {
+        const barraLateral = document.querySelector('.barra-lateral');
+        const cabecalho = document.getElementById('cabecalho-principal') || document.querySelector('.cabecalho-principal');
+
+        if (!barraLateral || !cabecalho) return;
+
+        // Cria o Overlay escuro de fundo se não existir
+        let overlay = document.getElementById('menuOverlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'menuOverlay';
+            overlay.className = 'menu-overlay';
+            document.body.appendChild(overlay);
+        }
+
+        // Cria o botão de menu hambúrguer no cabeçalho se não existir
+        let btnMenu = document.getElementById('btnMenuMobile');
+        if (!btnMenu) {
+            btnMenu = document.createElement('button');
+            btnMenu.id = 'btnMenuMobile';
+            btnMenu.className = 'btn-menu-mobile';
+            btnMenu.type = 'button';
+            btnMenu.setAttribute('aria-label', 'Abrir Menu');
+            btnMenu.innerHTML = `
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            `;
+
+            // Insere como primeiro elemento do cabeçalho
+            if (cabecalho.firstChild) {
+                cabecalho.insertBefore(btnMenu, cabecalho.firstChild);
+            } else {
+                cabecalho.appendChild(btnMenu);
+            }
+        }
+
+        function abrirMenu() {
+            barraLateral.classList.add('aberta');
+            overlay.classList.add('ativo');
+            document.body.classList.add('menu-aberto-bloqueio');
+        }
+
+        function fecharMenu() {
+            barraLateral.classList.remove('aberta');
+            overlay.classList.remove('ativo');
+            document.body.classList.remove('menu-aberto-bloqueio');
+        }
+
+        // Eventos
+        btnMenu.onclick = function (e) {
+            e.stopPropagation();
+            if (barraLateral.classList.contains('aberta')) {
+                fecharMenu();
+            } else {
+                abrirMenu();
+            }
+        };
+
+        overlay.onclick = fecharMenu;
+
+        // Fecha ao clicar em qualquer item do menu
+        const linksMenu = barraLateral.querySelectorAll('.menu-lateral a');
+        linksMenu.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 992) {
+                    fecharMenu();
+                }
+            });
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupMobileMenu);
+    } else {
+        setupMobileMenu();
+    }
+})();
+

@@ -53,27 +53,39 @@
 /* Afastamento lateral para alinhar com o topo da página */
 .tabela {
     padding: 15px 40px 40px 40px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
 }
 
 /* Transforma a tabela em um bloco de card com sombra */
 table {
     width: 100%;
+    min-width: 600px;
     border-collapse: collapse;
     text-align: left;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
 }
 
 /* Cabeçalho cinza com os nomes das colunas */
 th {
     background-color: #f8fafc;
     color: #64748b;
-    padding: 16px;
+    padding: 14px 16px;
     font-weight: 600;
     border-bottom: 2px solid #e2e8f0;
     font-size: 14px;
+    white-space: nowrap;
+}
+
+td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+    font-size: 14px;
+    white-space: nowrap;
 }
 
 /* Linhas com as informações dos usuários */
@@ -261,4 +273,47 @@ td strong {
 
 .btn-salvar:hover {
     background-color: #059669;
+}
+
+/* ================= MEDIA QUERIES RESPONSIVAS ================= */
+@media (max-width: 768px) {
+    .filtros {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 15px 0 10px 0;
+        gap: 10px;
+    }
+
+    .filtros input[type="text"],
+    .btn-nova {
+        max-width: 100% !important;
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    .tabela {
+        padding: 10px 0 20px 0;
+    }
+
+    .modal-container {
+        padding: 10px;
+        z-index: 10000;
+    }
+
+    .modal-conteudo {
+        max-width: 95vw !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+        padding: 18px 14px !important;
+        border-radius: 12px !important;
+    }
+
+    .modal-botoes {
+        flex-direction: column-reverse;
+    }
+
+    .modal-botoes button {
+        width: 100%;
+        padding: 12px;
+    }
 }

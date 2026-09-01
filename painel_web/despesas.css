@@ -9,17 +9,21 @@
 
 /* ==========================================================================
    ESTILO DOS CARDS DE INDICADORES (TOPO DA TELA)
+   ========================================================================== *//* ==========================================================================
+   ESTILO DOS CARDS DE INDICADORES (TOPO DA TELA)
    ========================================================================== */
 .cards-resumo {
     display: flex;
     justify-content: space-between;
     gap: 20px;
     padding: 15px 40px;
+    flex-wrap: wrap;
 }
 
 .card {
     background-color: #ffffff;
     flex: 1;
+    min-width: 200px;
     display: flex;
     align-items: center;
     padding: 20px;
@@ -38,6 +42,7 @@
     align-items: center;
     justify-content: center;
     margin-right: 15px;
+    flex-shrink: 0;
 }
 
 /* Cores de fundo suaves para cada tipo de ícone */
@@ -121,15 +126,18 @@
    ========================================================================== */
 .tabela {
     padding: 10px 40px 40px 40px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
 }
 
 table {
     width: 100%;
+    min-width: 650px;
     border-collapse: collapse;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
 }
 
 th {
@@ -141,13 +149,16 @@ th {
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 td {
-    padding: 16px;
+    padding: 14px 16px;
     border-bottom: 1px solid #e2e8f0;
     color: #334155;
     font-size: 14px;
+    white-space: nowrap;
+}14px;
     vertical-align: middle;
 }
 
@@ -327,3 +338,70 @@ tr:hover td {
 }
 
 .btn-salvar:hover { background-color: #059669; }
+
+/* ================= MEDIA QUERIES RESPONSIVAS ================= */
+@media (max-width: 768px) {
+    .subtitulo-pagina {
+        padding: 15px 16px 0 16px;
+        font-size: 18px;
+    }
+
+    .cards-resumo {
+        padding: 10px 16px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .card {
+        min-width: 0;
+        padding: 14px;
+    }
+
+    .filtros {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px 16px;
+        gap: 10px;
+    }
+
+    .filtros-esquerda {
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .filtros input[type="text"],
+    .filtros select,
+    .btn-nova {
+        max-width: 100% !important;
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    .tabela {
+        padding: 10px 16px 20px 16px;
+    }
+
+    .modal-container {
+        padding: 10px;
+        z-index: 10000;
+    }
+
+    .modal-conteudo {
+        max-width: 95vw !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+        padding: 18px 14px !important;
+        border-radius: 12px !important;
+    }
+
+    .modal-botoes {
+        flex-direction: column-reverse;
+    }
+
+    .modal-botoes button {
+        width: 100%;
+        padding: 12px;
+    }
+}

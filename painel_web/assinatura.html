@@ -229,6 +229,45 @@
             left: 20px;
             box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
         }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 15px 12px;
+            }
+
+            .header {
+                margin-bottom: 24px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .header p {
+                font-size: 0.95rem;
+            }
+
+            .alerta-pagamento {
+                padding: 12px;
+                font-size: 0.85rem;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .grid-planos {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+
+            .card-plano {
+                padding: 24px 16px;
+            }
+
+            .preco-plano {
+                font-size: 1.9rem;
+            }
+        }
     </style>
 </head>
 <body>

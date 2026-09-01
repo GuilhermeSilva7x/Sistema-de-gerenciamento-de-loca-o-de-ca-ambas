@@ -89,14 +89,17 @@
 .tabela {
     background: white; /* Fundo interno da tabela branco */
     border-radius: 12px; /* Arredonda os cantos extremos da tabela */
-    overflow: hidden; /* Corta o conteúdo que passar das bordas arredondadas */
+    overflow-x: auto; /* Permite rolagem horizontal suave */
+    -webkit-overflow-scrolling: touch;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); /* Sombra sutil de profundidade */
     border: 1px solid #e2e8f0; /* Borda exterior cinza */
     margin-bottom: 25px; /* Folga antes da paginação do rodapé */
+    width: 100%;
 }
 
 table {
     width: 100%; /* Obriga a tabela a ocupar 100% da largura da tela */
+    min-width: 700px; /* Largura mínima para evitar esmagamento das colunas */
     border-collapse: collapse; /* Funde as bordas das células para não duplicar */
 }
 
@@ -105,18 +108,20 @@ thead {
 }
 
 thead th {
-    padding: 16px; /* Altura do cabeçalho */
+    padding: 14px 16px; /* Altura do cabeçalho */
     text-align: left; /* Alinha o texto das colunas à esquerda */
     color: #475569; /* Cor do texto descritivo */
     font-size: 14px; /* Tamanho da fonte */
     font-weight: 600; /* Título semi-negrito */
+    white-space: nowrap;
 }
 
 tbody td {
-    padding: 16px; /* Espaçamento interno das linhas de dados */
+    padding: 14px 16px; /* Espaçamento interno das linhas de dados */
     border-top: 1px solid #e2e8f0; /* Linha divisória horizontal entre os registros */
     color: #334155; /* Cor do texto interno */
     font-size: 14px; /* Tamanho da fonte */
+    white-space: nowrap;
 }
 
 tbody tr:hover {
@@ -549,6 +554,7 @@ tbody tr:hover {
     .filtros {
         flex-direction: column; /* Empilha os filtros verticalmente */
         align-items: stretch; /* Estica todos os filtros para ocupar toda a largura */
+        gap: 10px;
     }
     .filtros select, .btn-nova, .btn-filtrar-data, .btn-limpar-data {
         width: 100%; /* Força tamanho completo em telas pequenas */
@@ -556,5 +562,76 @@ tbody tr:hover {
     }
     .linha-dupla, .linha-tripla {
         flex-direction: column; /* Transforma as linhas paralelas em campos empilhados em telas móveis */
+    }
+}
+
+@media (max-width: 768px) {
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .card {
+        min-width: 0;
+        padding: 14px;
+        border-radius: 10px;
+    }
+
+    .card h2 {
+        font-size: 22px;
+    }
+
+    .card p {
+        font-size: 12px;
+    }
+
+    .filtros input[type="text"],
+    .filtros select,
+    .btn-nova {
+        width: 100% !important;
+        min-width: 0 !important;
+        flex: 1 1 100% !important;
+        box-sizing: border-box;
+    }
+
+    .filtros > div {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .filtros input[type="date"] {
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    .modal-container {
+        padding: 10px;
+    }
+
+    .modal-conteudo,
+    .modal-detalhes-conteudo,
+    .modal-confirmacao-conteudo {
+        width: 100% !important;
+        max-width: 95vw !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+        padding: 16px !important;
+        border-radius: 12px !important;
+    }
+
+    .modal-rodape,
+    .modal-confirmacao-rodape {
+        flex-direction: column-reverse;
+        padding: 12px 16px;
+    }
+
+    .modal-rodape button,
+    .modal-confirmacao-rodape button {
+        width: 100%;
+        padding: 12px;
     }
 }
