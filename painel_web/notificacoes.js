@@ -233,16 +233,16 @@ window.alert = function (msg) {
 };
 
 // ==========================================================================
-// INICIALIZAÇÃO AUTOMÁTICA DO MENU MOBILE RESPONSIVO (DRAWER)
+// CONTROLE DO MENU LATERAL (DESKTOP E MOBILE)
 // ==========================================================================
-(function initMenuMobile() {
-    function setupMobileMenu() {
+(function initControleMenu() {
+    function setupMenu() {
         const barraLateral = document.querySelector('.barra-lateral');
         const cabecalho = document.getElementById('cabecalho-principal') || document.querySelector('.cabecalho-principal');
 
         if (!barraLateral || !cabecalho) return;
 
-        // Cria o Overlay escuro de fundo se não existir
+        // Cria o Overlay escuro de fundo para Mobile se não existir
         let overlay = document.getElementById('menuOverlay');
         if (!overlay) {
             overlay = document.createElement('div');
@@ -251,69 +251,95 @@ window.alert = function (msg) {
             document.body.appendChild(overlay);
         }
 
-        // Cria o botão de menu hambúrguer no cabeçalho se não existir
-        let btnMenu = document.getElementById('btnMenuMobile');
-        if (!btnMenu) {
-            btnMenu = document.createElement('button');
-            btnMenu.id = 'btnMenuMobile';
-            btnMenu.className = 'btn-menu-mobile';
-            btnMenu.type = 'button';
-            btnMenu.setAttribute('aria-label', 'Abrir Menu');
-            btnMenu.innerHTML = `
-                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        // Obtém o botão existente ou cria se não existir (evita duplicar)
+        let btnToggle = document.getElementById('btnToggleMenu') || document.querySelector('.btn-toggle-menu');
+        
+        if (!btnToggle) {
+            btnToggle = document.createElement('button');
+            btnToggle.id = 'btnToggleMenu';
+            btnToggle.className = 'btn-toggle-menu';
+            btnToggle.type = 'button';
+            btnToggle.setAttribute('title', 'Recolher / Expandir Menu Lateral (Ctrl+B)');
+            btnToggle.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="3" y1="12" x2="21" y2="12"></line>
                     <line x1="3" y1="6" x2="21" y2="6"></line>
                     <line x1="3" y1="18" x2="21" y2="18"></line>
                 </svg>
             `;
-
-            // Insere como primeiro elemento do cabeçalho
             if (cabecalho.firstChild) {
-                cabecalho.insertBefore(btnMenu, cabecalho.firstChild);
+                cabecalho.insertBefore(btnToggle, cabecalho.firstChild);
             } else {
-                cabecalho.appendChild(btnMenu);
+                cabecalho.appendChild(btnToggle);
             }
         }
 
-        function abrirMenu() {
+        // Remove qualquer botão mobile antigo duplicado se existir
+        const btnDuplicado = document.getElementById('btnMenuMobile');
+        if (btnDuplicado && btnDuplicado !== btnToggle) {
+            btnDuplicado.remove();
+        }
+
+        function abrirMenuMobile() {
             barraLateral.classList.add('aberta');
             overlay.classList.add('ativo');
             document.body.classList.add('menu-aberto-bloqueio');
         }
 
-        function fecharMenu() {
+        function fecharMenuMobile() {
             barraLateral.classList.remove('aberta');
             overlay.classList.remove('ativo');
             document.body.classList.remove('menu-aberto-bloqueio');
         }
 
-        // Eventos
-        btnMenu.onclick = function (e) {
+        function toggleMenuDesktop() {
+            document.body.classList.toggle('menu-fechado');
+        }
+
+        // Clique no botão (funciona tanto no Desktop quanto no Mobile)
+        btnToggle.onclick = function (e) {
             e.stopPropagation();
-            if (barraLateral.classList.contains('aberta')) {
-                fecharMenu();
+            if (window.innerWidth <= 992) {
+                // Modo Mobile: Abre / Fecha o Drawer
+                if (barraLateral.classList.contains('aberta')) {
+                    fecharMenuMobile();
+                } else {
+                    abrirMenuMobile();
+                }
             } else {
-                abrirMenu();
+                // Modo Desktop Web: Recolhe / Expande a barra lateral
+                toggleMenuDesktop();
             }
         };
 
-        overlay.onclick = fecharMenu;
+        overlay.onclick = fecharMenuMobile;
 
-        // Fecha ao clicar em qualquer item do menu
+        // Atalho de teclado Ctrl+B para Desktop
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'B')) {
+                e.preventDefault();
+                if (window.innerWidth > 992) {
+                    toggleMenuDesktop();
+                }
+            }
+        });
+
+        // Fecha ao clicar em qualquer item do menu no Mobile
         const linksMenu = barraLateral.querySelectorAll('.menu-lateral a');
         linksMenu.forEach(link => {
             link.addEventListener('click', () => {
                 if (window.innerWidth <= 992) {
-                    fecharMenu();
+                    fecharMenuMobile();
                 }
             });
         });
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupMobileMenu);
+        document.addEventListener('DOMContentLoaded', setupMenu);
     } else {
-        setupMobileMenu();
+        setupMenu();
     }
 })();
+
 

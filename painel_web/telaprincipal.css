@@ -15,6 +15,22 @@ body {
     transition: grid-template-columns 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+body.menu-fechado {
+    grid-template-columns: 0px 1fr !important;
+}
+
+body.menu-fechado .barra-lateral {
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    padding: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    overflow: hidden !important;
+    border: none !important;
+    margin: 0 !important;
+}
+
 body.menu-aberto-bloqueio {
     overflow: hidden;
 }
