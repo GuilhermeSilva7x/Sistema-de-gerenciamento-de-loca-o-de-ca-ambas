@@ -179,47 +179,6 @@ body.menu-aberto-bloqueio {
     transform: scale(1.05);
 }
 
-.menu-lateral a.active .nav-icon {
-    color: #60a5fa;
-}
-
-.menu-lateral a.active::before {
-    content: '';
-    position: absolute;
-    left: -12px;
-    top: 4px;
-    bottom: 4px;
-    width: 4px;
-    background: #3b82f6;
-    border-radius: 0 4px 4px 0;
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
-}
-
-.rodape-lateral {
-    margin-top: auto;
-    padding: 16px 14px 10px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.logo-rodape-img {
-    width: 120px;
-    height: auto;
-    max-height: 55px;
-    object-fit: contain;
-    opacity: 0.9;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    cursor: pointer;
-    user-select: none;
-}
-
-.logo-rodape-img:hover {
-    transform: scale(1.04);
-    opacity: 1;
-}
-
 /* --- CONTEÚDO DA DIREITA (USANDO OS SEUS IDS) --- */
 #titulo-principal {
     display: flex;
