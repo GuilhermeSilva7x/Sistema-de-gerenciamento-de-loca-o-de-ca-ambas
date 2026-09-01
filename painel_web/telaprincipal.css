@@ -35,31 +35,6 @@ body.menu-aberto-bloqueio {
     overflow: hidden;
 }
 
-/* --- BOTÃO MENU HAMBÚRGUER MOBILE --- */
-.btn-menu-mobile {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: #f1f5f9;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    color: #1e293b;
-    cursor: pointer;
-    margin-right: 12px;
-    flex-shrink: 0;
-    transition: background 0.2s, transform 0.1s;
-}
-
-.btn-menu-mobile:hover {
-    background: #e2e8f0;
-}
-
-.btn-menu-mobile:active {
-    transform: scale(0.95);
-}
-
 /* --- OVERLAY DE FUNDO DO MENU MOBILE --- */
 .menu-overlay {
     position: fixed;
@@ -286,8 +261,19 @@ body.menu-aberto-bloqueio {
         overflow-x: hidden;
     }
 
-    .btn-menu-mobile {
-        display: inline-flex;
+    .cabecalho-titulo-area {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .btn-toggle-menu {
+        width: 40px;
+        height: 40px;
+        display: inline-flex !important;
     }
 
     .barra-lateral {
@@ -324,23 +310,38 @@ body.menu-aberto-bloqueio {
 @media (max-width: 768px) {
     #cabecalho-principal {
         padding: 14px 16px;
-        gap: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .cabecalho-titulo-area {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
 
     #cabecalho-principal h2 {
         font-size: 18px;
         line-height: 1.2;
+        margin: 0;
     }
 
     #cabecalho-principal h2 span {
         display: block;
         margin-left: 0;
         margin-top: 2px;
-        font-size: 12px;
+        font-size: 11px;
+        color: #64748b;
+        font-weight: normal;
     }
 
-    #usuario {
-        font-size: 12px;
+    #usuario, .usuario {
+        font-size: 11px;
+        color: #64748b;
+        padding-left: 52px;
+        word-break: break-all;
     }
 
     #informacoes-principais {
