@@ -563,7 +563,7 @@
 
                     // Evento excluir
                     tr.querySelector('.btn-excluir').addEventListener('click', async () => {
-                        const despId = id;
+                        const despId = desp.id;
                         const descDespesa = desp.descricao || '';
                         const confirmou = await Alerta.confirmar({
                             titulo: 'Remover Despesa',
