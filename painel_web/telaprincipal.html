@@ -153,17 +153,19 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Caçamba</th>
+                            <th>OS</th>
                             <th>Cliente</th>
+                            <th>Caçamba</th>
                             <th>Endereço</th>
                             <th>Data Entrega</th>
                             <th>Prev. Retirada</th>
                             <th>Status</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="6" style="text-align: center; color: #64748b;">Carregando locações...</td>
+                            <td colspan="8" style="text-align: center; color: #64748b;">Carregando locações...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -546,7 +548,7 @@
                 });
 
                 if (docsFiltrados.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #64748b;">Nenhuma atividade ativa no momento.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #64748b;">Nenhuma atividade ativa no momento.</td></tr>';
                     const pagDiv = document.getElementById('paginacaoContainer');
                     if (pagDiv) pagDiv.innerHTML = '';
                     return;
@@ -582,6 +584,7 @@
                     const num = data.endereco?.numero || '';
                     const bairro = data.endereco?.bairro || '';
                     const dataEntrega = data.data_entrega ? new Date(data.data_entrega + 'T12:00:00').toLocaleDateString('pt-BR') : '-';
+                    const prevRetirada = data.data_retirada ? new Date(data.data_retirada + 'T12:00:00').toLocaleDateString('pt-BR') : '-';
 
                     let cobrancaAlerta = '';
                     if (data.pagamento_status !== 'Pago') {
@@ -607,8 +610,6 @@
                         return dStr.split('-').reverse().join('/');
                     };
 
-
-
                     const progData = formatarDataBr(data.data_entrega);
                     const progHora = data.hora_entrega || '';
                     const realDataHora = formatarTimestamp(data.concluido_em);
@@ -626,6 +627,7 @@
                         <td>${cacambaCell}</td>
                         <td>${rua}, ${num} - ${bairro}</td>
                         <td>${dataEntrega}</td>
+                        <td>${prevRetirada}</td>
                         <td>${statusBadge}${cobrancaAlerta}</td>
                         <td><button class="btn-olho" title="Ver Detalhes" style="cursor: pointer; border: none; background: none; font-size: 16px;">👁️</button></td>
                     `;

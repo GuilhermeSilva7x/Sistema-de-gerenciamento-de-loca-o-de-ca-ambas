@@ -344,7 +344,10 @@
         // 3. Cálculos dos Cards
         let faturamento = 0;
         locacoesFiltradas.forEach(loc => {
-          faturamento += parseValor(loc.valor);
+          const isPago = (loc.pagamento_status || '').trim().toLowerCase() === 'pago';
+          if (isPago) {
+            faturamento += parseValor(loc.valor);
+          }
         });
 
         let despesas = 0;
@@ -429,6 +432,8 @@
 
         locacoesCache.forEach(loc => {
           if (!loc.data_entrega) return;
+          const isPago = (loc.pagamento_status || '').trim().toLowerCase() === 'pago';
+          if (!isPago) return; // Apenas locações pagas entram no faturamento
           // Coleta os primeiros 7 caracteres: AAAA-MM
           const mesChave = loc.data_entrega.substring(0, 7);
           if (!mesesMap[mesChave]) mesesMap[mesChave] = { faturamento: 0, despesa: 0 };
