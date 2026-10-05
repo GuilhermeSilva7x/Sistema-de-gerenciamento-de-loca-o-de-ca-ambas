@@ -466,6 +466,9 @@
 
             <div class="modal-botoes"
                 style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                <button type="button" id="btnExcluirLocacaoModal"
+                    style="padding: 10px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-family: sans-serif; margin-right: auto;">🗑️
+                    Excluir Locação</button>
                 <button type="button" id="btnConcluirPeloPainel"
                     style="padding: 10px 16px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: none; font-family: sans-serif;">✅
                     Concluir Atividade</button>
@@ -1081,29 +1084,8 @@
 
                     // Evento excluir
                     tr.querySelector('.btn-excluir').addEventListener('click', async (e) => {
-                        const locId = id;
-                        const cacId = data.cacamba_id;
-                        const osNumero = data.os_numero || '';
-                        const confirmou = await Alerta.confirmar({
-                            titulo: 'Excluir Locação',
-                            texto: `Deseja realmente remover a locação ${osNumero}? A caçamba voltará ao status Disponível.`,
-                            confirmText: 'Sim, excluir',
-                            icone: 'warning',
-                            perigo: true
-                        });
-                        if (confirmou) {
-                            try {
-                                await db.collection('locacoes').doc(locId).delete();
-                                if (cacId) {
-                                    await db.collection('cacambas').doc(cacId).update({
-                                        status: 'disponivel'
-                                    });
-                                }
-                                Alerta.toast('Locação excluída com sucesso!');
-                            } catch (err) {
-                                Alerta.erro('Erro ao excluir: ' + err.message);
-                            }
-                        }
+                        e.stopPropagation();
+                        await executarExclusaoLocacao(id, data);
                     });
 
                     tr.style.cursor = 'pointer';
@@ -1728,8 +1710,77 @@
                     }
                 });
 
+                // Configurar clique no botão Excluir Locação dentro do modal
+                const btnExcluirModal = document.getElementById('btnExcluirLocacaoModal');
+                if (btnExcluirModal) {
+                    const novoBtnExcluirModal = btnExcluirModal.cloneNode(true);
+                    btnExcluirModal.parentNode.replaceChild(novoBtnExcluirModal, btnExcluirModal);
+                    novoBtnExcluirModal.addEventListener('click', async () => {
+                        await executarExclusaoLocacao(id, data);
+                    });
+                }
+
                 modalDet.classList.add('active');
                 modalDet.style.display = 'flex';
+            }
+
+            // Função segura e compartilhada para exclusão de locações sem erro 404
+            async function executarExclusaoLocacao(locId, data) {
+                const cacId = data.cacamba_id;
+                const cacVelhaId = data.cacamba_velha_id;
+                const osNumero = data.os_numero || '';
+
+                const confirmou = await Alerta.confirmar({
+                    titulo: 'Excluir Locação',
+                    texto: `Deseja realmente remover a locação ${osNumero}? As caçambas vinculadas voltarão ao status Disponível.`,
+                    confirmText: 'Sim, excluir',
+                    icone: 'warning',
+                    perigo: true
+                });
+
+                if (confirmou) {
+                    try {
+                        // 1. Exclui o documento da locação
+                        await db.collection('locacoes').doc(locId).delete();
+
+                        // 2. Libera a caçamba principal se existir de forma segura
+                        if (cacId && typeof cacId === 'string' && cacId.trim() !== '') {
+                            try {
+                                const cacRef = db.collection('cacambas').doc(cacId.trim());
+                                const cacSnap = await cacRef.get();
+                                if (cacSnap.exists) {
+                                    await cacRef.update({ status: 'disponivel' });
+                                }
+                            } catch (cacErr) {
+                                console.warn('Aviso: Caçamba vinculada não encontrada ou já removida:', cacErr);
+                            }
+                        }
+
+                        // 3. Libera caçamba antiga se for troca
+                        if (cacVelhaId && typeof cacVelhaId === 'string' && cacVelhaId.trim() !== '') {
+                            try {
+                                const cacVelhaRef = db.collection('cacambas').doc(cacVelhaId.trim());
+                                const cacVelhaSnap = await cacVelhaRef.get();
+                                if (cacVelhaSnap.exists) {
+                                    await cacVelhaRef.update({ status: 'disponivel' });
+                                }
+                            } catch (cacErr) {
+                                console.warn('Aviso: Caçamba antiga não encontrada:', cacErr);
+                            }
+                        }
+
+                        Alerta.toast('Locação excluída com sucesso!');
+
+                        // Fecha o modal se estiver aberto
+                        const modalDet = document.getElementById('modalDetalhesLocacao');
+                        if (modalDet) {
+                            modalDet.classList.remove('active');
+                            modalDet.style.display = 'none';
+                        }
+                    } catch (err) {
+                        Alerta.erro('Erro ao excluir locação: ' + err.message);
+                    }
+                }
             }
 
             // Eventos de fechamento do modal de detalhes

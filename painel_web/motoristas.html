@@ -402,13 +402,17 @@
 
                 // 1. Criar credencial de acesso do motorista no Firebase Auth
                 let secondaryApp;
+                let authUid = null;
                 try {
                     secondaryApp = firebase.initializeApp(firebaseConfig, "DriverAuthCreator");
-                    await secondaryApp.auth().createUserWithEmailAndPassword(email, senha);
+                    const userCredential = await secondaryApp.auth().createUserWithEmailAndPassword(email, senha);
+                    if (userCredential && userCredential.user) {
+                        authUid = userCredential.user.uid;
+                    }
                 } catch (authError) {
                     console.error("Erro no Firebase Auth:", authError);
                     if (authError.code === 'auth/email-already-in-use') {
-                        Alerta.aviso('Este e-mail já está cadastrado no Firebase Auth! O motorista foi registrado, mas para fazer login no celular ele deve usar a senha antiga. Caso queira usar a nova senha cadastrada agora, redefina a senha deste e-mail diretamente no Console do Firebase Auth.', 'E-mail Já Existente');
+                        Alerta.aviso('Este e-mail já está cadastrado no Firebase Auth! O motorista foi registrado no banco, mas para fazer login no celular ele deve usar a senha antiga. Caso queira usar a nova senha cadastrada agora, redefina a senha deste e-mail diretamente no Console do Firebase Auth.', 'E-mail Já Existente');
                     } else {
                         Alerta.erro('Erro ao gerar login de acesso do motorista: ' + authError.message);
                         if (secondaryApp) await secondaryApp.delete();
@@ -422,7 +426,7 @@
 
                 // 2. Criar perfil do motorista no Firestore
                 try {
-                    await db.collection('motoristas').add({
+                    const novoMotoristaDoc = {
                         admin_id: user.uid,
                         nome,
                         cpf,
@@ -433,7 +437,12 @@
                         caminhao,
                         ativo: true,
                         data_cadastro: new Date().toISOString()
-                    });
+                    };
+                    if (authUid) {
+                        novoMotoristaDoc.auth_uid = authUid;
+                    }
+
+                    await db.collection('motoristas').add(novoMotoristaDoc);
                     Alerta.sucesso('Motorista cadastrado com sucesso!');
                     formMotorista.reset();
                     modal.classList.remove('ativo');
@@ -544,15 +553,32 @@
                     tr.querySelector('.btn-excluir').addEventListener('click', async () => {
                         const motId = id;
                         const nomeMotorista = data.nome || '';
+                        const emailMotorista = (data.email || '').trim().toLowerCase();
+                        const authUid = data.auth_uid || null;
+
                         const confirmou = await Alerta.confirmar({
                             titulo: 'Excluir Motorista',
-                            texto: `Deseja realmente excluir o motorista ${nomeMotorista}?`,
+                            texto: `Deseja realmente excluir o motorista ${nomeMotorista}? A conta de acesso também será excluída permanentemente.`,
                             confirmText: 'Sim, excluir',
                             icone: 'warning',
                             perigo: true
                         });
                         if (confirmou) {
                             try {
+                                // 1. Exclui do Firebase Auth via Cloud Function HTTP
+                                if (emailMotorista || authUid) {
+                                    try {
+                                        fetch('https://us-central1-gerenciamento-de-cacambas.cloudfunctions.net/excluirMotoristaAuth', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ email: emailMotorista, auth_uid: authUid })
+                                        }).catch(cfErr => console.warn('Aviso exclusão Auth:', cfErr));
+                                    } catch (fetchErr) {
+                                        console.warn('Erro ao disparar chamada de exclusão do Auth:', fetchErr);
+                                    }
+                                }
+
+                                // 2. Exclui do Firestore (aciona também trigger onMotoristaDelete)
                                 await db.collection('motoristas').doc(motId).delete();
                                 Alerta.toast(`Motorista ${nomeMotorista} excluído com sucesso!`);
                             } catch (err) {

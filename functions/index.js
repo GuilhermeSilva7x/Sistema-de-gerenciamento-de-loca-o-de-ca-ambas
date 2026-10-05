@@ -1,9 +1,12 @@
-const functions = require('firebase-functions');
+const functions = require('firebase-functions/v1');
 const admin = require('firebase-admin');
+const { getFirestore } = require('firebase-admin/firestore');
+const { getAuth } = require('firebase-admin/auth');
 const axios = require('axios');
 
 admin.initializeApp();
-const db = admin.firestore();
+const db = getFirestore();
+const auth = getAuth();
 
 // Carrega as chaves a partir de variáveis de ambiente locais (.env) para segurança
 const MP_ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
@@ -214,5 +217,98 @@ exports.webhookAsaas = functions.https.onRequest(async (req, res) => {
             console.error('Erro retornado pela API do Asaas:', JSON.stringify(error.response.data));
         }
         return res.status(500).send('Erro interno do servidor');
+    }
+});
+
+// Trigger automática disparada quando um motorista é excluído do Firestore
+exports.onMotoristaDelete = functions.firestore
+    .document('motoristas/{motoristaId}')
+    .onDelete(async (snap, context) => {
+        const data = snap.data();
+        if (!data) return null;
+
+        const email = data.email ? data.email.trim().toLowerCase() : null;
+        const authUid = data.auth_uid || null;
+
+        console.log(`Trigger onMotoristaDelete acionada para motorista ID: ${snap.id}, email: ${email}, auth_uid: ${authUid}`);
+
+        try {
+            if (authUid) {
+                try {
+                    await auth.deleteUser(authUid);
+                    console.log(`Usuário Auth deletado com sucesso pelo auth_uid: ${authUid}`);
+                    return null;
+                } catch (e) {
+                    if (e.code !== 'auth/user-not-found') {
+                        console.error(`Erro ao deletar Auth por auth_uid (${authUid}):`, e);
+                    }
+                }
+            }
+
+            if (email) {
+                try {
+                    const userRecord = await auth.getUserByEmail(email);
+                    if (userRecord && userRecord.uid) {
+                        await auth.deleteUser(userRecord.uid);
+                        console.log(`Usuário Auth (${email}) deletado com sucesso pelo email: ${userRecord.uid}`);
+                    }
+                } catch (e) {
+                    if (e.code !== 'auth/user-not-found') {
+                        console.error(`Erro ao buscar/deletar usuário Auth por email (${email}):`, e);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Erro geral ao remover usuário no Firebase Auth:', error);
+        }
+        return null;
+    });
+
+// Endpoint HTTP com CORS para exclusão imediata de motorista no Firebase Auth
+exports.excluirMotoristaAuth = functions.https.onRequest(async (req, res) => {
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    if (req.method === 'OPTIONS') {
+        return res.status(204).send('');
+    }
+
+    try {
+        const { email, auth_uid } = req.body || {};
+        let deleted = false;
+
+        if (auth_uid) {
+            try {
+                await auth.deleteUser(auth_uid);
+                deleted = true;
+                console.log(`Usuário Auth deletado via HTTP por auth_uid: ${auth_uid}`);
+            } catch (e) {
+                if (e.code !== 'auth/user-not-found') {
+                    console.error('Erro HTTP ao deletar por auth_uid:', e);
+                }
+            }
+        }
+
+        if (!deleted && email) {
+            try {
+                const cleanEmail = email.trim().toLowerCase();
+                const userRecord = await auth.getUserByEmail(cleanEmail);
+                if (userRecord && userRecord.uid) {
+                    await auth.deleteUser(userRecord.uid);
+                    deleted = true;
+                    console.log(`Usuário Auth deletado via HTTP por email: ${cleanEmail}`);
+                }
+            } catch (e) {
+                if (e.code !== 'auth/user-not-found') {
+                    console.error('Erro HTTP ao deletar por email:', e);
+                }
+            }
+        }
+
+        return res.status(200).json({ success: true, deleted });
+    } catch (err) {
+        console.error('Erro no endpoint excluirMotoristaAuth:', err);
+        return res.status(500).json({ success: false, error: err.message });
     }
 });
