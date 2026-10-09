@@ -132,6 +132,7 @@
 
         <section class="filtros">
             <input type="text" id="filtroPesquisaMotorista" placeholder="Buscar motorista por nome ou CNH...">
+            <button type="button" class="btn-nova" id="btnCopiarLinkApp" style="background: #2563eb; color: white;" title="Copiar link do App para enviar aos motoristas">📲 Link do App (iOS / Web)</button>
             <button class="btn-nova" id="btnAbrirModal">+ Novo Motorista</button>
         </section>
 
@@ -320,6 +321,23 @@
                 } catch (error) {
                     console.error("Erro ao obter caminhões: ", error);
                 }
+            }
+
+            // Copiar link do Web App do Motorista
+            const btnCopiar = document.getElementById('btnCopiarLinkApp');
+            if (btnCopiar) {
+                btnCopiar.addEventListener('click', () => {
+                    const urlApp = window.location.origin + '/motorista/';
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(urlApp).then(() => {
+                            Alerta.toast('Link do App copiado para a área de transferência!');
+                        }).catch(() => {
+                            Alerta.info(`Acesse ou envie este link aos motoristas:<br><br><a href="${urlApp}" target="_blank" style="color:#2563eb; font-weight:bold; font-size:15px;">${urlApp}</a>`, 'Link do App do Motorista');
+                        });
+                    } else {
+                        Alerta.info(`Acesse ou envie este link aos motoristas:<br><br><a href="${urlApp}" target="_blank" style="color:#2563eb; font-weight:bold; font-size:15px;">${urlApp}</a>`, 'Link do App do Motorista');
+                    }
+                });
             }
 
             // Abre a janela flutuante e carrega os caminhões

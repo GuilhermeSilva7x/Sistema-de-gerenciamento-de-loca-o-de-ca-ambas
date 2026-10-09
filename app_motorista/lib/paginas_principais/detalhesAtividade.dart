@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -43,7 +43,8 @@ class Detalhesatividade extends StatefulWidget {
 }
 
 class _DetalhesatividadeState extends State<Detalhesatividade> {
-  File? _fotoComprovante;
+  XFile? _fotoComprovante;
+  Uint8List? _fotoBytes;
   bool _isLoading = false;
 
   Future<void> _tirarFoto() async {
@@ -58,14 +59,16 @@ class _DetalhesatividadeState extends State<Detalhesatividade> {
     );
 
     if (fotoTirada != null) {
+      final bytes = await fotoTirada.readAsBytes();
       setState(() {
-        _fotoComprovante = File(fotoTirada.path);
+        _fotoComprovante = fotoTirada;
+        _fotoBytes = bytes;
       });
     }
   }
 
   Future<void> _confirmarServico() async {
-    if (_fotoComprovante == null) {
+    if (_fotoBytes == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -83,7 +86,7 @@ class _DetalhesatividadeState extends State<Detalhesatividade> {
     final String docId = widget.id;
     final String atividade = widget.atividade;
     final String cacambaId = widget.cacambaId;
-    final File fileToUpload = _fotoComprovante!;
+    final Uint8List bytesToUpload = _fotoBytes!;
     final bool isRetirada =
         atividade == 'RETIRADA' ||
         atividade == 'retirada_pendente' ||
@@ -128,25 +131,23 @@ class _DetalhesatividadeState extends State<Detalhesatividade> {
             .child(docId)
             .child('comprovante.jpg');
 
-        final bytes = await fileToUpload.readAsBytes();
         await ref.putData(
-          bytes,
+          bytesToUpload,
           SettableMetadata(contentType: 'image/jpeg'),
         );
         fotoUrl = await ref.getDownloadURL();
       } catch (e) {
         debugPrint("Tentativa 1 falhou: $e. Tentando com bucket alternativo...");
         try {
-          final altStorage = FirebaseStorage.instanceFor(bucket: 'gs://gerenciamento-de-cacambas.appspot.com');
+          final altStorage = FirebaseStorage.instanceFor(bucket: 'gs://gerenciamento-de-cacambas.firebasestorage.app');
           final refAlt = altStorage
               .ref()
               .child('locacoes')
               .child(docId)
               .child('comprovante.jpg');
           
-          final bytes = await fileToUpload.readAsBytes();
           await refAlt.putData(
-            bytes,
+            bytesToUpload,
             SettableMetadata(contentType: 'image/jpeg'),
           );
           fotoUrl = await refAlt.getDownloadURL();
@@ -370,9 +371,9 @@ class _DetalhesatividadeState extends State<Detalhesatividade> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _fotoComprovante != null
-                            ? Image.file(
-                                _fotoComprovante!,
+                        _fotoBytes != null
+                            ? Image.memory(
+                                _fotoBytes!,
                                 height: 150,
                                 width: double.infinity,
                                 fit: BoxFit.contain,

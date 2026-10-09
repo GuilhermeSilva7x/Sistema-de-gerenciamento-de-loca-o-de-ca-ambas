@@ -491,6 +491,10 @@
             if (!user) {
                 window.location.href = 'TeladeLogin.HTML';
             } else {
+                // Sincroniza em segundo plano com o Asaas para garantir o status mais recente
+                fetch(`https://us-central1-gerenciamento-de-cacambas.cloudfunctions.net/sincronizarAssinaturaAsaas?uid=${user.uid}`)
+                    .catch(e => console.log('Auto-sync Asaas:', e));
+
                 // Escuta em tempo real do documento do plano
                 db.collection('empresas').doc(user.uid).onSnapshot((doc) => {
                     if (doc.exists) {

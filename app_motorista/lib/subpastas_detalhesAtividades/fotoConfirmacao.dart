@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -12,7 +11,7 @@ class Fotoconfirmacao extends StatefulWidget {
 }
 
 class _FotoconfirmacaoState extends State<Fotoconfirmacao> {
-  File? fotoComprovante;
+  Uint8List? fotoBytes;
   Future<void> tirarFoto() async {
     final ImagePicker buscador = ImagePicker();
     final XFile? fotoTirada = await buscador.pickImage(
@@ -20,7 +19,10 @@ class _FotoconfirmacaoState extends State<Fotoconfirmacao> {
       imageQuality: 50,
     );
     if (fotoTirada != null) {
-      fotoComprovante = File(fotoTirada.path);
+      final bytes = await fotoTirada.readAsBytes();
+      setState(() {
+        fotoBytes = bytes;
+      });
     }
   }
 
@@ -37,7 +39,6 @@ class _FotoconfirmacaoState extends State<Fotoconfirmacao> {
         GestureDetector(
           onTap: () async {
             await tirarFoto();
-            setState(() {});
           },
           child: Container(
             width: double.infinity,
@@ -48,9 +49,9 @@ class _FotoconfirmacaoState extends State<Fotoconfirmacao> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                fotoComprovante != null
-                    ? Image.file(
-                        fotoComprovante!,
+                fotoBytes != null
+                    ? Image.memory(
+                        fotoBytes!,
                         height: 150,
                         width: double.infinity,
                         fit: BoxFit.contain,
@@ -60,7 +61,7 @@ class _FotoconfirmacaoState extends State<Fotoconfirmacao> {
                     : const Icon(Icons.camera_alt_outlined, size: 50),
 
                 const SizedBox(height: 8),
-                fotoComprovante != null || widget.concluido
+                fotoBytes != null || widget.concluido
                     ? const SizedBox.shrink()
                     : const Text(
                         "Toque para tirar a foto da caçamba no local",

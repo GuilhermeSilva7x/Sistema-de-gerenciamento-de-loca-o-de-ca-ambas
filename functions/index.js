@@ -108,14 +108,46 @@ exports.webhookAsaas = functions.https.onRequest(async (req, res) => {
     console.log('Webhook Asaas recebido:', JSON.stringify(req.body));
 
     try {
-        const { event, payment } = req.body;
+        const { event, payment, subscription } = req.body;
 
-        if (!payment || !payment.customer) {
-            console.log('Sem dados de pagamento ou cliente no payload.');
+        let customerId = null;
+        let subscriptionId = null;
+        let paymentValue = null;
+        let paymentDesc = '';
+
+        if (payment) {
+            customerId = payment.customer;
+            subscriptionId = payment.subscription;
+            paymentValue = payment.value;
+            paymentDesc = (payment.description || '').toLowerCase();
+        } else if (subscription) {
+            customerId = subscription.customer;
+            subscriptionId = subscription.id;
+            paymentValue = subscription.value;
+            paymentDesc = (subscription.description || '').toLowerCase();
+        }
+
+        if (!customerId && !subscriptionId) {
+            console.log('Sem dados de cliente ou assinatura no payload.');
             return res.status(200).send('OK (Sem dados relevantes)');
         }
 
-        const customerId = payment.customer;
+        // Se tiver subscriptionId mas não tiver customerId, busca os detalhes da assinatura no Asaas
+        if (!customerId && subscriptionId) {
+            try {
+                const subRes = await axios.get(`${ASAAS_API_URL}/subscriptions/${subscriptionId}`, {
+                    headers: { access_token: ASAAS_API_KEY }
+                });
+                customerId = subRes.data?.customer;
+            } catch (e) {
+                console.error('Erro ao buscar assinatura no Asaas:', e.message);
+            }
+        }
+
+        if (!customerId) {
+            console.warn('Nenhum customerId encontrado para o evento:', event);
+            return res.status(200).send('OK (Sem customerId)');
+        }
 
         // 1. Consulta os detalhes do cliente no Asaas para pegar o e-mail cadastrado
         console.log(`Buscando dados do cliente ${customerId} no Asaas...`);
@@ -142,7 +174,6 @@ exports.webhookAsaas = functions.https.onRequest(async (req, res) => {
             .get();
 
         if (empresasSnap.empty) {
-            // Se o e-mail de cadastro no Asaas for diferente do e-mail do admin no sistema, tenta buscar pelo e-mail comum de login secundário ou avisa
             console.warn(`Nenhuma empresa encontrada com o email_admin: ${customerEmail}`);
             return res.status(200).send('Empresa não encontrada.');
         }
@@ -151,43 +182,49 @@ exports.webhookAsaas = functions.https.onRequest(async (req, res) => {
         const empresaId = empresaDoc.id;
 
         // 3. Define as ações com base no evento enviado pelo Asaas
-        // Eventos de ativação de pagamento
-        const eventosAtivacao = ['PAYMENT_CONFIRMED', 'PAYMENT_RECEIVED'];
-        // Eventos de bloqueio / inadimplência / cancelamento
-        const eventosBloqueio = ['PAYMENT_OVERDUE', 'PAYMENT_DELETED', 'PAYMENT_REFUNDED', 'PAYMENT_CHARGEBACK_REQUESTED'];
+        const eventosAtivacao = ['PAYMENT_CONFIRMED', 'PAYMENT_RECEIVED', 'PAYMENT_RESTORED'];
+        const eventosBloqueio = [
+            'PAYMENT_OVERDUE',
+            'PAYMENT_DELETED',
+            'PAYMENT_REFUNDED',
+            'PAYMENT_CHARGEBACK_REQUESTED',
+            'SUBSCRIPTION_DELETED',
+            'SUBSCRIPTION_INACTIVATED'
+        ];
+
+        // Se for atualização de assinatura, verifica se o status dela ficou inativo ou deletado
+        if (event === 'SUBSCRIPTION_UPDATED' && subscription) {
+            if (subscription.status === 'INACTIVE' || subscription.deleted) {
+                eventosBloqueio.push('SUBSCRIPTION_UPDATED');
+            }
+        }
 
         if (eventosAtivacao.includes(event)) {
-            const valor = payment.value;
-            const descricao = payment.description ? payment.description.toLowerCase() : '';
             let limiteCacambas = 10; // Default Bronze
+            const valor = paymentValue || 149.90;
 
-            // Mapeia o limite de caçambas com base na descrição ou faixa de valor pago
-            if (descricao.includes('ouro') || valor >= 390.00) {
+            if (paymentDesc.includes('ouro') || valor >= 390.00) {
                 limiteCacambas = 9999; // Ouro (R$ 399,90)
-            } else if (descricao.includes('prata') || valor >= 280.00) {
+            } else if (paymentDesc.includes('prata') || valor >= 280.00) {
                 limiteCacambas = 25; // Prata (R$ 289,90)
             } else {
                 limiteCacambas = 10; // Bronze (R$ 149,90)
             }
 
-            console.log(`Ativando plano da empresa ${empresaId}. Limite: ${limiteCacambas}. Valor pago: R$ ${valor}`);
+            console.log(`Ativando plano da empresa ${empresaId}. Limite: ${limiteCacambas}. Valor: R$ ${valor}`);
 
-            const newSubscriptionId = payment.subscription;
+            const newSubscriptionId = subscriptionId;
             const empresaData = empresaDoc.data();
             const oldSubscriptionId = empresaData.asaas_subscription_id;
 
-            // Se o usuário já tinha uma assinatura ativa diferente da nova, cancela a antiga no Asaas automaticamente para evitar cobrança dupla
             if (newSubscriptionId && oldSubscriptionId && oldSubscriptionId !== newSubscriptionId) {
-                console.log(`Nova assinatura (${newSubscriptionId}) detectada. Cancelando assinatura antiga (${oldSubscriptionId}) no Asaas...`);
+                console.log(`Nova assinatura (${newSubscriptionId}) detectada. Cancelando anterior (${oldSubscriptionId}) no Asaas...`);
                 try {
                     await axios.delete(`${ASAAS_API_URL}/subscriptions/${oldSubscriptionId}`, {
-                        headers: {
-                            access_token: ASAAS_API_KEY
-                        }
+                        headers: { access_token: ASAAS_API_KEY }
                     });
-                    console.log(`Assinatura antiga ${oldSubscriptionId} cancelada com sucesso.`);
                 } catch (cancelError) {
-                    console.error(`Erro ao cancelar assinatura antiga ${oldSubscriptionId}:`, cancelError.message);
+                    console.error(`Erro ao cancelar assinatura antiga:`, cancelError.message);
                 }
             }
 
@@ -217,6 +254,78 @@ exports.webhookAsaas = functions.https.onRequest(async (req, res) => {
             console.error('Erro retornado pela API do Asaas:', JSON.stringify(error.response.data));
         }
         return res.status(500).send('Erro interno do servidor');
+    }
+});
+
+// Endpoint para sincronização ativa do status da assinatura com a API do Asaas
+exports.sincronizarAssinaturaAsaas = functions.https.onRequest(async (req, res) => {
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    if (req.method === 'OPTIONS') {
+        return res.status(204).send('');
+    }
+
+    try {
+        const email = (req.query.email || req.body?.email || '').trim().toLowerCase();
+        const uid = (req.query.uid || req.body?.uid || '').trim();
+
+        let empresaDoc = null;
+        if (uid) {
+            const doc = await db.collection('empresas').doc(uid).get();
+            if (doc.exists) empresaDoc = doc;
+        }
+        if (!empresaDoc && email) {
+            const snap = await db.collection('empresas').where('email_admin', '==', email).limit(1).get();
+            if (!snap.empty) empresaDoc = snap.docs[0];
+        }
+
+        if (!empresaDoc) {
+            return res.status(404).json({ error: 'Empresa não encontrada.' });
+        }
+
+        const empresaData = empresaDoc.data();
+        const subId = empresaData.asaas_subscription_id;
+        const customerId = empresaData.asaas_customer_id;
+
+        if (!subId && !customerId) {
+            return res.status(200).json({ status: empresaData.plano_status, synced: false, message: 'Sem assinatura Asaas vinculada.' });
+        }
+
+        let isAtivo = false;
+        let novoLimite = empresaData.plano_limite || 10;
+
+        if (subId) {
+            try {
+                const subRes = await axios.get(`${ASAAS_API_URL}/subscriptions/${subId}`, {
+                    headers: { access_token: ASAAS_API_KEY }
+                });
+                const subData = subRes.data;
+                console.log(`Consulta Asaas para assinatura ${subId}: status=${subData.status}, deleted=${subData.deleted}`);
+                if (subData.status === 'ACTIVE' && !subData.deleted) {
+                    isAtivo = true;
+                }
+            } catch (e) {
+                console.warn('Erro ao consultar assinatura no Asaas:', e.message);
+            }
+        }
+
+        const novoStatus = isAtivo ? 'ativo' : 'bloqueado';
+        await empresaDoc.ref.update({
+            plano_status: novoStatus,
+            data_ultima_atualizacao: new Date().toISOString()
+        });
+
+        return res.status(200).json({
+            success: true,
+            status: novoStatus,
+            plano_limite: novoLimite,
+            subscription_id: subId
+        });
+    } catch (err) {
+        console.error('Erro ao sincronizar Asaas:', err);
+        return res.status(500).json({ error: err.message });
     }
 });
 
