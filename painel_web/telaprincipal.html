@@ -206,21 +206,38 @@
     <div id="modalDetalhesLocacao" class="modal-overlay"
         style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
         <div class="modal-conteudo"
-            style="background-color: #fefefe; padding: 24px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); font-family: sans-serif;">
+            style="background-color: #fefefe; padding: 24px; border-radius: 16px; width: 92%; max-width: 840px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-family: sans-serif;">
             <div class="modal-cabecalho"
-                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-                <h3 id="detalheOS" style="margin: 0; color: #1e3a8a;">Detalhes da Locação</h3>
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px;">
+                <h3 id="detalheOS" style="margin: 0; color: #1e3a8a; font-size: 20px;">Detalhes da Locação</h3>
                 <span id="btnFecharModalDetalhes"
-                    style="font-size: 24px; font-weight: bold; cursor: pointer; color: #64748b;">&times;</span>
+                    style="font-size: 26px; font-weight: bold; cursor: pointer; color: #64748b; line-height: 1;">&times;</span>
             </div>
-            <div id="detalhesCorpo" style="font-size: 14px; color: #334155; line-height: 1.6;">
-                <!-- Preenchido via JS -->
-            </div>
-            <div id="comprovanteArea" style="margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
-                <h4 style="margin: 0 0 10px 0; color: #1e3a8a;">Comprovante de Entrega/Troca/Retirada</h4>
-                <div id="comprovanteFoto"
-                    style="text-align: center; background: #f1f5f9; border-radius: 8px; padding: 10px; min-height: 100px; display: flex; align-items: center; justify-content: center;">
+
+            <!-- Grade com Informações à Esquerda e Comprovantes à Direita -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 18px; align-items: start; margin-bottom: 10px;">
+                <!-- Coluna 1: Informações -->
+                <div id="detalhesCorpo" style="font-size: 14px; color: #334155; line-height: 1.6; background: #f8fafc; padding: 18px; border-radius: 12px; border: 1px solid #e2e8f0;">
                     <!-- Preenchido via JS -->
+                </div>
+
+                <!-- Coluna 2: Comprovantes -->
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                    <div id="comprovanteArea" style="background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 14px;">📸 Comprovante no Local</h4>
+                        <div id="comprovanteFoto"
+                            style="text-align: center; background: white; border-radius: 8px; padding: 10px; min-height: 100px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center;">
+                            <!-- Preenchido via JS -->
+                        </div>
+                    </div>
+
+                    <div id="assinaturaArea" style="background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 14px;">✍️ Assinatura do Recebedor</h4>
+                        <div id="assinaturaCorpo"
+                            style="text-align: center; background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <!-- Preenchido via JS -->
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -860,15 +877,20 @@
                     ? `Nº ${data.cacamba_numero || '-'} <span style="color: #2563eb; font-weight: bold;">(Indo)</span> | Nº ${data.cacamba_velha_numero || '-'} <span style="color: #ea580c; font-weight: bold;">(Voltando)</span>`
                     : `Nº ${data.cacamba_numero || '-'}`;
 
+                const valorLimpo = data.valor ? String(data.valor).trim() : '-';
+                const valorFormatado = (valorLimpo !== '-' && !valorLimpo.startsWith('R$')) ? 'R$ ' + valorLimpo : valorLimpo;
+
                 document.getElementById('detalhesCorpo').innerHTML = `
-                    <p><strong>Cliente:</strong> ${data.cliente_nome || '-'}</p>
-                    <p><strong>Caçamba:</strong> ${cacambaInfo}</p>
-                    <p><strong>Endereço:</strong> ${rua}, ${num} - ${bairro}, ${cidade}</p>
-                    <p><strong>Status Operacional:</strong> ${statusTexto}</p>
-                    <p><strong>Motorista Vinculado:</strong> ${data.motorista_nome || '-'}</p>
-                    ${dataLinhas}
-                    <p><strong>Valor:</strong> ${data.valor ? 'R$ ' + data.valor : '-'}</p>
-                    <p><strong>Pagamento:</strong> ${pagamentoTexto}</p>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div><strong style="color: #475569;">Cliente:</strong> <span style="font-weight: bold; color: #1e3a8a;">${data.cliente_nome || '-'}</span></div>
+                        <div><strong style="color: #475569;">Caçamba:</strong> <span style="font-weight: bold;">${cacambaInfo}</span></div>
+                        <div><strong style="color: #475569;">Endereço:</strong> <span>${rua}, ${num} - ${bairro}, ${cidade}</span></div>
+                        <div><strong style="color: #475569;">Status:</strong> ${statusTexto}</div>
+                        <div><strong style="color: #475569;">Motorista:</strong> <span>${data.motorista_nome || '-'}</span></div>
+                        ${dataLinhas}
+                        <div><strong style="color: #475569;">Valor:</strong> <span style="font-weight: bold; color: #1e3a8a; font-size: 15px;">${valorFormatado}</span></div>
+                        <div><strong style="color: #475569;">Pagamento:</strong> ${pagamentoTexto}</div>
+                    </div>
                 `;
 
                 // Configurar clique no Salvar Pagamento Rápido
@@ -896,13 +918,31 @@
                 if (!data.foto_confirmacao_url) {
                     compFoto.innerHTML = `<span style="color: #64748b; font-style: italic;">Nenhuma foto enviada pelo motorista ainda.</span>`;
                 } else if (data.foto_confirmacao_url.startsWith('http')) {
-                    compFoto.innerHTML = `<img src="${data.foto_confirmacao_url}" alt="Comprovante" style="max-width: 100%; max-height: 200px; border-radius: 8px;">`;
+                    compFoto.innerHTML = `<img src="${data.foto_confirmacao_url}" alt="Comprovante" title="Clique para abrir em tamanho real" style="max-width: 100%; max-height: 180px; object-fit: contain; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); cursor: pointer;" onclick="window.open('${data.foto_confirmacao_url}', '_blank')">`;
                 } else if (data.foto_confirmacao_url === 'uploading') {
                     compFoto.innerHTML = `<span style="color: #2563eb; font-weight: bold; font-style: italic;">Enviando comprovante...</span>`;
                 } else if (data.foto_confirmacao_url === 'erro_upload_comprovante') {
                     compFoto.innerHTML = `<span style="color: #dc2626; font-weight: bold; font-style: italic;">Erro no envio do comprovante pelo motorista.</span>`;
                 } else {
                     compFoto.innerHTML = `<span style="color: #475569; font-weight: bold;">${data.foto_confirmacao_url}</span>`;
+                }
+
+                // Assinatura digital do recebedor
+                const assCorpo = document.getElementById('assinaturaCorpo');
+                if (assCorpo) {
+                    if (data.assinatura_url && data.assinatura_url.startsWith('http')) {
+                        const recebedorTxt = data.recebedor_nome ? `<div style="margin-bottom: 6px; font-weight: bold; color: #1e3a8a; font-size: 13px;">✍️ Recebido por: <span style="color: #0f172a;">${data.recebedor_nome}</span></div>` : '';
+                        assCorpo.innerHTML = `
+                            ${recebedorTxt}
+                            <div style="background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px; width: 100%; box-sizing: border-box; text-align: center;">
+                                <img src="${data.assinatura_url}" alt="Assinatura Digital" title="Clique para abrir em tamanho real" style="max-width: 100%; max-height: 140px; object-fit: contain; display: block; margin: 0 auto; cursor: pointer;" onclick="window.open('${data.assinatura_url}', '_blank')">
+                            </div>
+                        `;
+                    } else if (data.recebedor_nome) {
+                        assCorpo.innerHTML = `<span style="color: #1e3a8a; font-weight: bold;">Recebido por: ${data.recebedor_nome}</span><br><span style="color: #64748b; font-size: 12px; font-style: italic;">(Imagem da assinatura não disponível)</span>`;
+                    } else {
+                        assCorpo.innerHTML = `<span style="color: #64748b; font-style: italic;">Assinatura digital não coletada nesta locação.</span>`;
+                    }
                 }
 
                 // Esconde as áreas de agendamento inicialmente

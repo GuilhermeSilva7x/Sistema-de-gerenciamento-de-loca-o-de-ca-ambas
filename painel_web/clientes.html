@@ -197,6 +197,45 @@
         </div>
     </div>
 
+    <!-- MODAL DETALHES DA LOCAÇÃO DO CLIENTE (COM COMPROVANTE E ASSINATURA) -->
+    <div id="modalDetalhesLocacaoCliente" class="modal-container" style="display: none; z-index: 2500;">
+        <div class="modal-conteudo" style="max-width: 820px; width: 92%; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-cabecalho" style="border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 18px;">
+                <h3 id="detalheOSCliente" style="margin: 0; color: #1e3a8a; font-size: 20px;">Detalhes da Locação</h3>
+                <span id="btnFecharDetalhesCliente" class="modal-fechar">&times;</span>
+            </div>
+            
+            <!-- Grade 2 colunas -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; align-items: start; margin-bottom: 10px;">
+                <!-- Coluna 1: Informações -->
+                <div id="detalhesCorpoCliente" style="font-size: 14px; color: #334155; line-height: 1.6; background: #f8fafc; padding: 18px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                    <!-- Preenchido via JS -->
+                </div>
+
+                <!-- Coluna 2: Comprovantes -->
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                    <div style="background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 14px;">📸 Comprovante no Local</h4>
+                        <div id="comprovanteFotoCliente"
+                            style="text-align: center; background: white; border-radius: 8px; padding: 10px; min-height: 100px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center;">
+                        </div>
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <h4 style="margin: 0 0 10px 0; color: #1e3a8a; font-size: 14px;">✍️ Assinatura do Recebedor</h4>
+                        <div id="assinaturaCorpoCliente"
+                            style="text-align: center; background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-botoes" style="margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                <button type="button" id="btnVoltarHistoricoCliente" class="btn-cancelar" style="background: #2563eb; color: white;">← Voltar ao Histórico</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -561,12 +600,13 @@
                                 <th style="padding: 10px; font-size: 13px; color: #475569;">Data</th>
                                 <th style="padding: 10px; font-size: 13px; color: #475569;">Valor</th>
                                 <th style="padding: 10px; font-size: 13px; color: #475569;">Status</th>
+                                <th style="padding: 10px; font-size: 13px; color: #475569; text-align: center;">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
                 `;
 
-                    locs.forEach((item) => {
+                    locs.forEach((item, index) => {
                         const data = item.data;
                         const dateStr = data.data_entrega ? new Date(data.data_entrega + 'T12:00:00').toLocaleDateString('pt-BR') : '-';
 
@@ -616,13 +656,16 @@
                         }
 
                         html += `
-                        <tr style="border-bottom: 1px solid #f1f5f9;">
-                            <td style="padding: 10px; font-weight: bold;">${data.os_numero || '-'}</td>
+                        <tr class="linha-locacao-hist" data-index="${index}" style="border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
+                            <td style="padding: 10px; font-weight: bold; color: #1e3a8a;">${data.os_numero || '-'}</td>
                             <td style="padding: 10px;">${tipoBadge}</td>
                             <td style="padding: 10px;">${cacambaCell}</td>
                             <td style="padding: 10px;">${dateStr}</td>
                             <td style="padding: 10px; font-weight: bold; color: #1e3a8a;">${valorStr}</td>
                             <td style="padding: 10px;">${statusBadge}</td>
+                            <td style="padding: 10px; text-align: center;">
+                                <button type="button" class="btn-detalhes-hist" data-index="${index}" style="background: #dbeafe; color: #1e40af; border: none; padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer;">🔍 Detalhes</button>
+                            </td>
                         </tr>
                     `;
                     });
@@ -633,9 +676,98 @@
                 `;
 
                     corpo.innerHTML = html;
+
+                    // Adicionar listeners para clique nas linhas e botões
+                    corpo.querySelectorAll('.linha-locacao-hist').forEach(tr => {
+                        tr.addEventListener('click', () => {
+                            const idx = parseInt(tr.getAttribute('data-index'));
+                            if (locs[idx]) {
+                                abrirDetalhesLocacaoCliente(locs[idx].data);
+                            }
+                        });
+                    });
                 } catch (err) {
                     corpo.innerHTML = `<p style="text-align: center; color: #ef4444; padding: 20px;">Erro ao carregar movimentações: ${err.message}</p>`;
                 }
+            }
+
+            function abrirDetalhesLocacaoCliente(data) {
+                const modalDet = document.getElementById('modalDetalhesLocacaoCliente');
+                const osTitulo = document.getElementById('detalheOSCliente');
+                const corpoDet = document.getElementById('detalhesCorpoCliente');
+                const compFoto = document.getElementById('comprovanteFotoCliente');
+                const assCorpo = document.getElementById('assinaturaCorpoCliente');
+
+                osTitulo.textContent = `Ordem de Serviço: ${data.os_numero || '-'}`;
+
+                const rua = data.endereco?.rua || '-';
+                const num = data.endereco?.numero || '-';
+                const bairro = data.endereco?.bairro || '-';
+                const cidade = data.endereco?.cidade || '-';
+
+                const dtEntrega = data.data_entrega ? new Date(data.data_entrega + 'T12:00:00').toLocaleDateString('pt-BR') : '-';
+                const dtRetirada = data.data_retirada ? new Date(data.data_retirada + 'T12:00:00').toLocaleDateString('pt-BR') : '-';
+
+                let cacambaInfo = `Nº ${data.cacamba_numero || '-'}`;
+                if (data.cacamba_velha_numero) {
+                    cacambaInfo += ` (Troca com caçamba Nº ${data.cacamba_velha_numero})`;
+                }
+
+                const valorLimpo = data.valor ? String(data.valor).trim() : 'Sem Custo';
+                const valorFormatado = (valorLimpo !== 'Sem Custo' && !valorLimpo.startsWith('R$')) ? 'R$ ' + valorLimpo : valorLimpo;
+
+                corpoDet.innerHTML = `
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div><strong style="color: #475569;">Cliente:</strong> <span style="font-weight: bold; color: #1e3a8a;">${data.cliente_nome || '-'}</span></div>
+                        <div><strong style="color: #475569;">Caçamba:</strong> <span style="font-weight: bold;">${cacambaInfo}</span></div>
+                        <div><strong style="color: #475569;">Endereço:</strong> <span>${rua}, ${num} - ${bairro}, ${cidade}</span></div>
+                        <div><strong style="color: #475569;">Motorista:</strong> <span>${data.motorista_nome || '-'}</span></div>
+                        <div><strong style="color: #475569;">Data Entrega:</strong> <span>${dtEntrega} ${data.hora_entrega || ''}</span></div>
+                        <div><strong style="color: #475569;">Previsão Retirada:</strong> <span>${dtRetirada}</span></div>
+                        <div><strong style="color: #475569;">Valor:</strong> <span style="font-weight: bold; color: #1e3a8a; font-size: 15px;">${valorFormatado}</span></div>
+                        <div><strong style="color: #475569;">Pagamento:</strong> <span>${data.pagamento_status || '-'} (${data.pagamento_forma || '-'})</span></div>
+                    </div>
+                `;
+
+                // Renderiza Foto do Comprovante
+                if (!data.foto_confirmacao_url) {
+                    compFoto.innerHTML = `<span style="color: #64748b; font-style: italic;">Nenhuma foto enviada pelo motorista.</span>`;
+                } else if (data.foto_confirmacao_url.startsWith('http')) {
+                    compFoto.innerHTML = `<img src="${data.foto_confirmacao_url}" alt="Comprovante" title="Clique para abrir em tamanho real" style="max-width: 100%; max-height: 180px; object-fit: contain; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); cursor: pointer;" onclick="window.open('${data.foto_confirmacao_url}', '_blank')">`;
+                } else {
+                    compFoto.innerHTML = `<span style="color: #475569; font-weight: bold;">${data.foto_confirmacao_url}</span>`;
+                }
+
+                // Renderiza Assinatura Digital do Recebedor
+                if (data.assinatura_url && data.assinatura_url.startsWith('http')) {
+                    const recebedorTxt = data.recebedor_nome ? `<div style="margin-bottom: 6px; font-weight: bold; color: #1e3a8a; font-size: 13px;">✍️ Recebido por: <span style="color: #0f172a;">${data.recebedor_nome}</span></div>` : '';
+                    assCorpo.innerHTML = `
+                        ${recebedorTxt}
+                        <div style="background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px; width: 100%; box-sizing: border-box; text-align: center;">
+                            <img src="${data.assinatura_url}" alt="Assinatura Digital" title="Clique para abrir em tamanho real" style="max-width: 100%; max-height: 140px; object-fit: contain; display: block; margin: 0 auto; cursor: pointer;" onclick="window.open('${data.assinatura_url}', '_blank')">
+                        </div>
+                    `;
+                } else if (data.recebedor_nome) {
+                    assCorpo.innerHTML = `<span style="color: #1e3a8a; font-weight: bold;">Recebido por: ${data.recebedor_nome}</span><br><span style="color: #64748b; font-size: 12px; font-style: italic;">(Imagem da assinatura não disponível)</span>`;
+                } else {
+                    assCorpo.innerHTML = `<span style="color: #64748b; font-style: italic;">Assinatura digital não coletada nesta locação.</span>`;
+                }
+
+                modalDet.style.display = 'flex';
+            }
+
+            // Fechamento do modal de detalhes da locação do cliente
+            const btnFecharDet = document.getElementById('btnFecharDetalhesCliente');
+            if (btnFecharDet) {
+                btnFecharDet.addEventListener('click', () => {
+                    document.getElementById('modalDetalhesLocacaoCliente').style.display = 'none';
+                });
+            }
+            const btnVoltarHist = document.getElementById('btnVoltarHistoricoCliente');
+            if (btnVoltarHist) {
+                btnVoltarHist.addEventListener('click', () => {
+                    document.getElementById('modalDetalhesLocacaoCliente').style.display = 'none';
+                });
             }
         }
     </script>

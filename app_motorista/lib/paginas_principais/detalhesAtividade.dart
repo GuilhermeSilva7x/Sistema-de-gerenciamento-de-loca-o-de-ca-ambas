@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app_motorista/subpastas_detalhesAtividades/abaCliente.dart';
 import 'package:app_motorista/subpastas_detalhesAtividades/botaoLocalizacao.dart';
+import 'package:app_motorista/subpastas_detalhesAtividades/telaAssinatura.dart';
 import 'package:app_motorista/subpastas_homepage/atividades.dart';
 import 'package:app_motorista/paginas_principais/homepage.dart';
 
@@ -45,7 +46,39 @@ class Detalhesatividade extends StatefulWidget {
 class _DetalhesatividadeState extends State<Detalhesatividade> {
   XFile? _fotoComprovante;
   Uint8List? _fotoBytes;
+  Uint8List? _assinaturaBytes;
+  String _nomeRecebedor = '';
+  String? _fotoCarregadaUrl;
+  String? _assinaturaCarregadaUrl;
+  String? _nomeRecebedorCarregado;
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.concluido) {
+      _carregarDadosConcluidos();
+    }
+  }
+
+  Future<void> _carregarDadosConcluidos() async {
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('locacoes')
+          .doc(widget.id)
+          .get();
+      if (doc.exists && mounted) {
+        final data = doc.data();
+        if (data != null) {
+          setState(() {
+            _fotoCarregadaUrl = data['foto_confirmacao_url'];
+            _assinaturaCarregadaUrl = data['assinatura_url'];
+            _nomeRecebedorCarregado = data['recebedor_nome'];
+          });
+        }
+      }
+    } catch (_) {}
+  }
 
   Future<void> _tirarFoto() async {
     if (widget.concluido) return;
@@ -67,6 +100,24 @@ class _DetalhesatividadeState extends State<Detalhesatividade> {
     }
   }
 
+  Future<void> _coletarAssinatura() async {
+    if (widget.concluido) return;
+
+    final resultado = await Navigator.push<ResultadoAssinatura>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TelaAssinatura(nomeInicial: _nomeRecebedor),
+      ),
+    );
+
+    if (resultado != null) {
+      setState(() {
+        _nomeRecebedor = resultado.nomeRecebedor;
+        _assinaturaBytes = resultado.assinaturaBytes;
+      });
+    }
+  }
+
   Future<void> _confirmarServico() async {
     if (_fotoBytes == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -80,13 +131,27 @@ class _DetalhesatividadeState extends State<Detalhesatividade> {
       return;
     }
 
+    if (_assinaturaBytes == null || _nomeRecebedor.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Por favor, recolha a assinatura digital e o nome de quem recebeu antes de confirmar.',
+          ),
+          backgroundColor: Colors.orangeAccent,
+        ),
+      );
+      return;
+    }
+
     setState(() => _isLoading = true);
 
     // 1. Coleta dados locais antes da navegação para evitar problemas com widget desmontado
     final String docId = widget.id;
     final String atividade = widget.atividade;
     final String cacambaId = widget.cacambaId;
-    final Uint8List bytesToUpload = _fotoBytes!;
+    final Uint8List bytesFotoToUpload = _fotoBytes!;
+    final Uint8List bytesAssinaturaToUpload = _assinaturaBytes!;
+    final String nomeRecebedorFinal = _nomeRecebedor.trim();
     final bool isRetirada =
         atividade == 'RETIRADA' ||
         atividade == 'retirada_pendente' ||
@@ -123,8 +188,8 @@ class _DetalhesatividadeState extends State<Detalhesatividade> {
     // 3. Executa todo o processo em background
     Future.microtask(() async {
       String fotoUrl = 'erro_upload_comprovante';
+      // A. Upload da Foto para o Firebase Storage
       try {
-        // A. Upload para o Firebase Storage
         final ref = FirebaseStorage.instance
             .ref()
             .child('locacoes')
@@ -132,12 +197,12 @@ class _DetalhesatividadeState extends State<Detalhesatividade> {
             .child('comprovante.jpg');
 
         await ref.putData(
-          bytesToUpload,
+          bytesFotoToUpload,
           SettableMetadata(contentType: 'image/jpeg'),
         );
         fotoUrl = await ref.getDownloadURL();
       } catch (e) {
-        debugPrint("Tentativa 1 falhou: $e. Tentando com bucket alternativo...");
+        debugPrint("Tentativa 1 falhou para foto: $e. Tentando com bucket alternativo...");
         try {
           final altStorage = FirebaseStorage.instanceFor(bucket: 'gs://gerenciamento-de-cacambas.firebasestorage.app');
           final refAlt = altStorage
@@ -147,21 +212,59 @@ class _DetalhesatividadeState extends State<Detalhesatividade> {
               .child('comprovante.jpg');
           
           await refAlt.putData(
-            bytesToUpload,
+            bytesFotoToUpload,
             SettableMetadata(contentType: 'image/jpeg'),
           );
           fotoUrl = await refAlt.getDownloadURL();
         } catch (e2) {
           debugPrint("Erro no upload do comprovante: $e2");
-          fotoUrl = 'Erro no upload: ${e2.toString()}. Dica: Ative o Storage no Console do Firebase (clique em Começar).';
+          fotoUrl = 'Erro no upload: ${e2.toString()}';
+        }
+      }
+
+      // B. Upload da Assinatura Digital para o Firebase Storage
+      String assinaturaUrl = '';
+      try {
+        final refAssinatura = FirebaseStorage.instance
+            .ref()
+            .child('locacoes')
+            .child(docId)
+            .child('assinatura.png');
+
+        await refAssinatura.putData(
+          bytesAssinaturaToUpload,
+          SettableMetadata(contentType: 'image/png'),
+        );
+        assinaturaUrl = await refAssinatura.getDownloadURL();
+      } catch (eAss) {
+        debugPrint("Tentativa 1 falhou para assinatura: $eAss. Tentando com bucket alternativo...");
+        try {
+          final altStorage = FirebaseStorage.instanceFor(bucket: 'gs://gerenciamento-de-cacambas.firebasestorage.app');
+          final refAltAss = altStorage
+              .ref()
+              .child('locacoes')
+              .child(docId)
+              .child('assinatura.png');
+
+          await refAltAss.putData(
+            bytesAssinaturaToUpload,
+            SettableMetadata(contentType: 'image/png'),
+          );
+          assinaturaUrl = await refAltAss.getDownloadURL();
+        } catch (eAss2) {
+          debugPrint("Erro no upload da assinatura: $eAss2");
+          assinaturaUrl = '';
         }
       }
 
       try {
-        // B. Atualiza a Locação no Firestore com tudo junto (status, datas, fotoUrl final)
+        // C. Atualiza a Locação no Firestore com tudo junto (status, datas, fotoUrl, assinaturaUrl, recebedor_nome)
         final Map<String, dynamic> updateFields = {
           'status': novoStatusLocacao,
           'foto_confirmacao_url': fotoUrl,
+          'assinatura_url': assinaturaUrl,
+          'recebedor_nome': nomeRecebedorFinal,
+          'assinatura_em': FieldValue.serverTimestamp(),
           'concluido_em': FieldValue.serverTimestamp(),
         };
 
@@ -378,6 +481,13 @@ class _DetalhesatividadeState extends State<Detalhesatividade> {
                                 width: double.infinity,
                                 fit: BoxFit.contain,
                               )
+                            : (_fotoCarregadaUrl != null && _fotoCarregadaUrl!.startsWith('http'))
+                            ? Image.network(
+                                _fotoCarregadaUrl!,
+                                height: 150,
+                                width: double.infinity,
+                                fit: BoxFit.contain,
+                              )
                             : widget.concluido
                             ? const Icon(
                                 Icons.photo,
@@ -390,7 +500,7 @@ class _DetalhesatividadeState extends State<Detalhesatividade> {
                                 color: Colors.blue,
                               ),
                         const SizedBox(height: 8),
-                        if (_fotoComprovante == null && !widget.concluido)
+                        if (_fotoComprovante == null && _fotoCarregadaUrl == null && !widget.concluido)
                           const Text(
                             "Toque para tirar a foto da caçamba no local",
                             style: TextStyle(fontSize: 15),
@@ -400,6 +510,213 @@ class _DetalhesatividadeState extends State<Detalhesatividade> {
                     ),
                   ),
                 ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
+            // Área de Assinatura Digital do Recebedor
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.draw_outlined, size: 20, color: Color(0xFF2563EB)),
+                    const SizedBox(width: 8),
+                    const Text(
+                      "Assinatura do Recebedor",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    if (!widget.concluido) ...[
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFEE2E2),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: const Text(
+                          "Obrigatório",
+                          style: TextStyle(
+                            color: Color(0xFFDC2626),
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                if (widget.concluido) ...[
+                  // Exibição quando atividade já está concluída
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey[200]!),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.04),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (_nomeRecebedorCarregado != null && _nomeRecebedorCarregado!.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.person, size: 18, color: Color(0xFF10B981)),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: Text(
+                                    "Recebido por: $_nomeRecebedorCarregado",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: Color(0xFF1E293B),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        if (_assinaturaCarregadaUrl != null && _assinaturaCarregadaUrl!.startsWith('http'))
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              color: const Color(0xFFF8FAFC),
+                              padding: const EdgeInsets.all(8),
+                              child: Image.network(
+                                _assinaturaCarregadaUrl!,
+                                height: 120,
+                                width: double.infinity,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          )
+                        else
+                          const Text(
+                            "Assinatura digital não vinculada.",
+                            style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+                          ),
+                      ],
+                    ),
+                  ),
+                ] else if (_assinaturaBytes != null) ...[
+                  // Assinatura recém coletada pelo motorista
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFF10B981), width: 1.5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.check_circle, size: 18, color: Color(0xFF10B981)),
+                                const SizedBox(width: 6),
+                                Text(
+                                  "Recebido por: $_nomeRecebedor",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: Color(0xFF1E293B),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            TextButton.icon(
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                minimumSize: Size.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              icon: const Icon(Icons.edit, size: 14, color: Color(0xFF2563EB)),
+                              label: const Text(
+                                "Alterar",
+                                style: TextStyle(fontSize: 12, color: Color(0xFF2563EB), fontWeight: FontWeight.bold),
+                              ),
+                              onPressed: _coletarAssinatura,
+                            ),
+                          ],
+                        ),
+                        const Divider(height: 16),
+                        Container(
+                          height: 110,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF8FAFC),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Image.memory(
+                            _assinaturaBytes!,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ] else ...[
+                  // Botão chamativo para coletar assinatura
+                  InkWell(
+                    onTap: _coletarAssinatura,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFEFF6FF),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFF3B82F6), width: 1.5),
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.edit_note_rounded, size: 40, color: Color(0xFF2563EB)),
+                          SizedBox(height: 8),
+                          Text(
+                            "COLETAR ASSINATURA DIGITAL",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1E40AF),
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            "Pergunte o nome do recebedor e peça para assinar na tela",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF3B82F6),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
             const SizedBox(height: 32),
